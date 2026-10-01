@@ -303,6 +303,7 @@ function mgAmt(t){let a=0;CUTAWAYS.forEach(([s0,s1])=>{a=Math.max(a,cl((t-(s0-.1
 // tn = time on the output timeline (differs from t for re-ordered variants)
 window.render=(t,tn)=>{comps.forEach(f=>f(t));S.style.opacity=1-mgAmt(tn??t)};
 window.setVariant=(cuts)=>{window.V2=true;CUTAWAYS=cuts};
+window.setCuts=(cuts)=>{CUTAWAYS=cuts};
 window.init=W=>{buildChunks(W);return chunks.length};
 </script>
 </body>

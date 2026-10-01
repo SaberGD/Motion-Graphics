@@ -17,6 +17,11 @@ const fs = require('fs'), path = require('path');
   const V2 = process.env.VARIANT === '2';
   const oldFrame = n => !V2 ? n : n < 290 ? n + 137 : n < 427 ? n - 290 : n;
   if (V2) await page.evaluate(() => window.setVariant([[5.90, 9.667], [14.233, 16.10], [22.95, 25.067], [35.00, 37.75]]));
+  // TIMING=<json>: beat-synced cutaway windows on the output timeline
+  if (process.env.TIMING) {
+    const tm = JSON.parse(fs.readFileSync(process.env.TIMING, 'utf8'));
+    await page.evaluate(c => window.setCuts(c), tm.cutaways.map(c => [c[0], c[1]]));
+  }
   const f0 = Math.round(t0 * fps), f1 = Math.round(t1 * fps);
   const list = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.round(+x * fps)) : null;
   const frames = list || Array.from({ length: Math.ceil((f1 - f0) / step) }, (_, i) => f0 + i * step);

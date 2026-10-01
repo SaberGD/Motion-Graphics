@@ -34,14 +34,19 @@ def punch(t, t0, t1, amt, din=.14, dout=.3):
         return 0
     return amt * ease((t - t0) / din) * (1 - ease((t - t1) / dout))
 
+# --timing file.json: beat-synced overrides {"punch": {"<orig start>": new_start}, "cutaways": [[s, e, in, out], ...]}
+TIMING = json.load(open(sys.argv[sys.argv.index('--timing') + 1])) if '--timing' in sys.argv else {}
+def PS(x):
+    return TIMING.get('punch', {}).get(str(x), x)
+
 def zoom_at(t):
     if t < 4.567:   z = 1.0 + .10 * ease(t / 4.5)
     elif t < 9.2:   z = 1.16
-    elif t < 10.467: z = 1.0 + punch(t, 9.86, 10.4, .12)
+    elif t < 10.467: z = 1.0 + punch(t, PS(9.86), 10.4, .12)
     elif t < 14.233: z = 1.0
-    elif t < 25.067: z = 1.10 + punch(t, 14.98, 16.05, .12) + punch(t, 24.30, 24.95, .10)
-    elif t < 34.1:  z = 1.0 + .08 * ease((t - 25.067) / 6) + punch(t, 31.90, 34.0, .12)
-    elif t < 37.6:  z = 1.0 + punch(t, 35.96, 37.5, .10)
+    elif t < 25.067: z = 1.10 + punch(t, PS(14.98), 16.05, .12) + punch(t, PS(24.30), 24.95, .10)
+    elif t < 34.1:  z = 1.0 + .08 * ease((t - 25.067) / 6) + punch(t, PS(31.90), 34.0, .12)
+    elif t < 37.6:  z = 1.0 + punch(t, PS(35.96), 37.5, .10)
     else:           z = 1.04 + .08 * ease((t - 37.6) / 7.8)
     return z
 
@@ -125,7 +130,9 @@ CUTAWAYS = [
     (22.95, 25.067, 'zoom', 'whip'),   # everyone experimenting from the starting line (exits on the location change)
     (35.00, 37.75, 'push', 'zoomout'), # ride the AI wave -> "you'll regret it"; out-transition runs 37.6-37.9 so it lands on the next clip
 ] if MG else []
-if MG and V2:
+if MG and TIMING.get('cutaways'):
+    CUTAWAYS = [tuple(c) for c in TIMING['cutaways']]
+elif MG and V2:
     CUTAWAYS = [
         (5.90, 9.667, 'push', 'whip'),     # experience bars (cuts away to the AI hook on the clip change)
         (14.233, 16.10, 'zoom', 'zoomout'),# AI resets the counter
@@ -189,6 +196,13 @@ def transition(kind, A, B, p):
         return cv2.addWeighted(out, 1 - .55 * w, np.full_like(out, 255), .55 * w, 0)
     return B
 
+def music_hit(img, t):
+    amp = 0
+    for h, a in TIMING.get('hits', []):
+        if 0 <= t - h < .6:
+            amp = max(amp, a * np.exp(-(t - h) / .14))
+    return scale_about(img, 1 + amp) if amp > .002 else img
+
 def cutaway_state(t):
     """returns (kind, p, a_is_speaker) when in a transition, ('mg',) when fully on mg, None otherwise."""
     for s0, s1, kin, kout in CUTAWAYS:
@@ -217,7 +231,7 @@ for i in range(N):
     t = i / FPS
     st = cutaway_state(t)
     if st and st[0] == 'mg':
-        enc.stdin.write(mgf.tobytes()); continue
+        enc.stdin.write(np.ascontiguousarray(music_hit(mgf, t)).tobytes()); continue
     # zoom-blur transition around big cuts
     cuts = [c for c in BIG_CUTS if not any(s0 - .5 < c < s1 + .5 for s0, s1, *_ in CUTAWAYS)]
     dist = min((abs(t - c) for c in cuts), default=9)
@@ -241,6 +255,7 @@ for i in range(N):
         out = transition(kind, spk, mgf, p) if spk_first else transition(kind, mgf, spk, p)
     else:
         out = spk
+    out = music_hit(out, t)
     enc.stdin.write(np.ascontiguousarray(out).tobytes())
     if i % 150 == 0:
         print("frame", i, flush=True)

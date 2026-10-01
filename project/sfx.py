@@ -1,5 +1,5 @@
 """Synthesise a subtle SFX bed (whooshes, pops, ticks, typing) synced to the motion graphics."""
-import numpy as np, wave, sys
+import numpy as np, wave, sys, json
 
 SR = 48000
 DUR = 45.47
@@ -37,6 +37,8 @@ def tick(f=2600, dur=.03):
     return (np.sin(2 * np.pi * f * t) + .4 * rng.standard_normal(n)) * np.exp(-t * 180)
 
 V2 = len(sys.argv) > 2 and sys.argv[2] == 'v2'
+# optional 3rd arg: timing json with beat-synced cutaways (transition whooshes follow them)
+TIMING = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else None
 def remap(t):
     # alternate-hook edit: old 0-4.567 -> new 9.667-14.233, old 4.567-14.233 -> new 0-9.667
     if not V2: return t
@@ -57,6 +59,8 @@ Pp(.05, .14); W(.84, .14); Pp(1.66, .12); Pp(2.40, .2)
 # transitions into / out of the motion-graphics cutaways
 TR = ((5.90, .2), (9.667, .2), (14.233, .2), (16.10, .17), (22.95, .18), (35.00, .2), (37.60, .17)) if V2 else \
      ((10.47, .2), (16.10, .17), (22.95, .18), (35.00, .2), (37.60, .17))
+if TIMING:
+    TR = [(c[0], .2) for c in TIMING["cutaways"]] + [(c[1], .17) for c in TIMING["cutaways"]]
 for tt, g in TR:
     place(whoosh(), tt + .15 - .2, g, raw=True)
 place(pop(420, 200, .18), 35.93, .24)        # "هتندم كتير" lands in the wave cutaway

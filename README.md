@@ -20,3 +20,15 @@ node project/render_overlay.js /tmp/ov
 python3 project/sfx.py /tmp/sfx.wav
 project/assemble.sh raw/after_coloring.mp4 /tmp/base.mp4 /tmp/ov /tmp/sfx.wav output/montaj1_reel.mp4
 ```
+
+## Music versions (`output/with_music/`)
+Four reels with the funk bed ("Radio Feelings"): beat 1 from 4:19.6, beat 2 from 6:28.8 (first downbeat after the inter-track gap).
+
+| File | Edit | Beat |
+|---|---|---|
+| `reel1_beat1.mp4` | colour-graded edit | beat 1 |
+| `reel1_beat2.mp4` | colour-graded edit | beat 2 |
+| `reel2_newhook_beat1.mp4` | alternate hook | beat 1 |
+| `reel2_newhook_beat2.mp4` | alternate hook | beat 2 |
+
+`make_timing.py` snaps punch-ins and mid-shot cutaway transitions to the beat grid (cuts in the footage stay put) and adds zoom "hits" where the track lifts. `assemble_music.sh` mixes the untouched voice (gain only) + SFX + music ducked under the voice, master ≈ −14 LUFS.
