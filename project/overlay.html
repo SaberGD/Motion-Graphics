@@ -157,10 +157,9 @@ add(t=>{
   const l4=mk(g,'tilt','غير بعد <span style="color:var(--or)">20 سنة</span>','font-size:76px;position:relative;margin-top:16px;line-height:1.3');
   mk(l4,'badge','+','right:-26px;top:-30px;line-height:50px');
   add(t=>{
-    popStyle(lab,t,-0.5,3.22,{dy:40});
-    popStyle(l2,t,0.84,3.25,{dy:70});
-    popStyle(l3,t,1.66,3.28,{dy:50});
-    popStyle(l4,t,2.40,3.30,{rot:-4,rotIn:true,sc0:.3});
+    popStyle(lab,t,-0.5,1.70,{dy:40,dout:.15});
+    popStyle(l2,t,0.84,1.70,{dy:70,dout:.15});
+    show(l3,false);show(l4,false);
   });
 }
 
@@ -210,65 +209,6 @@ function pill({t0,t1,html,top,left=null,right=null,rot=-4,size=64,badge='+',bcol
 /* 2. dragons */
 pill({t0:9.80,t1:10.40,html:'تنافس <span style="color:var(--or)">تنانين</span> 🐉',top:880,left:170,rot:-5});
 
-/* ---------------- 3. experience card (10.4 - 16.1) ---------------- */
-{
-  const c=mk(S,'abs dcard',null,'top:780px;left:160px;width:760px;padding:28px 34px 30px');
-  const lab=mk(c,'label','<span>سنين الخبرة في المجال</span><i></i>','margin-bottom:14px;height:40px');
-  const lab2=mk(c,'abs','<span style="font-weight:900;font-size:40px;color:var(--or)">الـ<span class="ai">AI</span> صفّر العداد ⟲</span>','top:24px;right:34px;opacity:0');
-  function mkRow(name){
-    const r=mk(c,'',null,'display:flex;align-items:center;gap:22px;height:110px');
-    mk(r,'',`<span style="font-weight:900;font-size:46px;display:inline-block;width:110px">${name}</span>`);
-    const bar=mk(r,'bar');const f=mk(bar,'f');
-    const n=mk(r,'num',`0`,'font-weight:1000;font-size:84px;width:130px;text-align:center;line-height:1');
-    return {f,n};
-  }
-  const A=mkRow('هم'),B=mkRow('انت');
-  A.f.style.background='linear-gradient(270deg,#FF6B1A,#ffb067)';
-  B.f.style.background='linear-gradient(270deg,#16B8A6,#5fe0d2)';
-  const eq=mk(c,'abs','<span style="font-weight:900;font-size:34px;background:var(--teal);border-radius:12px;padding:4px 18px 8px">نفس نقطة البداية</span>','bottom:-26px;left:34px;opacity:0');
-  const steps=[[11.18,20],[11.38,30],[11.78,40]];
-  add(t=>{
-    if(!popStyle(c,t,10.50,16.05,{dy:50,sc0:.8}))return;
-    // value of "them"
-    let v=0,lastAt=-1;steps.forEach(([at,val])=>{if(t>=at){v=val;lastAt=at}});
-    let barW=v/40*100;
-    const reset=P(t,14.98,.55);
-    if(t>=14.98){v=Math.round(40*(1-E.io(reset)));barW=100*(1-E.io(reset))}
-    else if(lastAt>0){const prev=steps.findIndex(s=>s[0]===lastAt);const pv=prev>0?steps[prev-1][1]:0;barW=(pv+(v-pv)*E.expo(P(t,lastAt,.35)))/40*100}
-    A.f.style.width=Math.max(barW,4)+'%';A.n.textContent=v;
-    const pop=lastAt>0&&t<14.98?P(t,lastAt,.25):1;
-    A.n.style.transform=`scale(${1+.25*(1-E.cub(pop))})`;A.n.style.color=t>=11.18&&t<14.98?'var(--or)':'#fff';
-    B.f.style.width='4%';B.n.textContent='0';
-    const lp=P(t,14.98,.3);lab.style.opacity=1-lp;lab2.style.opacity=lp;lab2.style.transform=`translateY(${(1-E.cub(lp))*20}px)`;
-    const ep=P(t,15.55,.3);eq.style.opacity=ep;eq.style.transform=`scale(${.5+.5*E.back(ep)})`;
-  });
-}
-
-/* ---------------- 4. same start line (16.2 - 21.15) ---------------- */
-{
-  const c=mk(S,'abs dcard',null,'top:770px;left:160px;width:760px;height:440px;padding:0;overflow:hidden');
-  const head=mk(c,'abs label','<span>كلنا بنبدأ من نفس النقطة</span><i></i>','top:26px;right:36px');
-  const lineX=140; // from right
-  const line=mk(c,'abs',null,`top:90px;bottom:30px;right:${lineX}px;width:6px;background:repeating-linear-gradient(180deg,var(--or) 0 16px,transparent 16px 28px);transform-origin:top`);
-  const st=mk(c,'abs','<span class="chip" style="font-size:22px">START</span>',`top:84px;right:${lineX-34}px`);
-  const lanes=[['10 سنين خبرة',18.14],['20 سنة خبرة',18.64],['لسه بتبدأ',19.30]].map(([txt,at],i)=>{
-    const y=130+i*96;
-    const tr=mk(c,'abs',null,`top:${y+36}px;right:${lineX+3}px;left:36px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;transform-origin:right`);
-    const tx=mk(c,'abs',`<span style="font-weight:900;font-size:40px">${txt}</span>`,`top:${y}px;left:40px`);
-    const dot=mk(c,'abs',null,`top:${y+20}px;right:${lineX-14}px;width:36px;height:36px;border-radius:50%;background:#fff;border:7px solid var(--or);box-sizing:border-box`);
-    return {tr,tx,dot,at};
-  });
-  add(t=>{
-    if(!popStyle(c,t,16.40,21.12,{dy:50,sc0:.8}))return;
-    const hp=P(t,16.55,.35);head.style.opacity=hp;
-    const lp=P(t,16.98,.45);line.style.transform=`scaleY(${E.expo(lp)})`;st.style.opacity=lp;
-    lanes.forEach(o=>{const a=P(t,o.at,.4);o.tr.style.transform=`scaleX(${E.expo(a)})`;o.tx.style.opacity=cl(a*2);
-      o.tx.style.transform=`translateX(${(1-E.expo(a))*-40}px)`;
-      const pulse=t>19.92?Math.abs(Math.sin((t-19.92)*Math.PI*1.6))*.18:0;
-      o.dot.style.transform=`scale(${E.back(P(t,o.at,.3))+pulse})`;});
-  });
-}
-
 /* ---------------- 5. no method / experimenting (21.18 - 24.96) ---------------- */
 pill({t0:21.25,t1:22.55,html:'مفيش <span style="color:var(--or)">منهجية</span> واضحة',top:880,right:180,rot:3,badge:'?',size:62});
 pill({t0:23.00,t1:24.92,html:'🧪 كله بيجرب',top:800,right:190,rot:-3,badge:'',size:56});
@@ -288,11 +228,8 @@ pill({t0:23.64,t1:24.92,html:'🧭 كله بيستكشف',top:1020,left:170,rot:
 checklist({t0:28.42,t1:31.92,top:780,head:'أيًا كان مجالك',headAt:28.55,width:620,
   items:[{text:'مونتاج',at:29.02,tag:'+AI'},{text:'جرافيكس',at:29.52,tag:'+AI'},{text:'موشن جرافيكس',at:30.12,tag:'+AI'},{text:'ترجمة',at:31.34,tag:'+AI'}]});
 
-/* ---------------- 8. must master (31.9 - 34.1) ---------------- */
-pill({t0:32.70,t1:34.05,html:'لازم <span style="color:var(--or)">تتقن</span> الـ<span class="ai">AI</span>',top:880,left:180,rot:-4,badge:'!',size:66});
 
 /* ---------------- 9. the wave (34.12 - 37.38) ---------------- */
-pill({t0:34.64,t1:37.30,html:'🌊 الموجة دي <span style="color:var(--or)">دلوقتي</span>',top:790,right:180,rot:3,badge:'',size:56});
 pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:1030,left:170,rot:-3,badge:'!',bcol:'var(--red)',size:58,
   style:'background:var(--red);color:#fff;border-color:#fff'});
 
@@ -337,7 +274,9 @@ pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:1030,left:170,r
   });
 }
 
-window.render=t=>{comps.forEach(f=>f(t))};
+const CUTAWAYS=[[1.85,3.34],[10.47,16.10],[17.45,20.95],[32.90,35.93]];
+function mgAmt(t){let a=0;CUTAWAYS.forEach(([s0,s1])=>{a=Math.max(a,cl((t-(s0-.12))/.18)*(1-cl((t-(s1-.06))/.18)))});return a}
+window.render=t=>{comps.forEach(f=>f(t));S.style.opacity=1-mgAmt(t)};
 window.init=W=>{buildChunks(W);return chunks.length};
 </script>
 </body>

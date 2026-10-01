@@ -89,17 +89,105 @@ def frame_xform(i, extra=1.0):
     s = OW / cw
     return np.float32([[s, 0, -(cx - cw / 2) * s], [0, s, -top * s]])
 
+# ---- optional motion-graphics cutaways (B-roll) with transitions ----
+# argv: SRC OUT face.json [--no-grade] [--mg mg.mp4]
+GRADE = '--no-grade' not in sys.argv
+MG = sys.argv[sys.argv.index('--mg') + 1] if '--mg' in sys.argv else None
+MG_OFFSET = .04   # mg render lags the voice by ~40ms (audio cross-correlation)
+TD = .30          # transition length (s)
+# (start, end, transition in, transition out)
+CUTAWAYS = [
+    (1.85, 3.34, 'zoom', 'whip'),      # door opens: "مش هيتفتح تاني غير بعد 20 سنة"
+    (10.47, 16.10, 'push', 'zoomout'), # years-of-experience bars + AI resets the counter
+    (17.45, 20.95, 'iris', 'pushdown'),# everyone on the same START line
+    (32.90, 35.93, 'push', 'flash'),   # ride the AI wave
+] if MG else []
+
+def mblur(img, k, axis):
+    k = int(k)
+    if k < 3: return img
+    return cv2.blur(img, (k, 1) if axis == 'x' else (1, k))
+
+def scale_about(img, s):
+    if abs(s - 1) < 1e-3: return img
+    m = cv2.getRotationMatrix2D((OW / 2, OH * .42), 0, s)
+    return cv2.warpAffine(img, m, (OW, OH), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+
+def shift(img, dx, dy):
+    m = np.float32([[1, 0, dx], [0, 1, dy]])
+    return cv2.warpAffine(img, m, (OW, OH), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+
+def ease_io(x):
+    x = min(max(x, 0), 1)
+    return 4 * x ** 3 if x < .5 else 1 - (-2 * x + 2) ** 3 / 2
+
+yy2, xx2 = np.mgrid[0:OH, 0:OW].astype(np.float32)
+RR = np.sqrt((xx2 - OW / 2) ** 2 + (yy2 - OH * .45) ** 2)
+RMAX = float(RR.max())
+
+def transition(kind, A, B, p):
+    """A = outgoing frame, B = incoming frame, p in [0,1]."""
+    e = ease_io(p); sp = np.sin(np.pi * p)   # speed proxy, peaks mid-transition
+    if kind in ('zoom', 'zoomout'):
+        a = scale_about(A, 1 + .45 * e); b = scale_about(B, 1.25 - .25 * e)
+        a = cv2.GaussianBlur(a, (0, 0), 1 + 12 * sp); b = cv2.GaussianBlur(b, (0, 0), 1 + 12 * sp)
+        return cv2.addWeighted(a, 1 - e, b, e, 0)
+    if kind in ('push', 'pushdown'):
+        d = -1 if kind == 'push' else 1
+        off = e * OH
+        a = mblur(shift(A, 0, d * off), 2 + 90 * sp, 'y'); b = mblur(shift(B, 0, d * (off - OH)), 2 + 90 * sp, 'y')
+        out = a.copy()
+        if d < 0: out[int(OH - off):] = b[int(OH - off):]
+        else:     out[:int(off)] = b[:int(off)]
+        return out
+    if kind == 'whip':
+        off = e * OW
+        a = mblur(shift(A, off, 0), 2 + 160 * sp, 'x'); b = mblur(shift(B, off - OW, 0), 2 + 160 * sp, 'x')
+        out = a.copy(); out[:, :int(off)] = b[:, :int(off)]
+        return out
+    if kind == 'iris':
+        r = e * RMAX * 1.02
+        m = np.clip((r - RR) / 6 + .5, 0, 1)[..., None]
+        out = A * (1 - m) + B * m
+        ring = np.clip(1 - np.abs(RR - r) / 9, 0, 1)[..., None] * (p < .98)
+        out = out * (1 - ring) + np.array([255, 107, 26], np.float32) * ring
+        return out.astype(np.uint8)
+    if kind == 'flash':
+        b = scale_about(B, 1.12 - .12 * e)
+        out = A if p < .5 else b
+        w = 1 - abs(p - .5) * 2
+        return cv2.addWeighted(out, 1 - .55 * w, np.full_like(out, 255), .55 * w, 0)
+    return B
+
+def cutaway_state(t):
+    """returns (kind, p, a_is_speaker) when in a transition, ('mg',) when fully on mg, None otherwise."""
+    for s0, s1, kin, kout in CUTAWAYS:
+        if s0 - TD / 2 <= t < s0 + TD / 2: return (kin, (t - s0 + TD / 2) / TD, True)
+        if s1 - TD / 2 <= t < s1 + TD / 2: return (kout, (t - s1 + TD / 2) / TD, False)
+        if s0 + TD / 2 <= t < s1 - TD / 2: return ('mg',)
+    return None
+
 dec = subprocess.Popen(["ffmpeg", "-v", "error", "-i", SRC, "-vf", f"scale={PW}:{PH}:flags=lanczos",
                         "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
+mgdec = subprocess.Popen(["ffmpeg", "-v", "error", "-ss", str(MG_OFFSET), "-i", MG, "-vf", f"fps={FPS},scale={OW}:{OH}",
+                          "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE) if MG else None
 enc = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{OW}x{OH}",
                         "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-preset", "slow", "-crf", "12",
                         "-pix_fmt", "yuv420p", OUT], stdin=subprocess.PIPE)
+mgf = None
 for i in range(N):
     buf = dec.stdout.read(PW * PH * 3)
     if len(buf) < PW * PH * 3:
         break
+    if mgdec:
+        mb = mgdec.stdout.read(OW * OH * 3)
+        if len(mb) == OW * OH * 3:
+            mgf = np.frombuffer(mb, np.uint8).reshape(OH, OW, 3)
     src = np.frombuffer(buf, np.uint8).reshape(PH, PW, 3)
     t = i / FPS
+    st = cutaway_state(t)
+    if st and st[0] == 'mg':
+        enc.stdin.write(mgf.tobytes()); continue
     # zoom-blur transition around big cuts
     dist = min((abs(t - c) for c in BIG_CUTS))
     if dist < .17:
@@ -116,7 +204,13 @@ for i in range(N):
             out = cv2.addWeighted(out, .7, np.full_like(out, 255), .3, 0)
     else:
         out = cv2.warpAffine(src, frame_xform(i), (OW, OH), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
-    enc.stdin.write(grade(out).tobytes())
+    spk = grade(out) if GRADE else out
+    if st:
+        kind, p, spk_first = st
+        out = transition(kind, spk, mgf, p) if spk_first else transition(kind, mgf, spk, p)
+    else:
+        out = spk
+    enc.stdin.write(np.ascontiguousarray(out).tobytes())
     if i % 150 == 0:
         print("frame", i, flush=True)
 enc.stdin.close(); enc.wait()
