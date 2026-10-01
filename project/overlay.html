@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:Cairo;src:url(fonts/Cairo.ttf);font-weight:200 1000}
+:root{--or:#FF6B1A;--or2:#FF8A3D;--teal:#16B8A6;--dark:#15120F;--cream:#FFF7EE;--red:#E8441C}
+html,body{margin:0;background:transparent}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,"Noto Color Emoji",sans-serif;color:#fff}
+.abs{position:absolute}
+.w{display:inline-block;will-change:transform}
+/* captions */
+#cap{position:absolute;left:150px;width:760px;top:1300px;height:170px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0 22px;
+  font-weight:900;font-size:76px;line-height:1.15;text-align:center}
+.cw{display:inline-block;-webkit-text-stroke:14px #0d0b09;paint-order:stroke fill;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.hl{color:var(--or)}
+/* cards */
+.dcard{background:rgba(21,18,15,.93);border-radius:30px;box-shadow:0 24px 60px rgba(0,0,0,.40),inset 0 0 0 2px rgba(255,255,255,.06)}
+.tilt{line-height:1.35;background:#fff;color:#151210;border:6px solid var(--or);border-radius:20px;font-weight:900;padding:10px 34px 16px;white-space:nowrap;
+  box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.badge{position:absolute;width:58px;height:58px;border-radius:50%;background:var(--or);color:#fff;font-weight:900;font-size:40px;line-height:54px;text-align:center;
+  border:5px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.3)}
+.label{font-family:Cairo;font-weight:800;font-size:30px;line-height:1.3;letter-spacing:3px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:14px}
+.label i{display:block;height:3px;width:90px;background:var(--teal);border-radius:2px}
+.row{display:flex;align-items:center;gap:20px;height:84px;position:relative;padding:0 18px;border-radius:16px}
+.row .bg{position:absolute;inset:0;border-radius:16px;background:linear-gradient(270deg,var(--or),#ff9a52);transform-origin:right center}
+.row .ic{position:relative;width:46px;height:46px;flex:none}
+.row .ic .dia{position:absolute;inset:4px;background:var(--or);transform:rotate(45deg);border-radius:8px}
+.row .ic .num{position:absolute;inset:0;text-align:center;line-height:46px;font-weight:900;font-size:24px;color:#fff}
+.row .ic .chk{position:absolute;inset:0;border-radius:50%;border:4px solid var(--teal);}
+.row .ic .chk:after{content:"";position:absolute;left:12px;top:6px;width:11px;height:20px;border:solid var(--teal);border-width:0 5px 5px 0;transform:rotate(45deg)}
+.row .tx{position:relative;font-weight:900;font-size:50px;white-space:nowrap}
+.chip{font-weight:900;font-size:28px;background:var(--or);color:#fff;border-radius:12px;padding:2px 14px 6px;direction:ltr}
+.bar{height:34px;border-radius:17px;background:rgba(255,255,255,.12);position:relative;overflow:hidden;flex:1}
+.bar .f{position:absolute;right:0;top:0;bottom:0;border-radius:17px}
+.num{font-variant-numeric:tabular-nums}
+.ai{letter-spacing:4px;unicode-bidi:isolate;direction:ltr;display:inline-block}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+const S=document.getElementById('stage');
+const cl=x=>Math.max(0,Math.min(1,x));
+const E={
+  back:(x,s=1.9)=>{x=cl(x);return 1+(s+1)*Math.pow(x-1,3)+s*Math.pow(x-1,2)},
+  expo:x=>{x=cl(x);return x>=1?1:1-Math.pow(2,-10*x)},
+  cub:x=>{x=cl(x);return 1-Math.pow(1-x,3)},
+  inC:x=>{x=cl(x);return x*x*x},
+  io:x=>{x=cl(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2},
+};
+const P=(t,t0,d)=>cl((t-t0)/d);
+function mk(parent,cls,html,css){const d=document.createElement('div');if(cls)d.className=cls;if(html!=null)d.innerHTML=html;if(css)d.style.cssText=css;parent.appendChild(d);return d}
+function show(el,v){el.style.display=v?'':'none'}
+// generic enter/exit transform: pop with motion blur
+function popStyle(el,t,t0,t1,o={}){
+  const din=o.din||.42,dout=o.dout||.28,rot=o.rot||0,dy=o.dy??60,sc0=o.sc0??.6;
+  if(t<t0||t>t1+dout){el.style.opacity=0;el.style.visibility='hidden';return false}
+  el.style.visibility='visible';
+  const pi=P(t,t0,din),po=P(t,t1,dout);
+  const s=(sc0+(1-sc0)*E.back(pi))*(1-.25*E.inC(po));
+  const y=dy*(1-E.cub(pi))+ (o.outY??-30)*E.inC(po);
+  const blur=Math.max(0,(1-E.cub(pi*1.4))*10)+E.inC(po)*10;
+  el.style.opacity=cl(pi*2.5)*(1-E.inC(po));
+  el.style.transform=`translateY(${y}px) scale(${s}) rotate(${rot*(o.rotIn?E.back(pi):1)}deg)`;
+  el.style.filter=blur>.3?`blur(${blur.toFixed(1)}px)`:'none';
+  return true;
+}
+const comps=[];
+const add=f=>comps.push(f);
+
+/* ---------------- captions ---------------- */
+const RAW=[
+ // [whisper line index, corrected tokens ('' = merge into previous), highlight indices]
+ ["الذكاء الاصطناعي فتح لك باب مش هيتفتح تاني غير بعد 20 سنة",[10,11]],
+ ["وانت واقف تتفرج",[2]],
+ ["من 10 سنين عشان تتعلم أي مهارة من مهارات الفريلانسنج",[1,2]],
+ ["سواء الجرافيك المونتاج الموشن جرافيك",[1,2,3,4]],
+ ["كنت محتاج تنافس تنانين",[3]],
+ ["ناس بقالها حوالي 20 30 40 سنة في المجال وسابقينك بسنين",[3,4,5,6]],
+ ["الـAI _ دلوقتي صفّر العداد ده",[0,3,4]],
+ ["كلنا بنبدأ من نفس النقطة",[3,4]],
+ ["سواء عندك خبرة 10 سنين 20 سنة أو لسه بتبدأ",[]],
+ ["كله بيبدأ من نفس المكان",[3,4]],
+ ["مفيش حد عنده منهجية واضحة",[3,4]],
+ ["كله بيجرب كله بيستكشف من أول الخط",[5,6]],
+ ["عشان كده ده أنسب وقت تتعلم وتدمج الـAI _ في مجالك",[3,4,7]],
+ ["أيًا كان مجالك مونتاج جرافيكس موشن جرافيكس",[]],
+ ["إن شاء الله يكون ترجمة",[4]],
+ ["لازم تبدأ تتقن استخدام الـAI _",[2,4]],
+ ["لو مركبتش الموجة بتاعة الـAI _ دي دلوقتي هتندم كتير بعد 10 سنين",[2,4,8,9]],
+ ["لو مهتم تعرف أكتر عن الـAI _",[5]],
+ ["سيبلي كومنت هرد عليك بالتفاصيل",[1]],
+];
+const CAP_OFF=[[0,3.30],[25.55,26.28],[40.62,99]];
+let chunks=[];
+function buildChunks(W){
+  W.slice(0,RAW.length).forEach((seg,li)=>{
+    const toks=RAW[li][0].split(' '),hl=RAW[li][1];
+    const ws=seg.words;
+    if(toks.length!==ws.length) console.warn('mismatch',li,toks.length,ws.length);
+    let words=[];
+    toks.forEach((tk,i)=>{const w=ws[Math.min(i,ws.length-1)];
+      if(tk==='_'){words[words.length-1].e=w.e;return}
+      words.push({w:tk,s:w.s,e:w.e,hl:hl.includes(i)})});
+    // chunk: max 3 words, max 1.25s
+    let cur=[];
+    words.forEach(w=>{
+      if(cur.length&&(cur.length>=3||w.e-cur[0].s>1.25)){chunks.push(cur);cur=[]}
+      cur.push(w)});
+    if(cur.length)chunks.push(cur);
+  });
+  chunks=chunks.map((c,i)=>({ws:c,s:c[0].s,e:c[c.length-1].e}));
+  chunks.forEach((c,i)=>{c.end=i+1<chunks.length?Math.min(chunks[i+1].s,c.e+.6):c.e+.6});
+}
+const cap=mk(S,'',null,'');cap.id='cap';
+let capCur=-1,capSpans=[];
+add(t=>{
+  const off=CAP_OFF.some(([a,b])=>t>=a&&t<b);
+  const ci=off?-1:chunks.findIndex(c=>t>=c.s-.04&&t<c.end);
+  if(ci!==capCur){cap.innerHTML='';capSpans=[];capCur=ci;
+    if(ci>=0)chunks[ci].ws.forEach(w=>{const sp=mk(cap,'cw'+(w.hl?' hl':''),w.w.replace('AI','<span class="ai">AI</span>'));capSpans.push(sp)})}
+  if(ci<0)return;
+  const c=chunks[ci];
+  const outP=P(t,c.end-.07,.07);
+  c.ws.forEach((w,i)=>{const sp=capSpans[i];const p=P(t,w.s-.04,.2);
+    const act=t>=w.s&&t<w.e+.02;
+    const s=(.55+.45*E.back(p,2.4))*(act?1.07:1);
+    sp.style.opacity=cl(p*3)*(1-outP);
+    sp.style.transform=`translateY(${(1-E.cub(p))*28}px) scale(${s})`;
+  });
+});
+
+/* ---------------- 0. HOOK (0 - 3.34) ---------------- */
+{
+  const g=mk(S,'abs',null,'left:150px;width:760px;top:1020px;display:flex;flex-direction:column;align-items:center;gap:6px;line-height:1.25');
+  const lab=mk(g,'',`<span style="display:inline-flex;align-items:center;gap:14px;background:var(--dark);border-radius:40px;padding:4px 28px 10px;font-weight:800;font-size:40px">
+    <span style="width:16px;height:16px;border-radius:50%;background:var(--or);box-shadow:0 0 0 6px rgba(255,107,26,.25)"></span>الذكاء الاصطناعي</span>`,'margin-bottom:6px');
+  const l2=mk(g,'','<span class="cw" style="font-size:120px;font-weight:1000">فتحلك باب</span>','height:150px;display:flex;align-items:center');
+  const l3=mk(g,'','<span class="cw" style="font-size:70px">مش هيتفتح تاني</span>','height:96px;display:flex;align-items:center');
+  const l4=mk(g,'tilt','غير بعد <span style="color:var(--or)">20 سنة</span>','font-size:76px;position:relative;margin-top:16px;line-height:1.3');
+  mk(l4,'badge','+','right:-26px;top:-30px;line-height:50px');
+  add(t=>{
+    popStyle(lab,t,-0.5,3.22,{dy:40});
+    popStyle(l2,t,0.84,3.25,{dy:70});
+    popStyle(l3,t,1.66,3.28,{dy:50});
+    popStyle(l4,t,2.40,3.30,{rot:-4,rotIn:true,sc0:.3});
+  });
+}
+
+/* ---------------- checklist panel (reused) ---------------- */
+function checklist({t0,t1,top,right=170,width=560,head,headAt,items}){
+  const p=mk(S,'abs dcard',null,`top:${top}px;right:${right}px;width:${width}px;padding:26px 26px 22px;transform-origin:right top`);
+  const h=mk(p,'label',`<span>${head}</span><i></i>`,'margin:0 6px 12px');
+  const rows=items.map((it,i)=>{
+    const r=mk(p,'row');const bg=mk(r,'bg');
+    const ic=mk(r,'ic');const dia=mk(ic,'dia');const num=mk(ic,'num',String(i+1));const chk=mk(ic,'chk');
+    const tx=mk(r,'tx',it.text);
+    let tag=null; if(it.tag){tag=mk(r,'chip',it.tag,'margin-right:auto')}
+    return {r,bg,dia,num,chk,tx,tag,at:it.at};
+  });
+  add(t=>{
+    if(!popStyle(p,t,t0,t1,{dy:0,sc0:.85,outY:0}))return;
+    const hp=P(t,headAt,.35);h.style.opacity=hp;h.style.transform=`translateX(${(1-E.cub(hp))*-40}px)`;
+    rows.forEach((o,i)=>{
+      const a=P(t,o.at,.35);const next=i+1<rows.length?rows[i+1].at:1e9;
+      const done=t>=next;const active=t>=o.at&&!done;
+      o.r.style.opacity=t<o.at-.02?0:cl(a*2.5);
+      o.r.style.transform=`translateX(${(1-E.expo(a))*-70}px)`;
+      o.bg.style.transform=`scaleX(${active?E.expo(P(t,o.at,.3)):0})`;
+      o.bg.style.opacity=active?1:0;
+      const dp=P(t,next,.25);
+      o.dia.style.opacity=done?1-dp:1;o.num.style.opacity=done?1-dp:1;
+      o.dia.style.background=active?'#fff':'var(--or)';o.num.style.color=active?'var(--or)':'#fff';
+      o.chk.style.opacity=done?dp:0;o.chk.style.transform=`scale(${done?.5+.5*E.back(dp):.5})`;
+      o.tx.style.color=done?'rgba(255,255,255,.88)':'#fff';
+      if(o.tag){const tp=P(t,o.at+.12,.3);o.tag.style.opacity=tp;o.tag.style.transform=`scale(${.4+.6*E.back(tp)})`}
+    });
+  });
+}
+
+/* ---------------- 1. skills before (4.44 - 9.15) ---------------- */
+checklist({t0:5.62,t1:9.10,top:800,head:'مهارات الفريلانسنج · من 10 سنين',headAt:5.75,width:600,
+  items:[{text:'الجرافيك',at:7.30},{text:'المونتاج',at:7.72},{text:'الموشن جرافيك',at:8.30}]});
+
+/* ---------------- tilted pill helper ---------------- */
+function pill({t0,t1,html,top,left=null,right=null,rot=-4,size=64,badge='+',bcol='var(--or)',style=''}){
+  const w=mk(S,'abs',null,`top:${top}px;${left!=null?'left:'+left+'px;':''}${right!=null?'right:'+right+'px;':''}`);
+  const c=mk(w,'tilt',html,`font-size:${size}px;position:relative;${style}`);
+  if(badge){const b=mk(c,'badge',badge,`right:-26px;top:-30px;background:${bcol}`)}
+  add(t=>popStyle(c,t,t0,t1,{rot,rotIn:true,sc0:.3,dy:40}));
+  return c;
+}
+/* 2. dragons */
+pill({t0:9.80,t1:10.40,html:'تنافس <span style="color:var(--or)">تنانين</span> 🐉',top:880,left:170,rot:-5});
+
+/* ---------------- 3. experience card (10.4 - 16.1) ---------------- */
+{
+  const c=mk(S,'abs dcard',null,'top:780px;left:160px;width:760px;padding:28px 34px 30px');
+  const lab=mk(c,'label','<span>سنين الخبرة في المجال</span><i></i>','margin-bottom:14px;height:40px');
+  const lab2=mk(c,'abs','<span style="font-weight:900;font-size:40px;color:var(--or)">الـ<span class="ai">AI</span> صفّر العداد ⟲</span>','top:24px;right:34px;opacity:0');
+  function mkRow(name){
+    const r=mk(c,'',null,'display:flex;align-items:center;gap:22px;height:110px');
+    mk(r,'',`<span style="font-weight:900;font-size:46px;display:inline-block;width:110px">${name}</span>`);
+    const bar=mk(r,'bar');const f=mk(bar,'f');
+    const n=mk(r,'num',`0`,'font-weight:1000;font-size:84px;width:130px;text-align:center;line-height:1');
+    return {f,n};
+  }
+  const A=mkRow('هم'),B=mkRow('انت');
+  A.f.style.background='linear-gradient(270deg,#FF6B1A,#ffb067)';
+  B.f.style.background='linear-gradient(270deg,#16B8A6,#5fe0d2)';
+  const eq=mk(c,'abs','<span style="font-weight:900;font-size:34px;background:var(--teal);border-radius:12px;padding:4px 18px 8px">نفس نقطة البداية</span>','bottom:-26px;left:34px;opacity:0');
+  const steps=[[11.18,20],[11.38,30],[11.78,40]];
+  add(t=>{
+    if(!popStyle(c,t,10.50,16.05,{dy:50,sc0:.8}))return;
+    // value of "them"
+    let v=0,lastAt=-1;steps.forEach(([at,val])=>{if(t>=at){v=val;lastAt=at}});
+    let barW=v/40*100;
+    const reset=P(t,14.98,.55);
+    if(t>=14.98){v=Math.round(40*(1-E.io(reset)));barW=100*(1-E.io(reset))}
+    else if(lastAt>0){const prev=steps.findIndex(s=>s[0]===lastAt);const pv=prev>0?steps[prev-1][1]:0;barW=(pv+(v-pv)*E.expo(P(t,lastAt,.35)))/40*100}
+    A.f.style.width=Math.max(barW,4)+'%';A.n.textContent=v;
+    const pop=lastAt>0&&t<14.98?P(t,lastAt,.25):1;
+    A.n.style.transform=`scale(${1+.25*(1-E.cub(pop))})`;A.n.style.color=t>=11.18&&t<14.98?'var(--or)':'#fff';
+    B.f.style.width='4%';B.n.textContent='0';
+    const lp=P(t,14.98,.3);lab.style.opacity=1-lp;lab2.style.opacity=lp;lab2.style.transform=`translateY(${(1-E.cub(lp))*20}px)`;
+    const ep=P(t,15.55,.3);eq.style.opacity=ep;eq.style.transform=`scale(${.5+.5*E.back(ep)})`;
+  });
+}
+
+/* ---------------- 4. same start line (16.2 - 21.15) ---------------- */
+{
+  const c=mk(S,'abs dcard',null,'top:770px;left:160px;width:760px;height:440px;padding:0;overflow:hidden');
+  const head=mk(c,'abs label','<span>كلنا بنبدأ من نفس النقطة</span><i></i>','top:26px;right:36px');
+  const lineX=140; // from right
+  const line=mk(c,'abs',null,`top:90px;bottom:30px;right:${lineX}px;width:6px;background:repeating-linear-gradient(180deg,var(--or) 0 16px,transparent 16px 28px);transform-origin:top`);
+  const st=mk(c,'abs','<span class="chip" style="font-size:22px">START</span>',`top:84px;right:${lineX-34}px`);
+  const lanes=[['10 سنين خبرة',18.14],['20 سنة خبرة',18.64],['لسه بتبدأ',19.30]].map(([txt,at],i)=>{
+    const y=130+i*96;
+    const tr=mk(c,'abs',null,`top:${y+36}px;right:${lineX+3}px;left:36px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;transform-origin:right`);
+    const tx=mk(c,'abs',`<span style="font-weight:900;font-size:40px">${txt}</span>`,`top:${y}px;left:40px`);
+    const dot=mk(c,'abs',null,`top:${y+20}px;right:${lineX-14}px;width:36px;height:36px;border-radius:50%;background:#fff;border:7px solid var(--or);box-sizing:border-box`);
+    return {tr,tx,dot,at};
+  });
+  add(t=>{
+    if(!popStyle(c,t,16.20,21.12,{dy:50,sc0:.8}))return;
+    const hp=P(t,16.40,.35);head.style.opacity=hp;
+    const lp=P(t,16.98,.45);line.style.transform=`scaleY(${E.expo(lp)})`;st.style.opacity=lp;
+    lanes.forEach(o=>{const a=P(t,o.at,.4);o.tr.style.transform=`scaleX(${E.expo(a)})`;o.tx.style.opacity=cl(a*2);
+      o.tx.style.transform=`translateX(${(1-E.expo(a))*-40}px)`;
+      const pulse=t>19.92?Math.abs(Math.sin((t-19.92)*Math.PI*1.6))*.18:0;
+      o.dot.style.transform=`scale(${E.back(P(t,o.at,.3))+pulse})`;});
+  });
+}
+
+/* ---------------- 5. no method / experimenting (21.18 - 24.96) ---------------- */
+pill({t0:21.25,t1:22.55,html:'مفيش <span style="color:var(--or)">منهجية</span> واضحة',top:880,right:180,rot:3,badge:'?',size:62});
+pill({t0:23.00,t1:24.92,html:'🧪 كله بيجرب',top:820,right:190,rot:-3,badge:'',size:58});
+pill({t0:23.64,t1:24.92,html:'🧭 كله بيستكشف',top:990,left:170,rot:4,badge:'',size:58});
+
+/* ---------------- 6. best time (25.1 - 28.15) ---------------- */
+{
+  const g=mk(S,'abs',null,'left:150px;width:760px;top:800px;text-align:center');
+  const now=mk(g,'',`<span style="display:inline-flex;align-items:center;gap:12px;background:var(--or);border-radius:40px;padding:4px 26px 10px;font-weight:900;font-size:38px">⏱ NOW · دلوقتي</span>`,'');
+  const big=mk(g,'','<span class="cw" style="font-size:108px;font-weight:1000;white-space:nowrap">ده <span style="color:var(--or)">أنسب وقت</span></span>','margin-top:4px');
+  const subw=mk(g,'',null,'display:flex;justify-content:center;margin-top:18px');
+  const sub=mk(subw,'tilt','تتعلم + تدمج الـ<span class="ai">AI</span> في مجالك','font-size:52px;position:relative');
+  add(t=>{popStyle(now,t,25.30,28.08,{dy:30});popStyle(big,t,25.64,28.10,{dy:70,sc0:.4});popStyle(sub,t,26.30,28.12,{rot:-3,rotIn:true,sc0:.3});});
+}
+
+/* ---------------- 7. any field (28.18 - 31.95) ---------------- */
+checklist({t0:28.25,t1:31.92,top:780,head:'أيًا كان مجالك',headAt:28.35,width:620,
+  items:[{text:'مونتاج',at:29.02,tag:'+AI'},{text:'جرافيكس',at:29.52,tag:'+AI'},{text:'موشن جرافيكس',at:30.12,tag:'+AI'},{text:'ترجمة',at:31.34,tag:'+AI'}]});
+
+/* ---------------- 8. must master (31.9 - 34.1) ---------------- */
+pill({t0:32.70,t1:34.05,html:'لازم <span style="color:var(--or)">تتقن</span> الـ<span class="ai">AI</span>',top:880,left:180,rot:-4,badge:'!',size:66});
+
+/* ---------------- 9. the wave (34.12 - 37.38) ---------------- */
+pill({t0:34.64,t1:37.30,html:'🌊 الموجة دي <span style="color:var(--or)">دلوقتي</span>',top:820,right:180,rot:3,badge:'',size:58});
+pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:985,left:170,rot:-4,badge:'!',bcol:'var(--red)',size:60,
+  style:'background:var(--red);color:#fff;border-color:#fff'});
+
+/* ---------------- 10. CTA comment (37.4 - 40.7) ---------------- */
+{
+  const c=mk(S,'abs',null,'top:790px;left:170px;width:740px;background:#fff;color:#151210;border-radius:30px;padding:26px 30px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4);box-sizing:border-box');
+  const hd=mk(c,'',`<div style="display:flex;align-items:center;gap:16px">
+     <div style="width:64px;height:64px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center">
+       <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg></div>
+     <div style="font-weight:900;font-size:48px">مهتم تعرف أكتر عن الـ<span class="ai">AI</span>؟</div></div>`);
+  const field=mk(c,'',null,'margin-top:22px;display:flex;align-items:center;gap:16px;background:#F3EEE8;border-radius:22px;padding:10px 12px 10px 22px;height:84px;box-sizing:border-box');
+  const txt=mk(field,'',null,'flex:1;font-weight:800;font-size:40px;white-space:nowrap;overflow:hidden');
+  const send=mk(field,'',`<svg width="34" height="34" viewBox="0 0 24 24" fill="#fff"><path d="M3 11.5 21 3l-6.5 18-3-7.5z"/></svg>`,'width:64px;height:64px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;transform:scaleX(-1)');
+  const rep=mk(c,'',`<span style="display:inline-flex;align-items:center;gap:10px;background:var(--teal);color:#fff;border-radius:18px;padding:6px 22px 12px;font-weight:900;font-size:38px">✓ هرد عليك بالتفاصيل</span>`,'margin-top:18px');
+  const full='سيبلي كومنت: "AI" 🔥';
+  const chars=[...full];
+  add(t=>{
+    if(!popStyle(c,t,37.55,40.62,{dy:60,sc0:.7}))return;
+    const tp=P(t,39.20,.55);const n=Math.round(chars.length*tp);
+    txt.innerHTML=(n?chars.slice(0,n).join(''):'<span style="color:#9a918a">اكتب تعليق…</span>')+(t<39.95&&Math.floor(t*4)%2===0?'<span style="color:var(--or)">|</span>':'');
+    const sp=P(t,39.96,.3);send.style.transform=`scaleX(-1) scale(${1+.3*Math.sin(sp*Math.PI)})`;
+    const rp=P(t,40.18,.3);rep.style.opacity=rp;rep.style.transform=`translateY(${(1-E.cub(rp))*20}px)`;
+  });
+}
+
+/* ---------------- 11. name lower third (40.7 - end) ---------------- */
+{
+  const c=mk(S,'abs dcard',null,'top:1150px;left:170px;width:740px;padding:26px 34px 30px;box-sizing:border-box;overflow:hidden');
+  const acc=mk(c,'abs',null,'top:0;right:0;width:12px;bottom:0;background:var(--or);transform-origin:top');
+  const small=mk(c,'label','<span>أنا</span><i></i>','');
+  const name=mk(c,'','<span style="font-weight:1000;font-size:96px;line-height:1.1">محمد <span style="color:var(--or)">صابر</span></span>','');
+  const roles=mk(c,'',null,'display:flex;flex-direction:column;align-items:flex-end;gap:12px;margin-top:10px;direction:ltr');
+  const R=[['AI Automation Engineer',41.50],['Senior Graphic Designer',43.12],['Adobe Certified Instructor',43.92]].map(([s,at])=>{
+    const e=mk(roles,'',`<span style="display:inline-flex;align-items:center;gap:12px;font-weight:800;font-size:38px;background:rgba(255,255,255,.08);border-radius:14px;padding:4px 18px 8px"><b style="width:12px;height:12px;border-radius:50%;background:var(--or);display:inline-block"></b>${s}</span>`);
+    return {e,at};});
+  add(t=>{
+    if(!popStyle(c,t,40.70,99,{dy:80,sc0:.85}))return;
+    acc.style.transform=`scaleY(${E.expo(P(t,40.75,.5))})`;
+    const np=P(t,40.92,.4);name.style.opacity=cl(np*2);name.style.transform=`translateX(${(1-E.expo(np))*-60}px)`;
+    small.style.opacity=P(t,40.75,.3);
+    R.forEach(o=>{const p=P(t,o.at,.4);o.e.style.opacity=cl(p*2);o.e.style.transform=`translateX(${(1-E.expo(p))*60}px)`;});
+  });
+}
+
+window.render=t=>{comps.forEach(f=>f(t))};
+window.init=W=>{buildChunks(W);return chunks.length};
+</script>
+</body>
+</html>
