@@ -15,6 +15,14 @@ PW, PH = 1440, 2560          # pre-scaled working plate (keeps detail up to ~1.3
 N = 1364
 
 CUTS = [0, 4.567, 9.2, 10.467, 14.233, 25.067, 34.1, 37.6, 45.47]
+# --variant2: alternate-hook edit where the first two blocks are swapped
+# (new 0-9.667 = old 4.567-14.233, new 9.667-14.233 = old 0-4.567; identical after that)
+V2 = '--variant2' in sys.argv
+def old_frame(n):
+    if not V2: return n
+    return n + 137 if n < 290 else n - 290 if n < 427 else n
+if V2:
+    CUTS = [0, 4.633, 5.9, 9.667, 14.233, 25.067, 34.1, 37.6, 45.47]
 BIG_CUTS = [25.067, 34.1]     # scene changes that get a zoom-blur transition
 
 def ease(x):
@@ -95,7 +103,7 @@ def grade(img):
 
 def frame_xform(i, extra=1.0):
     t = i / FPS
-    z = zoom_at(t) * extra
+    z = zoom_at(old_frame(i) / FPS) * extra
     cw, ch = PW / z, PH / z
     cx = np.clip(sx[i] * PW, cw / 2, PW - cw / 2)
     eye = (sy[i] - .01) * PH
@@ -109,7 +117,7 @@ GRADE = '--no-grade' not in sys.argv
 LIGHT = '--light-grade' in sys.argv
 
 MG = sys.argv[sys.argv.index('--mg') + 1] if '--mg' in sys.argv else None
-MG_OFFSET = .04   # mg render lags the voice by ~40ms (audio cross-correlation)
+MG_OFFSET = float(sys.argv[sys.argv.index('--mg-offset') + 1]) if '--mg-offset' in sys.argv else .04  # mg lags the voice ~40ms
 TD = .30          # transition length (s)
 # (start, end, transition in, transition out)
 CUTAWAYS = [
@@ -117,6 +125,13 @@ CUTAWAYS = [
     (22.95, 25.067, 'zoom', 'whip'),   # everyone experimenting from the starting line (exits on the location change)
     (35.00, 37.75, 'push', 'zoomout'), # ride the AI wave -> "you'll regret it"; out-transition runs 37.6-37.9 so it lands on the next clip
 ] if MG else []
+if MG and V2:
+    CUTAWAYS = [
+        (5.90, 9.667, 'push', 'whip'),     # experience bars (cuts away to the AI hook on the clip change)
+        (14.233, 16.10, 'zoom', 'zoomout'),# AI resets the counter
+        (22.95, 25.067, 'zoom', 'whip'),
+        (35.00, 37.75, 'push', 'zoomout'),
+    ]
 
 def mblur(img, k, axis):
     k = int(k)

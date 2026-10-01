@@ -36,7 +36,15 @@ def tick(f=2600, dur=.03):
     n = int(dur * SR); t = np.arange(n) / SR
     return (np.sin(2 * np.pi * f * t) + .4 * rng.standard_normal(n)) * np.exp(-t * 180)
 
-def place(sig, t, gain=.25, pan=0.):
+V2 = len(sys.argv) > 2 and sys.argv[2] == 'v2'
+def remap(t):
+    # alternate-hook edit: old 0-4.567 -> new 9.667-14.233, old 4.567-14.233 -> new 0-9.667
+    if not V2: return t
+    return t + 9.6667 if t < 4.5667 else t - 4.5667 if t < 14.2333 else t
+
+def place(sig, t, gain=.25, pan=0., raw=False):
+    t = t if raw else remap(t)
+    if t < 0: return
     i = int(t * SR); sig = sig * gain
     L, R = np.cos((pan + 1) * np.pi / 4), np.sin((pan + 1) * np.pi / 4)
     out[i:i + len(sig), 0] += sig * L * 1.41
@@ -47,8 +55,10 @@ Pp = lambda t, g=.2: place(pop(), t, g)
 # hook
 Pp(.05, .14); W(.84, .14); Pp(1.66, .12); Pp(2.40, .2)
 # transitions into / out of the motion-graphics cutaways
-for tt, g in ((10.47, .2), (16.10, .17), (22.95, .18), (35.00, .2), (37.60, .17)):
-    W(tt + .15, g)
+TR = ((5.90, .2), (9.667, .2), (14.233, .2), (16.10, .17), (22.95, .18), (35.00, .2), (37.60, .17)) if V2 else \
+     ((10.47, .2), (16.10, .17), (22.95, .18), (35.00, .2), (37.60, .17))
+for tt, g in TR:
+    place(whoosh(), tt + .15 - .2, g, raw=True)
 place(pop(420, 200, .18), 35.93, .24)        # "هتندم كتير" lands in the wave cutaway
 # skills panel
 W(5.62, .12); [Pp(t, .15) for t in (7.30, 7.72, 8.30)]
