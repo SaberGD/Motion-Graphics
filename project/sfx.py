@@ -63,6 +63,8 @@ if TIMING:
     TR = [(c[0], .2) for c in TIMING["cutaways"]] + [(c[1], .17) for c in TIMING["cutaways"]]
 for tt, g in TR:
     place(whoosh(), tt + .15 - .2, g, raw=True)
+for tt in (TIMING or {}).get('big_cuts', []):   # extra zoom-blur cuts get a quick whoosh
+    place(whoosh(.32, 250, 5000), tt - .17, .2, raw=True)
 place(pop(420, 200, .18), 35.93, .24)        # "هتندم كتير" lands in the wave cutaway
 # skills panel
 W(5.62, .12); [Pp(t, .15) for t in (7.30, 7.72, 8.30)]

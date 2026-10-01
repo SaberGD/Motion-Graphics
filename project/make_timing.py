@@ -40,5 +40,7 @@ for c in cut:
 # Beat A is full-energy from the first bar -> one bump at the 8-bar phrase change.
 # Beat B builds from a quiet intro -> bump where it opens up and a bigger one on the drop.
 hits = [[snap(16.75, 16.3, 17.2), .035]] if key == 'A' else [[snap(3.68, 3.4, 3.9), .03], [snap(7.86, 7.6, 8.1), .06]]
-json.dump({'punch': punch, 'cutaways': cut, 'hits': hits, 'ibi': ibi}, open(out, 'w'), indent=1)
+# clip changes that get a zoom-blur ("zoom seka") transition instead of a hard cut
+big_cuts = [4.567] if not V2 else []
+json.dump({'punch': punch, 'cutaways': cut, 'hits': hits, 'big_cuts': big_cuts, 'ibi': ibi}, open(out, 'w'), indent=1)
 print(json.dumps({'punch': punch, 'cutaways': cut, 'hits': hits}))

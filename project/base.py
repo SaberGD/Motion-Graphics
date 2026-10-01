@@ -233,7 +233,7 @@ for i in range(N):
     if st and st[0] == 'mg':
         enc.stdin.write(np.ascontiguousarray(music_hit(mgf, t)).tobytes()); continue
     # zoom-blur transition around big cuts
-    cuts = [c for c in BIG_CUTS if not any(s0 - .5 < c < s1 + .5 for s0, s1, *_ in CUTAWAYS)]
+    cuts = [c for c in BIG_CUTS + TIMING.get('big_cuts', []) if not any(s0 - .5 < c < s1 + .5 for s0, s1, *_ in CUTAWAYS)]
     dist = min((abs(t - c) for c in cuts), default=9)
     if dist < .17:
         side = 1 if any(0 <= t - c < .17 for c in cuts) else -1
