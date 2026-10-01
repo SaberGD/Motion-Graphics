@@ -210,6 +210,32 @@ function pill({t0,t1,html,top,left=null,right=null,rot=-4,size=64,badge='+',bcol
 /* 2. dragons */
 pill({t0:9.80,t1:10.40,html:'تنافس <span style="color:var(--or)">تنانين</span> 🐉',top:880,left:170,rot:-5});
 
+/* ---------------- 4. same start line (16.2 - 21.15) ---------------- */
+{
+  const c=mk(S,'abs dcard',null,'top:770px;left:160px;width:760px;height:440px;padding:0;overflow:hidden');
+  const head=mk(c,'abs label','<span>كلنا بنبدأ من نفس النقطة</span><i></i>','top:26px;right:36px');
+  const lineX=140; // from right
+  const line=mk(c,'abs',null,`top:90px;bottom:30px;right:${lineX}px;width:6px;background:repeating-linear-gradient(180deg,var(--or) 0 16px,transparent 16px 28px);transform-origin:top`);
+  const st=mk(c,'abs','<span class="chip" style="font-size:22px">START</span>',`top:84px;right:${lineX-34}px`);
+  const lanes=[['10 سنين خبرة',18.14],['20 سنة خبرة',18.64],['لسه بتبدأ',19.30]].map(([txt,at],i)=>{
+    const y=130+i*96;
+    const tr=mk(c,'abs',null,`top:${y+36}px;right:${lineX+3}px;left:36px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;transform-origin:right`);
+    const tx=mk(c,'abs',`<span style="font-weight:900;font-size:40px">${txt}</span>`,`top:${y}px;left:40px`);
+    const dot=mk(c,'abs',null,`top:${y+20}px;right:${lineX-14}px;width:36px;height:36px;border-radius:50%;background:#fff;border:7px solid var(--or);box-sizing:border-box`);
+    return {tr,tx,dot,at};
+  });
+  add(t=>{
+    if(!popStyle(c,t,16.40,21.12,{dy:50,sc0:.8}))return;
+    const hp=P(t,16.55,.35);head.style.opacity=hp;
+    const lp=P(t,16.98,.45);line.style.transform=`scaleY(${E.expo(lp)})`;st.style.opacity=lp;
+    lanes.forEach(o=>{const a=P(t,o.at,.4);o.tr.style.transform=`scaleX(${E.expo(a)})`;o.tx.style.opacity=cl(a*2);
+      o.tx.style.transform=`translateX(${(1-E.expo(a))*-40}px)`;
+      const pulse=t>19.92?Math.abs(Math.sin((t-19.92)*Math.PI*1.6))*.18:0;
+      o.dot.style.transform=`scale(${E.back(P(t,o.at,.3))+pulse})`;});
+  });
+}
+
+
 /* ---------------- 5. no method / experimenting (21.18 - 24.96) ---------------- */
 pill({t0:21.25,t1:22.55,html:'مفيش <span style="color:var(--or)">منهجية</span> واضحة',top:880,right:180,rot:3,badge:'?',size:62});
 
@@ -245,7 +271,7 @@ pill({t0:32.70,t1:33.90,html:'لازم <span style="color:var(--or)">تتقن</s
   const full='سيبلي كومنت: "AI" 🔥';
   const chars=[...full];
   add(t=>{
-    if(!popStyle(c,t,37.55,40.55,{dy:60,sc0:.7}))return;
+    if(!popStyle(c,t,37.85,40.55,{dy:60,sc0:.7}))return;
     const tp=P(t,39.20,.55);const n=Math.round(chars.length*tp);
     txt.innerHTML=(n?chars.slice(0,n).join(''):'<span style="color:#9a918a">اكتب تعليق…</span>')+(t<39.95&&Math.floor(t*4)%2===0?'<span style="color:var(--or)">|</span>':'');
     const sp=P(t,39.96,.3);send.style.transform=`scaleX(-1) scale(${1+.3*Math.sin(sp*Math.PI)})`;
@@ -272,7 +298,7 @@ pill({t0:32.70,t1:33.90,html:'لازم <span style="color:var(--or)">تتقن</s
   });
 }
 
-const CUTAWAYS=[[10.47,16.10],[17.45,20.95],[22.95,25.067],[35.00,37.45]];
+const CUTAWAYS=[[10.47,16.10],[22.95,25.067],[35.00,37.75]];
 function mgAmt(t){let a=0;CUTAWAYS.forEach(([s0,s1])=>{a=Math.max(a,cl((t-(s0-.12))/.18)*(1-cl((t-(s1-.06))/.18)))});return a}
 window.render=t=>{comps.forEach(f=>f(t));S.style.opacity=1-mgAmt(t)};
 window.init=W=>{buildChunks(W);return chunks.length};

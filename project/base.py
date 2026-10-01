@@ -114,9 +114,8 @@ TD = .30          # transition length (s)
 # (start, end, transition in, transition out)
 CUTAWAYS = [
     (10.47, 16.10, 'push', 'zoomout'), # years-of-experience bars + AI resets the counter
-    (17.45, 20.95, 'iris', 'pushdown'),# everyone on the same START line
     (22.95, 25.067, 'zoom', 'whip'),   # everyone experimenting from the starting line (exits on the location change)
-    (35.00, 37.45, 'push', 'zoomout'), # ride the AI wave -> "you'll regret it 10 years from now"
+    (35.00, 37.75, 'push', 'zoomout'), # ride the AI wave -> "you'll regret it"; out-transition runs 37.6-37.9 so it lands on the next clip
 ] if MG else []
 
 def mblur(img, k, axis):

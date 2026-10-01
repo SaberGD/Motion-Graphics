@@ -7,7 +7,7 @@
 |---|---|---|
 | 1 | `words.json` | Arabic transcript with word timings (faster-whisper large-v3) |
 | 2 | `face.json` | Per-frame face track used for smart reframing |
-| 3 | `base.py` | Reframe 4K → 1080×1920 following the face, per-shot zoom plan + punch-ins, zoom-blur transitions; `--no-grade` keeps a pre-graded source as-is, `--light-grade` adds a subtle finishing pass; `--mg` cuts to motion-graphics B-roll (experience bars, START line, "everyone experimenting", AI wave) with zoom / push / iris / whip / flash transitions |
+| 3 | `base.py` | Reframe 4K → 1080×1920 following the face, per-shot zoom plan + punch-ins, zoom-blur transitions; `--no-grade` keeps a pre-graded source as-is, `--light-grade` adds a subtle finishing pass; `--mg` cuts to motion-graphics B-roll (experience bars, "everyone experimenting", AI wave) with zoom / push / iris / whip / flash transitions |
 | 4 | `overlay.html` + `render_overlay.js` | Motion graphics / captions / infographics, rendered to a transparent PNG sequence with Playwright |
 | 5 | `sfx.py` | Synthesised SFX (whooshes, pops, ticks, typing) synced to the graphics |
 | 6 | `assemble.sh` | Composite + voice cleanup (HPF, denoise, EQ, compression), SFX ducked under the voice, loudness normalisation. Original voice only — no music, no audio from the B-roll |
