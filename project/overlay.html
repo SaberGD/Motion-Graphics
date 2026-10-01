@@ -157,9 +157,10 @@ add(t=>{
   const l4=mk(g,'tilt','غير بعد <span style="color:var(--or)">20 سنة</span>','font-size:76px;position:relative;margin-top:16px;line-height:1.3');
   mk(l4,'badge','+','right:-26px;top:-30px;line-height:50px');
   add(t=>{
-    popStyle(lab,t,-0.5,1.70,{dy:40,dout:.15});
-    popStyle(l2,t,0.84,1.70,{dy:70,dout:.15});
-    show(l3,false);show(l4,false);
+    popStyle(lab,t,-0.5,3.22,{dy:40});
+    popStyle(l2,t,0.84,3.25,{dy:70});
+    popStyle(l3,t,1.66,3.28,{dy:50});
+    popStyle(l4,t,2.40,3.30,{rot:-4,rotIn:true,sc0:.3});
   });
 }
 
@@ -211,8 +212,6 @@ pill({t0:9.80,t1:10.40,html:'تنافس <span style="color:var(--or)">تناني
 
 /* ---------------- 5. no method / experimenting (21.18 - 24.96) ---------------- */
 pill({t0:21.25,t1:22.55,html:'مفيش <span style="color:var(--or)">منهجية</span> واضحة',top:880,right:180,rot:3,badge:'?',size:62});
-pill({t0:23.00,t1:24.92,html:'🧪 كله بيجرب',top:800,right:190,rot:-3,badge:'',size:56});
-pill({t0:23.64,t1:24.92,html:'🧭 كله بيستكشف',top:1020,left:170,rot:3,badge:'',size:56});
 
 /* ---------------- 6. best time (25.1 - 28.15) ---------------- */
 {
@@ -229,13 +228,12 @@ checklist({t0:28.42,t1:31.92,top:780,head:'أيًا كان مجالك',headAt:28
   items:[{text:'مونتاج',at:29.02,tag:'+AI'},{text:'جرافيكس',at:29.52,tag:'+AI'},{text:'موشن جرافيكس',at:30.12,tag:'+AI'},{text:'ترجمة',at:31.34,tag:'+AI'}]});
 
 
+pill({t0:32.70,t1:33.90,html:'لازم <span style="color:var(--or)">تتقن</span> الـ<span class="ai">AI</span>',top:880,left:180,rot:-4,badge:'!',size:66});
 /* ---------------- 9. the wave (34.12 - 37.38) ---------------- */
-pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:1030,left:170,rot:-3,badge:'!',bcol:'var(--red)',size:58,
-  style:'background:var(--red);color:#fff;border-color:#fff'});
 
 /* ---------------- 10. CTA comment (37.4 - 40.7) ---------------- */
 {
-  const c=mk(S,'abs',null,'top:790px;left:170px;width:740px;background:#fff;color:#151210;border-radius:30px;padding:26px 30px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4);box-sizing:border-box');
+  const c=mk(S,'abs',null,'top:910px;left:170px;width:740px;background:#fff;color:#151210;border-radius:30px;padding:26px 30px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4);box-sizing:border-box');
   const hd=mk(c,'',`<div style="display:flex;align-items:center;gap:16px">
      <div style="width:64px;height:64px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center">
        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg></div>
@@ -274,7 +272,7 @@ pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:1030,left:170,r
   });
 }
 
-const CUTAWAYS=[[1.85,3.34],[10.47,16.10],[17.45,20.95],[32.90,35.93]];
+const CUTAWAYS=[[10.47,16.10],[17.45,20.95],[22.95,25.067],[35.00,37.45]];
 function mgAmt(t){let a=0;CUTAWAYS.forEach(([s0,s1])=>{a=Math.max(a,cl((t-(s0-.12))/.18)*(1-cl((t-(s1-.06))/.18)))});return a}
 window.render=t=>{comps.forEach(f=>f(t));S.style.opacity=1-mgAmt(t)};
 window.init=W=>{buildChunks(W);return chunks.length};

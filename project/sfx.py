@@ -45,22 +45,21 @@ def place(sig, t, gain=.25, pan=0.):
 W = lambda t, g=.16, **k: place(whoosh(**k), t - .2, g)
 Pp = lambda t, g=.2: place(pop(), t, g)
 # hook
-Pp(.05, .14); W(.84, .14)
+Pp(.05, .14); W(.84, .14); Pp(1.66, .12); Pp(2.40, .2)
 # transitions into / out of the motion-graphics cutaways
-for tt, g in ((1.85, .2), (3.34, .2), (10.47, .2), (16.10, .17), (17.45, .18), (20.95, .17), (32.90, .2)):
+for tt, g in ((10.47, .2), (16.10, .17), (17.45, .18), (20.95, .17), (22.95, .18), (35.00, .2), (37.45, .17)):
     W(tt + .15, g)
-place(pop(500, 160, .16), 35.93, .26)        # flash cut back + "هتندم"
+place(pop(420, 200, .18), 35.93, .24)        # "هتندم كتير" lands in the wave cutaway
 # skills panel
 W(5.62, .12); [Pp(t, .15) for t in (7.30, 7.72, 8.30)]
 Pp(9.80, .2)                                 # dragons
 [place(tick(), t, .2) for t in (11.18, 11.38, 11.78)]   # bars grow (cutaway)
 W(14.98, .18, f0=4000, f1=250)               # counter reset (down sweep)
 [Pp(t, .13) for t in (18.14, 18.64, 19.30)]  # people step onto START line
-Pp(21.25, .2); Pp(23.0, .16); Pp(23.64, .16)
-W(25.067, .26, dur=.55, f0=200, f1=6000)     # scene-change transition
+Pp(21.25, .2); Pp(32.70, .2)
+W(25.067, .24, dur=.5, f0=200, f1=6000)      # whip out of the cutaway into the new location
 Pp(25.30, .14); place(pop(500, 160, .16), 25.64, .26); Pp(26.30, .16)
 W(28.42, .12); [Pp(t, .14) for t in (29.02, 29.52, 30.12, 31.34)]
-Pp(35.98, .14)
 W(37.55, .13)
 for k in range(9): place(tick(3800, .02), 39.22 + k * .06, .09 + .03 * (k % 2))
 Pp(39.96, .2); place(pop(800, 1500, .1), 40.18, .14)

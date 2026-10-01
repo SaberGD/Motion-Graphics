@@ -72,6 +72,20 @@ yy, xx = np.mgrid[0:OH, 0:OW]
 d = np.sqrt(((xx - OW / 2) / (OW * .75)) ** 2 + ((yy - OH * .42) / (OH * .72)) ** 2)
 vign = (1 - .22 * np.clip(d - .45, 0, 1) ** 1.6)[..., None].astype(np.float32)
 
+# subtle finishing pass for footage that is already colour graded:
+# lift the mids a touch, soft contrast, keep skin natural, light vignette to focus the face
+lx = np.arange(256) / 255.
+lcurve = np.clip(lx + .035 * np.sin(np.pi * lx) + .045 * (lx - .5) * (1 - np.abs(2 * lx - 1)), 0, 1)
+llut = (lcurve * 255).astype(np.uint8)
+lvign = (1 - .13 * np.clip(d - .5, 0, 1) ** 1.5)[..., None].astype(np.float32)
+
+def light_grade(img):
+    img = cv2.LUT(img, llut)
+    hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV).astype(np.float32)
+    hsv[..., 1] = np.clip(hsv[..., 1] * 1.04, 0, 255)
+    img = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2RGB).astype(np.float32) * lvign
+    return np.clip(img, 0, 255).astype(np.uint8)
+
 def grade(img):
     img = cv2.merge([cv2.LUT(img[..., 0], lut_r), cv2.LUT(img[..., 1], lut_g), cv2.LUT(img[..., 2], lut_b)])
     hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV).astype(np.float32)
@@ -92,15 +106,17 @@ def frame_xform(i, extra=1.0):
 # ---- optional motion-graphics cutaways (B-roll) with transitions ----
 # argv: SRC OUT face.json [--no-grade] [--mg mg.mp4]
 GRADE = '--no-grade' not in sys.argv
+LIGHT = '--light-grade' in sys.argv
+
 MG = sys.argv[sys.argv.index('--mg') + 1] if '--mg' in sys.argv else None
 MG_OFFSET = .04   # mg render lags the voice by ~40ms (audio cross-correlation)
 TD = .30          # transition length (s)
 # (start, end, transition in, transition out)
 CUTAWAYS = [
-    (1.85, 3.34, 'zoom', 'whip'),      # door opens: "مش هيتفتح تاني غير بعد 20 سنة"
     (10.47, 16.10, 'push', 'zoomout'), # years-of-experience bars + AI resets the counter
     (17.45, 20.95, 'iris', 'pushdown'),# everyone on the same START line
-    (32.90, 35.93, 'push', 'flash'),   # ride the AI wave
+    (22.95, 25.067, 'zoom', 'whip'),   # everyone experimenting from the starting line (exits on the location change)
+    (35.00, 37.45, 'push', 'zoomout'), # ride the AI wave -> "you'll regret it 10 years from now"
 ] if MG else []
 
 def mblur(img, k, axis):
@@ -189,9 +205,10 @@ for i in range(N):
     if st and st[0] == 'mg':
         enc.stdin.write(mgf.tobytes()); continue
     # zoom-blur transition around big cuts
-    dist = min((abs(t - c) for c in BIG_CUTS))
+    cuts = [c for c in BIG_CUTS if not any(s0 - .5 < c < s1 + .5 for s0, s1, *_ in CUTAWAYS)]
+    dist = min((abs(t - c) for c in cuts), default=9)
     if dist < .17:
-        side = 1 if any(0 <= t - c < .17 for c in BIG_CUTS) else -1
+        side = 1 if any(0 <= t - c < .17 for c in cuts) else -1
         k = 1 - dist / .17
         base = 1 + .22 * k
         acc = np.zeros((OH, OW, 3), np.float32)
@@ -204,7 +221,7 @@ for i in range(N):
             out = cv2.addWeighted(out, .7, np.full_like(out, 255), .3, 0)
     else:
         out = cv2.warpAffine(src, frame_xform(i), (OW, OH), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
-    spk = grade(out) if GRADE else out
+    spk = light_grade(out) if LIGHT else grade(out) if GRADE else out
     if st:
         kind, p, spk_first = st
         out = transition(kind, spk, mgf, p) if spk_first else transition(kind, mgf, spk, p)
