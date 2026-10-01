@@ -4,15 +4,24 @@
 <meta charset="utf-8">
 <style>
 @font-face{font-family:Cairo;src:url(fonts/Cairo.ttf);font-weight:200 1000}
+@font-face{font-family:Plex;src:url(fonts/IBMPlexSansArabic-Bold.ttf);font-weight:700}
+@font-face{font-family:Plex;src:url(fonts/IBMPlexSansArabic-SemiBold.ttf);font-weight:600}
 :root{--or:#FF6B1A;--or2:#FF8A3D;--teal:#16B8A6;--dark:#15120F;--cream:#FFF7EE;--red:#E8441C}
 html,body{margin:0;background:transparent}
 #stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,"Noto Color Emoji",sans-serif;color:#fff}
 .abs{position:absolute}
 .w{display:inline-block;will-change:transform}
 /* captions */
-#cap{position:absolute;left:150px;width:760px;top:1300px;height:170px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0 22px;
-  font-weight:900;font-size:76px;line-height:1.15;text-align:center}
-.cw{display:inline-block;-webkit-text-stroke:14px #0d0b09;paint-order:stroke fill;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+#capwrap{position:absolute;left:150px;width:760px;top:1300px;height:170px;display:flex;align-items:center;justify-content:center}
+#cap{display:flex;align-items:center;gap:4px;white-space:nowrap;padding:10px 16px 14px;border-radius:26px;
+  background:rgba(14,11,9,.82);box-shadow:0 14px 34px rgba(0,0,0,.30);
+  font-family:Plex,sans-serif;font-weight:700;font-size:60px;line-height:1.5;transform-origin:center}
+#cap .w{position:relative;padding:0 14px 6px;border-radius:16px;color:#fff}
+#cap .w .hb{position:absolute;inset:6px 0 4px;border-radius:14px;background:var(--or);z-index:0;transform-origin:center}
+#cap .w .tx{position:relative;z-index:1}
+#cap .w.hl .tx{color:#FFB27A}
+#cap .w.act .tx{color:#fff}
+.cw{display:inline-block;background:rgba(14,11,9,.86);border-radius:26px;padding:0 30px 10px;line-height:1.45;box-shadow:0 14px 34px rgba(0,0,0,.30)}
 .hl{color:var(--or)}
 /* cards */
 .dcard{background:rgba(21,18,15,.93);border-radius:30px;box-shadow:0 24px 60px rgba(0,0,0,.40),inset 0 0 0 2px rgba(255,255,255,.06)}
@@ -113,31 +122,38 @@ function buildChunks(W){
   chunks=chunks.map((c,i)=>({ws:c,s:c[0].s,e:c[c.length-1].e}));
   chunks.forEach((c,i)=>{c.end=i+1<chunks.length?Math.min(chunks[i+1].s,c.e+.6):c.e+.6});
 }
-const cap=mk(S,'',null,'');cap.id='cap';
+const capwrap=mk(S,'',null,'');capwrap.id='capwrap';const cap=mk(capwrap,'',null,'');cap.id='cap';
 let capCur=-1,capSpans=[];
 add(t=>{
   const off=CAP_OFF.some(([a,b])=>t>=a&&t<b);
   const ci=off?-1:chunks.findIndex(c=>t>=c.s-.04&&t<c.end);
   if(ci!==capCur){cap.innerHTML='';capSpans=[];capCur=ci;
-    if(ci>=0)chunks[ci].ws.forEach(w=>{const sp=mk(cap,'cw'+(w.hl?' hl':''),w.w.replace('AI','<span class="ai">AI</span>'));capSpans.push(sp)})}
-  if(ci<0)return;
+    if(ci>=0)chunks[ci].ws.forEach(w=>{const sp=mk(cap,'w'+(w.hl?' hl':''));const hb=mk(sp,'hb');
+      mk(sp,'tx',w.w.replace('AI','<span class="ai">AI</span>'));capSpans.push({sp,hb})});
+    cap.style.transform='none';
+    if(ci>=0){const wd=cap.getBoundingClientRect().width;cap.dataset.fit=Math.min(1,760/wd)}}
+  if(ci<0){cap.style.opacity=0;return}
   const c=chunks[ci];
-  const outP=P(t,c.end-.07,.07);
-  c.ws.forEach((w,i)=>{const sp=capSpans[i];const p=P(t,w.s-.04,.2);
-    const act=t>=w.s&&t<w.e+.02;
-    const s=(.55+.45*E.back(p,2.4))*(act?1.07:1);
-    sp.style.opacity=cl(p*3)*(1-outP);
-    sp.style.transform=`translateY(${(1-E.cub(p))*28}px) scale(${s})`;
+  const inP=P(t,c.s-.06,.22),outP=P(t,c.end-.08,.08);
+  const fit=+cap.dataset.fit;
+  cap.style.opacity=cl(inP*3)*(1-outP);
+  cap.style.transform=`translateY(${(1-E.cub(inP))*24}px) scale(${fit*(.9+.1*E.back(inP))})`;
+  c.ws.forEach((w,i)=>{const {sp,hb}=capSpans[i];
+    const act=t>=w.s-.03&&t<(i+1<c.ws.length?c.ws[i+1].s-.03:c.end);
+    sp.classList.toggle('act',act);
+    const hp=act?E.back(P(t,w.s-.03,.16),1.4):0;
+    hb.style.transform=`scale(${hp})`;hb.style.opacity=act?1:0;
+    sp.style.opacity=t>=w.s-.03?1:.45;
   });
 });
 
 /* ---------------- 0. HOOK (0 - 3.34) ---------------- */
 {
-  const g=mk(S,'abs',null,'left:150px;width:760px;top:1020px;display:flex;flex-direction:column;align-items:center;gap:6px;line-height:1.25');
+  const g=mk(S,'abs',null,'left:150px;width:760px;top:960px;display:flex;flex-direction:column;align-items:center;gap:14px;line-height:1.25');
   const lab=mk(g,'',`<span style="display:inline-flex;align-items:center;gap:14px;background:var(--dark);border-radius:40px;padding:4px 28px 10px;font-weight:800;font-size:40px">
     <span style="width:16px;height:16px;border-radius:50%;background:var(--or);box-shadow:0 0 0 6px rgba(255,107,26,.25)"></span>الذكاء الاصطناعي</span>`,'margin-bottom:6px');
-  const l2=mk(g,'','<span class="cw" style="font-size:120px;font-weight:1000">فتحلك باب</span>','height:150px;display:flex;align-items:center');
-  const l3=mk(g,'','<span class="cw" style="font-size:70px">مش هيتفتح تاني</span>','height:96px;display:flex;align-items:center');
+  const l2=mk(g,'','<span class="cw" style="font-size:104px;font-weight:1000">فتحلك باب</span>','');
+  const l3=mk(g,'','<span class="cw" style="font-size:62px;font-weight:800">مش هيتفتح تاني</span>','');
   const l4=mk(g,'tilt','غير بعد <span style="color:var(--or)">20 سنة</span>','font-size:76px;position:relative;margin-top:16px;line-height:1.3');
   mk(l4,'badge','+','right:-26px;top:-30px;line-height:50px');
   add(t=>{
@@ -243,8 +259,8 @@ pill({t0:9.80,t1:10.40,html:'تنافس <span style="color:var(--or)">تناني
     return {tr,tx,dot,at};
   });
   add(t=>{
-    if(!popStyle(c,t,16.20,21.12,{dy:50,sc0:.8}))return;
-    const hp=P(t,16.40,.35);head.style.opacity=hp;
+    if(!popStyle(c,t,16.40,21.12,{dy:50,sc0:.8}))return;
+    const hp=P(t,16.55,.35);head.style.opacity=hp;
     const lp=P(t,16.98,.45);line.style.transform=`scaleY(${E.expo(lp)})`;st.style.opacity=lp;
     lanes.forEach(o=>{const a=P(t,o.at,.4);o.tr.style.transform=`scaleX(${E.expo(a)})`;o.tx.style.opacity=cl(a*2);
       o.tx.style.transform=`translateX(${(1-E.expo(a))*-40}px)`;
@@ -255,29 +271,29 @@ pill({t0:9.80,t1:10.40,html:'تنافس <span style="color:var(--or)">تناني
 
 /* ---------------- 5. no method / experimenting (21.18 - 24.96) ---------------- */
 pill({t0:21.25,t1:22.55,html:'مفيش <span style="color:var(--or)">منهجية</span> واضحة',top:880,right:180,rot:3,badge:'?',size:62});
-pill({t0:23.00,t1:24.92,html:'🧪 كله بيجرب',top:820,right:190,rot:-3,badge:'',size:58});
-pill({t0:23.64,t1:24.92,html:'🧭 كله بيستكشف',top:990,left:170,rot:4,badge:'',size:58});
+pill({t0:23.00,t1:24.92,html:'🧪 كله بيجرب',top:800,right:190,rot:-3,badge:'',size:56});
+pill({t0:23.64,t1:24.92,html:'🧭 كله بيستكشف',top:1020,left:170,rot:3,badge:'',size:56});
 
 /* ---------------- 6. best time (25.1 - 28.15) ---------------- */
 {
   const g=mk(S,'abs',null,'left:150px;width:760px;top:800px;text-align:center');
   const now=mk(g,'',`<span style="display:inline-flex;align-items:center;gap:12px;background:var(--or);border-radius:40px;padding:4px 26px 10px;font-weight:900;font-size:38px">⏱ NOW · دلوقتي</span>`,'');
-  const big=mk(g,'','<span class="cw" style="font-size:108px;font-weight:1000;white-space:nowrap">ده <span style="color:var(--or)">أنسب وقت</span></span>','margin-top:4px');
+  const big=mk(g,'','<span class="cw" style="font-size:96px;font-weight:1000;white-space:nowrap">ده <span style="color:var(--or)">أنسب وقت</span></span>','margin-top:14px');
   const subw=mk(g,'',null,'display:flex;justify-content:center;margin-top:18px');
   const sub=mk(subw,'tilt','تتعلم + تدمج الـ<span class="ai">AI</span> في مجالك','font-size:52px;position:relative');
   add(t=>{popStyle(now,t,25.30,28.08,{dy:30});popStyle(big,t,25.64,28.10,{dy:70,sc0:.4});popStyle(sub,t,26.30,28.12,{rot:-3,rotIn:true,sc0:.3});});
 }
 
 /* ---------------- 7. any field (28.18 - 31.95) ---------------- */
-checklist({t0:28.25,t1:31.92,top:780,head:'أيًا كان مجالك',headAt:28.35,width:620,
+checklist({t0:28.42,t1:31.92,top:780,head:'أيًا كان مجالك',headAt:28.55,width:620,
   items:[{text:'مونتاج',at:29.02,tag:'+AI'},{text:'جرافيكس',at:29.52,tag:'+AI'},{text:'موشن جرافيكس',at:30.12,tag:'+AI'},{text:'ترجمة',at:31.34,tag:'+AI'}]});
 
 /* ---------------- 8. must master (31.9 - 34.1) ---------------- */
 pill({t0:32.70,t1:34.05,html:'لازم <span style="color:var(--or)">تتقن</span> الـ<span class="ai">AI</span>',top:880,left:180,rot:-4,badge:'!',size:66});
 
 /* ---------------- 9. the wave (34.12 - 37.38) ---------------- */
-pill({t0:34.64,t1:37.30,html:'🌊 الموجة دي <span style="color:var(--or)">دلوقتي</span>',top:820,right:180,rot:3,badge:'',size:58});
-pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:985,left:170,rot:-4,badge:'!',bcol:'var(--red)',size:60,
+pill({t0:34.64,t1:37.30,html:'🌊 الموجة دي <span style="color:var(--or)">دلوقتي</span>',top:790,right:180,rot:3,badge:'',size:56});
+pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:1030,left:170,rot:-3,badge:'!',bcol:'var(--red)',size:58,
   style:'background:var(--red);color:#fff;border-color:#fff'});
 
 /* ---------------- 10. CTA comment (37.4 - 40.7) ---------------- */
@@ -294,7 +310,7 @@ pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:985,left:170,ro
   const full='سيبلي كومنت: "AI" 🔥';
   const chars=[...full];
   add(t=>{
-    if(!popStyle(c,t,37.55,40.62,{dy:60,sc0:.7}))return;
+    if(!popStyle(c,t,37.55,40.55,{dy:60,sc0:.7}))return;
     const tp=P(t,39.20,.55);const n=Math.round(chars.length*tp);
     txt.innerHTML=(n?chars.slice(0,n).join(''):'<span style="color:#9a918a">اكتب تعليق…</span>')+(t<39.95&&Math.floor(t*4)%2===0?'<span style="color:var(--or)">|</span>':'');
     const sp=P(t,39.96,.3);send.style.transform=`scaleX(-1) scale(${1+.3*Math.sin(sp*Math.PI)})`;
@@ -313,7 +329,7 @@ pill({t0:35.96,t1:37.32,html:'هتندم بعد 10 سنين',top:985,left:170,ro
     const e=mk(roles,'',`<span style="display:inline-flex;align-items:center;gap:12px;font-weight:800;font-size:38px;background:rgba(255,255,255,.08);border-radius:14px;padding:4px 18px 8px"><b style="width:12px;height:12px;border-radius:50%;background:var(--or);display:inline-block"></b>${s}</span>`);
     return {e,at};});
   add(t=>{
-    if(!popStyle(c,t,40.70,99,{dy:80,sc0:.85}))return;
+    if(!popStyle(c,t,40.88,99,{dy:80,sc0:.85}))return;
     acc.style.transform=`scaleY(${E.expo(P(t,40.75,.5))})`;
     const np=P(t,40.92,.4);name.style.opacity=cl(np*2);name.style.transform=`translateX(${(1-E.expo(np))*-60}px)`;
     small.style.opacity=P(t,40.75,.3);

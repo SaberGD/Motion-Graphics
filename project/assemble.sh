@@ -6,7 +6,7 @@ RAW=$1 BASE=$2 OV=$3 SFX=$4 OUT=$5
 ffmpeg -v error -stats -y \
   -i "$BASE" -framerate 30 -start_number 0 -i "$OV/ov_%05d.png" -i "$RAW" -i "$SFX" \
   -filter_complex "
-    [0:v][1:v]overlay=format=auto:shortest=1,format=yuv420p[v];
+    [0:v][1:v]overlay=format=auto:shortest=1,setsar=1,format=yuv420p[v];
     [2:a]aresample=48000,highpass=f=80,afftdn=nr=10:nf=-42,
          equalizer=f=220:t=q:w=1.2:g=-1.5,equalizer=f=3200:t=q:w=1.4:g=2.5,equalizer=f=7000:t=q:w=2:g=-1.5,
          acompressor=threshold=-21dB:ratio=3:attack=5:release=90:makeup=2[voice];
