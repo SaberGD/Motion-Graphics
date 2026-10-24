@@ -117,6 +117,77 @@
 5. الـRequest اتبعت مرتين. إزاي تمنع إنه يتنفذ مرتين؟
 6. جهاز عنده Version قديمة من التطبيق والـBackend اتغير. إزاي متكسرهوش؟
 
+### من بوست Mahmoud Adel (Foodics): "إزاي تبني مهندس برمجيات"
+المصدر: https://monstersgate.com/ar/tips/17/azay-tbny-mhnds-brmgyat-ao-software-engineer
+
+الفكرة الأساسية: عشان توجّه الـAI وتحكم على قراراته محتاج تكون مهندس مش مبرمج حافظ كود. والخطة بتبدأ من فهم المطلوب، وبعدها الأرقام، وبعدها التصميم، ومع كل خطوة تكتب قراراتك.
+
+#### 9. استخراج الـRequirements
+- 📌 تطلع الـRequirements من الـTask صح.
+- 📌 **Functional Requirements:** السيستم المفروض يعمل إيه.
+- 📌 **Non-Functional Requirements:** السيستم المفروض يكون عامل إزاي (سرعة، تحمّل، أمان...).
+- 📌 **Out-of-Scope Requirements:** إيه اللي مش هنعمله دلوقتي، ونكتبه صراحةً.
+- ➕ **Clarifying Questions:** تسأل قبل ما تصمم. مين المستخدمين؟ كام واحد؟ إيه أهم Use Case؟
+- ➕ أشهر الـNFRs: Availability، Latency، Consistency، Scalability، Durability، Security، وإمتى تضحي بواحدة عشان التانية.
+- ➕ **SLA / SLO / SLI:** إزاي تحوّل "السيستم لازم يبقى سريع" لرقم تقدر تقيسه.
+- ➕ **User Stories و Acceptance Criteria.**
+- **المصادر:**
+  - كتاب *Software Requirements* لـ Karl Wiegers.
+  - كتاب Google *Site Reliability Engineering*: الفصل بتاع Service Level Objectives.
+
+#### 10. الـCapacity Estimation (Back-of-the-envelope)
+- 📌 تحسب **Read / Write Per Second** لمليون مستخدم.
+- 📌 تحسب احتياج الـ**Storage** على مدار 5 سنين (البوست افترض 500 بايت).
+- 📌 تحسب الـ**Bandwidth In / Out**.
+- ➕ **Read/Write Ratio** و **Peak vs Average Traffic**: السيستم بيتصمم على الذروة مش على المتوسط.
+- ➕ أرقام لازم تبقى حافظها: *Latency Numbers Every Programmer Should Know*، وPowers of Two (KB / MB / GB / TB)، وإن اليوم ≈ 100 ألف ثانية تقريبًا.
+- ➕ إزاي الأرقام دي تحدد القرار: محتاج Cache؟ Sharding؟ CDN؟ كام Server؟
+- **مثال محلول عشان تفهم الفكرة:** مليون مستخدم يومي، كل واحد بيعمل 10 Writes و50 Reads في اليوم:
+  - Writes = 10 مليون ÷ 86,400 ≈ **116 / ثانية** (وفي الذروة × 3 ≈ 350).
+  - Reads = 50 مليون ÷ 86,400 ≈ **580 / ثانية**.
+  - Storage لو كل Write بـ 500 بايت: 10 مليون × 500B = 5GB في اليوم، × 365 × 5 ≈ **9 TB** في 5 سنين.
+  - Bandwidth In ≈ 116 × 500B ≈ 58 KB/s، والـOut بيتحسب بنفس الطريقة من الـReads.
+- **المصادر:**
+  - كتاب *System Design Interview* لـ Alex Xu، الجزء الأول، فصل *Back-of-the-envelope Estimation*.
+  - *Latency Numbers Every Programmer Should Know* (أرقام Jeff Dean).
+  - GitHub: *donnemartin/system-design-primer*.
+
+#### 11. الـHLD (High-Level Design)
+- 📌 تعمل **HLD Diagram** فيه Components السيستم.
+- 📌 **Request Flow:** الطلب بيمشي إزاي من المستخدم لحد الـDB وبيرجع.
+- 📌 **Sequence Diagram.**
+- 📌 تقدر تشرح كل **Component** موجود في السيستم ودوره.
+- 📌 **Coupling** بين الـComponents.
+- ➕ **Cohesion:** الوش التاني للـCoupling (High Cohesion + Low Coupling).
+- ➕ **HLD vs LLD:** الصورة الكبيرة مقابل تفاصيل الـClasses والـAPIs والـSchema.
+- ➕ مكونات أساسية لازم تعرفها: Load Balancer، API Gateway، Cache، CDN، Message Queue، Database (SQL vs NoSQL)، Object Storage.
+- ➕ **CAP و PACELC:** أساس الـTrade-offs في الأنظمة الموزعة.
+- ➕ **C4 Model:** طريقة منظمة ترسم بيها الـArchitecture على مستويات.
+- ➕ أدوات الرسم كـCode: **Mermaid** و **PlantUML**.
+- ➕ تمرّن على تصميمات مشهورة: URL Shortener، Chat App، News Feed، Rate Limiter، Notification System.
+- **المصادر:**
+  - المصدر اللي في البوست: *System Design Tutorial*، GeeksforGeeks: https://www.geeksforgeeks.org/system-design/system-design-tutorial/
+  - GitHub: *donnemartin/system-design-primer*.
+  - كتاب *System Design Interview* (الجزء 1 و 2) لـ Alex Xu.
+  - كتاب *Fundamentals of Software Architecture* لـ Mark Richards و Neal Ford.
+  - c4model.com.
+  - Hello Interview (أدلة System Design).
+
+#### 12. الـKey Decisions والتفكير كمهندس
+- 📌 آخر أي خطة تكتب الـ**Key Decisions**: كل قرار خدته وليه.
+- 📌 توجيه الـAI والحكم على قراراته محتاج مهندس مش مبرمج حافظ كود (نفس فكرة رقم 8).
+- ➕ **ADRs (Architecture Decision Records):** شكل ثابت لكتابة القرار: السياق، القرار، البدائل، والنتايج.
+- ➕ لكل قرار تكتب البدائل اللي رفضتها وليه، والـTrade-off اللي قبلته.
+- **المصادر:** adr.github.io، ومقالة Michael Nygard *Documenting Architecture Decisions*.
+
+#### 🧪 تمرين عملي من البوست: طبّق الخطة على سيستم حقيقي
+خد Taskatk (Timer على كذا جهاز) أو El-Behery-CRM وامشي على نفس الخطة:
+1. اكتب الـFunctional والـNon-Functional والـOut-of-Scope.
+2. احسب RPS والـStorage على 5 سنين والـBandwidth لمليون مستخدم.
+3. ارسم HLD + Request Flow + Sequence Diagram لعملية واحدة مهمة (مثلًا Start Timer).
+4. اشرح كل Component، وإيه الـCoupling بينهم.
+5. اكتب الـKey Decisions بالبدائل والـTrade-offs.
+
 ---
 
 ## 🗂️ التصنيفات (بنرتب فيها حاجات الـ Inbox مع الوقت)
