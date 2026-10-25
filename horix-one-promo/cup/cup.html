@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'Cairo'; font-weight: 900; src: url('../assets/fonts/cairo-arabic-900-normal.woff2'); }
+@font-face { font-family: 'Cairo'; font-weight: 700; src: url('../assets/fonts/cairo-arabic-700-normal.woff2'); }
+html, body { margin: 0; background: transparent; }
+canvas { display: block; }
+</style>
+<script type="importmap">{ "imports": { "three": "../node_modules/three/build/three.module.js", "three/addons/": "../node_modules/three/examples/jsm/" } }</script>
+<script src="../logo.js"></script>
+</head>
+<body>
+<script type="module">
+// The "product photo" for the Pixel scene: a cream ceramic cup on a warm paper sweep.
+// shot(mode): "full" = cup + backdrop, "cut" = cup only (transparent), "logo" = cup only with the «بُنّ» print.
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const W = 1040, H = 1300;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.VSMShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.55;
+
+const camera = new THREE.PerspectiveCamera(30, W / H, 0.1, 50);
+camera.position.set(-0.5, 2.05, 3.3);
+camera.lookAt(0.06, 0.4, 0);
+
+// --- backdrop: a paper sweep (floor curving up into a wall) ---
+const sweep = (() => {
+  const g = new THREE.PlaneGeometry(14, 1, 1, 160);
+  const pos = g.attributes.position;
+  const R = 1.8, floorLen = 6;
+  const total = floorLen + (Math.PI / 2) * R + 6;
+  for (let i = 0; i < pos.count; i++) {
+    const s = (pos.getY(i) + 0.5) * total; // 0 at the front edge
+    let y, z;
+    if (s < floorLen) { y = 0; z = 3.5 - s; }
+    else if (s < floorLen + (Math.PI / 2) * R) { const a = (s - floorLen) / R; y = R - Math.cos(a) * R; z = 3.5 - floorLen - Math.sin(a) * R; }
+    else { y = R + (s - floorLen - (Math.PI / 2) * R); z = 3.5 - floorLen - R; }
+    pos.setY(i, y); pos.setZ(i, z);
+  }
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0xe6d3bd, roughness: 0.95 }));
+  m.receiveShadow = true;
+  // normals point toward -z by default on a bent plane, flip so it faces the camera
+  m.material.side = THREE.DoubleSide;
+  return m;
+})();
+scene.add(sweep);
+
+// --- the cup ---
+const glaze = new THREE.MeshPhysicalMaterial({ color: 0xf3ece2, roughness: 0.32, clearcoat: 0.7, clearcoatRoughness: 0.18, sheen: 0.2 });
+const prof = [
+  [0, 0.0], [0.33, 0.0], [0.355, 0.006], [0.372, 0.022], [0.378, 0.045],
+  [0.392, 0.15], [0.41, 0.3], [0.428, 0.45], [0.445, 0.6], [0.46, 0.75], [0.472, 0.86], [0.478, 0.895],
+  [0.476, 0.908], [0.468, 0.914], [0.458, 0.91], [0.452, 0.895],
+  [0.446, 0.85], [0.432, 0.7], [0.414, 0.52], [0.396, 0.34], [0.38, 0.17], [0.36, 0.085], [0.3, 0.07], [0, 0.068],
+].map(([r, y]) => new THREE.Vector2(r, y));
+const cup = new THREE.Group();
+const body = new THREE.Mesh(new THREE.LatheGeometry(prof, 160), glaze);
+body.castShadow = body.receiveShadow = true;
+cup.add(body);
+
+// coffee with crema
+const crema = (() => {
+  const c = document.createElement("canvas"); c.width = c.height = 512;
+  const x = c.getContext("2d");
+  const g = x.createRadialGradient(256, 256, 10, 256, 256, 256);
+  g.addColorStop(0, "#5a3218"); g.addColorStop(0.55, "#7b4722"); g.addColorStop(0.86, "#a8703e"); g.addColorStop(0.97, "#c99766"); g.addColorStop(1, "#6d3f1d");
+  x.fillStyle = g; x.fillRect(0, 0, 512, 512);
+  // a little latte-art heart
+  x.fillStyle = "rgba(236,214,186,.92)";
+  x.beginPath(); x.moveTo(256, 330);
+  x.bezierCurveTo(150, 260, 170, 170, 230, 182); x.bezierCurveTo(250, 186, 256, 205, 256, 215);
+  x.bezierCurveTo(256, 205, 262, 186, 282, 182); x.bezierCurveTo(342, 170, 362, 260, 256, 330); x.fill();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const coffee = new THREE.Mesh(new THREE.CircleGeometry(0.44, 96), new THREE.MeshPhysicalMaterial({ map: crema, roughness: 0.25, clearcoat: 0.5 }));
+coffee.rotation.x = -Math.PI / 2; coffee.rotation.z = 0.5; coffee.position.y = 0.8;
+cup.add(coffee);
+
+// handle: a "C" on the right
+const handle = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.036, 32, 96, Math.PI * 1.12), glaze);
+handle.rotation.z = -Math.PI * 0.56;
+handle.scale.set(1, 1.32, 1.15);
+handle.position.set(0.455, 0.5, 0);
+handle.castShadow = handle.receiveShadow = true;
+cup.add(handle);
+
+// logo print: a band of the outer wall facing the camera
+const printTex = (() => {
+  const c = document.createElement("canvas"); c.width = 1100; c.height = 1100;
+  const x = c.getContext("2d");
+  x.translate(0, 0);
+  drawLogo(x, 1100 / 560, { tag: false, colors: { ink: "#2a1b12", bean: "#E58A2E" } });
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+})();
+const band = prof.slice(5, 10).map((v) => new THREE.Vector2(v.x + 0.0025, v.y));
+// band spans y .15-.75 (cup body); the logo is square so give it the matching arc width, centred toward the camera
+const print = new THREE.Mesh(
+  new THREE.LatheGeometry(band, 64, -0.26 - 0.7, 1.4),
+  new THREE.MeshStandardMaterial({ map: printTex, transparent: true, roughness: 0.4, polygonOffset: true, polygonOffsetFactor: -2 }),
+);
+cup.add(print);
+cup.rotation.y = 0.12;
+scene.add(cup);
+
+// --- lights ---
+const key = new THREE.DirectionalLight(0xfff1e0, 2.6);
+key.position.set(-3, 4.2, 2.2);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.radius = 14; key.shadow.blurSamples = 24;
+key.shadow.camera.left = -4; key.shadow.camera.right = 4; key.shadow.camera.top = 4; key.shadow.camera.bottom = -4;
+key.shadow.bias = -0.0004;
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xffd9a8, 1.1); rim.position.set(3, 2.5, -2.5); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xfff6ea, 0xcdb69a, 0.55));
+
+window.shot = (mode) => {
+  sweep.visible = mode === "full";
+  print.visible = mode === "logo" || mode === "full-logo";
+  if (mode === "full-logo") sweep.visible = true;
+  renderer.setClearColor(0x000000, 0);
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL("image/png");
+};
+document.fonts.load("900 50px Cairo").then(() => document.fonts.ready).then(() => {
+  printTex.image.getContext("2d").clearRect(0, 0, 1100, 1100);
+  drawLogo(printTex.image.getContext("2d"), 1100 / 560, { tag: false, colors: { ink: "#2a1b12", bean: "#E58A2E" } });
+  printTex.needsUpdate = true;
+  window.ready = true;
+});
+</script>
+</body>
+</html>
