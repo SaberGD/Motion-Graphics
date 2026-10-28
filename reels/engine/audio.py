@@ -107,8 +107,9 @@ def shutter():
 
 SYN = dict(whoosh=lambda: whoosh(), whoosh_dn=lambda: whoosh(.45, False), riser=riser, impact=impact, pop=pop,
            pop_lo=lambda: pop(500, .12), click=click, tick=tick, shimmer=shimmer, glitch=glitch, shutter=shutter)
-GAIN = dict(whoosh=-15, whoosh_dn=-17, riser=-20, impact=-11, pop=-17, pop_lo=-15, click=-18, tick=-20, shimmer=-21,
-            glitch=-20, shutter=-14)
+# target RMS (dBFS, pre-master) per sound; voice sits around -20 dBFS RMS, so SFX stay ~13-20 dB under it
+GAIN = dict(whoosh=-35, whoosh_dn=-37, riser=-36, impact=-32, pop=-36, pop_lo=-34, click=-37, tick=-41, shimmer=-38,
+            glitch=-37, shutter=-34)
 
 events = []
 for el in spec.get('els', []):
@@ -137,7 +138,18 @@ for el in spec.get('els', []):
         sk = el.get('send', te + .25); events += [(sk, 'click'), (sk + .05, 'shimmer')]
     elif ty in ('card', 'toast', 'stat', 'bars'):
         events.append((el['t0'] - .05, 'whoosh'))
-        if ty == 'stat': events.append((el['t0'] + el.get('count', 1), 'pop'))
+        if ty == 'stat':
+            if el.get('steps'): events += [(st, 'pop') for st, _ in el['steps']]
+            else: events.append((el['t0'] + el.get('count', 1), 'pop'))
+    elif ty == 'demo':
+        events.append((el['t0'] - .05, 'whoosh'))
+        if el.get('focus') is not None: events += [(el['focus'], 'pop_lo'), (el['focus'] + .02, 'shimmer', 4)]
+        for st in el.get('steps', []): events.append((st, 'pop'))
+        for sw in el.get('sw', []): events.append((sw[0], 'pop'))
+        if el.get('stamp') is not None: events.append((el['stamp'], 'impact', -6))
+        for c in el.get('cups', []):
+            if c[1]: events += [(c[1], 'pop_lo'), (c[1] + .03, 'shimmer')]
+        for m in el.get('marks', []): events.append((m, 'pop'))
     elif ty == 'vf':
         events.append((el['t0'], 'shutter'))
     elif ty == 'sweep':
@@ -155,7 +167,8 @@ sfx = np.zeros(N, np.float32)
 for ev in events:
     t, ty = ev[0], ev[1]
     if ty in off or t < 0: continue
-    s = SYN[ty]().astype(np.float32) * db(GAIN[ty] + (ev[2] if len(ev) > 2 else 0) + spec.get('sfx_gain', 0))
+    s = SYN[ty]().astype(np.float32); s /= np.sqrt((s ** 2).mean()) + 1e-9  # unit RMS, then place at its target level
+    s *= db(GAIN[ty] + (ev[2] if len(ev) > 2 else 0) + spec.get('sfx_gain', 0))
     i = int(t * SR); s = s[:max(0, N - i)]; sfx[i:i + len(s)] += s
 
 # ---------- music ----------
@@ -183,6 +196,11 @@ if M:
     duck = db(M.get('duck', -9) * np.clip(speaking * 1.6, 0, 1))
     mus *= (g * duck * db(M.get('gain', -16)))[:, None]
 
+if os.environ.get('STEMS'):  # QC: write each stem as heard in the mix
+    for nm, st in (('voice', voice), ('sfx', sfx), ('music', mus)):
+        st = st if st.ndim == 2 else np.repeat(st[:, None], 2, 1)
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ac', '2', '-ar', str(SR), '-i', '-', f'{OUT}.{nm}.wav'],
+                       input=st[:int(DUR * SR)].astype(np.float32).tobytes(), check=True)
 mix = mus + (voice + sfx)[:, None]
 mix = mix[:int(DUR * SR)]
 tmp = OUT + '.pre.wav'

@@ -122,7 +122,7 @@ def apply_fx(img, t):
             img = cv2.filter2D(img, -1, kern)
             img = np.roll(img, dx, axis=1)
         elif typ == 'flash':
-            img = cv2.addWeighted(img, 1, np.full_like(img, 255), .85 * a ** 2, 0)
+            img = cv2.addWeighted(img, 1, np.full_like(img, 255), f.get('amt', .5) * a ** 2, 0)
         elif typ == 'shake':
             r = np.random.RandomState(int(t * 1000))
             img = np.roll(img, (int(r.randn() * 14 * a), int(r.randn() * 10 * a)), axis=(0, 1))

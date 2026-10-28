@@ -19,7 +19,7 @@ const frames = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.ro
     page.on('console', m => console.log(`[w${wi}]`, m.text()));
     page.on('pageerror', e => console.log(`[w${wi}] ERR`, e.message));
     await page.goto('file://' + path.join(__dirname, 'stage.html'));
-    await page.evaluate(() => document.fonts.ready);
+    await page.evaluate(() => Promise.all(['900 100px Alex', '800 100px Alex', '600 100px Alex', '500 100px Poppins', '600 100px Poppins', '900 100px Cairo', '800 100px Cairo', '700 100px Cairo', '100px Bebas'].map(f => document.fonts.load(f, 'abc اختبار'))));
     const chunks = await page.evaluate(([s, w]) => window.init(s, w), [spec, words]);
     if (wi === 0) fs.writeFileSync(path.join(out, '_chunks.txt'), chunks.join('\n'));
     await page.evaluate(() => document.fonts.ready);

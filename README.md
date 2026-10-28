@@ -32,3 +32,38 @@ Four reels with the funk bed ("Radio Feelings"): beat 1 from 4:19.6, beat 2 from
 | `reel2_newhook_beat2.mp4` | alternate hook | beat 2 |
 
 `make_timing.py` snaps punch-ins and mid-shot cutaway transitions to the beat grid (cuts in the footage stay put) and adds zoom "hits" where the track lifts. `assemble_music.sh` mixes the untouched voice (gain only) + SFX + music ducked under the voice, master ≈ −14 LUFS.
+
+---
+
+# Reels v2: Saber Group × Mushroom series (`reels/`)
+
+The style is documented in [`reels/STYLE.md`](reels/STYLE.md): the VibeDocX motion language in Saber's ember palette, the AI-reel format, and the *Top Flow – The Funky* music edit.
+
+| Reel | Topic | Output |
+|---|---|---|
+| `r3` | التباين في التصميم (contrast) | `reels/r3/out/r3.mp4` |
+| `r4` | سيكولوجية الألوان (colour psychology) | `reels/r4/out/r4.mp4` |
+| `r5` | زاوية التصوير (camera angle) | `reels/r5/out/r5.mp4` |
+| `r_saber2` | الـ AI صفّر العداد (start learning AI now) | `reels/r_saber2/out/r_saber2.mp4` |
+
+Each reel is one `spec.json` plus its word-level transcript (`words.json`) and face track (`face.json`). The spec holds:
+- the jump-cut list
+- camera keyframes and punch-ins
+- in-camera transitions
+- the caption chunking, highlighted words and text fixes
+- the graphics timeline: `kin`, `demo`, `chips`, `prompt`, `card`, `toast`, `stat`, `vf`, `sweep`, `outro`
+- the music edit (track ranges + beat-stops)
+
+| Engine file | Role |
+|---|---|
+| `engine/base.py` | jump cuts, face-following reframe, zoom/punch camera, zoom-blur/whip/flash/shake, light grade |
+| `engine/stage.html` + `engine/render.js` | Chromium composites base frames and graphics (4 parallel workers) |
+| `engine/audio.py` | cleaned voice, SFX auto-generated from the graphics, music edit ducked under the voice, −14 LUFS |
+| `make.sh <reel>` / `build_all.sh` | full build |
+| `preview.sh <reel> t1,t2,…` | contact sheet of chosen times |
+| `tools/transcribe.py`, `tools/facetrack.py` | Egyptian-primed Whisper large-v3, YuNet face track |
+
+```bash
+ln -s /path/to/footage raw            # raw/3.mp4, raw/4.mp4, raw/5.mp4, raw/saber2.mp4 (not in git)
+reels/build_all.sh                    # → reels/<reel>/out/<reel>.mp4
+```
