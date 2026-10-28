@@ -1,0 +1,150 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Cairo;src:url(../../project/fonts/Cairo.ttf);font-weight:200 1000}
+@font-face{font-family:Alex;src:url(../../project/fonts/Alexandria.ttf);font-weight:100 900}
+@font-face{font-family:Poppins;src:url(../../project/fonts/Poppins-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Poppins;src:url(../../project/fonts/Poppins-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../project/fonts/BebasNeue-Regular.ttf)}
+:root{--org:#FF8A1F;--hl:#FF9C3F;--cream:#F4EEE8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;color:#fff}
+.L{position:absolute;inset:0}
+#bg{position:absolute;inset:0;width:1080px;height:1920px}
+#fg{position:absolute;inset:0;background-size:100% 100%;-webkit-mask-size:100% 100%;mask-size:100% 100%;mask-mode:luminance}
+/* text placed in the room, behind the speaker */
+.depth{position:absolute;left:0;right:0;text-align:center;white-space:nowrap;will-change:transform,opacity,filter}
+.depth .w{position:absolute;left:0;right:0;text-align:center}
+.depth .sub{position:absolute;left:0;right:0;text-align:center;font-family:Alex;font-weight:600;direction:rtl}
+/* captions */
+#cap{position:absolute;left:80px;right:80px;display:flex;justify-content:center;direction:rtl}
+#cap .c{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:0 16px;direction:rtl;flex-wrap:wrap;font-family:Cairo;font-weight:800;font-size:62px;line-height:1.3;text-align:center}
+#cap .w{white-space:nowrap;text-shadow:0 2px 3px rgba(0,0,0,.35),0 4px 18px rgba(0,0,0,.55)}
+#cap .w.hl{color:var(--hl)}
+#cap .w.lat{font-family:Poppins;font-weight:600;font-size:.84em;direction:ltr;unicode-bidi:isolate}
+#logo{position:absolute;top:110px;left:64px;width:250px;opacity:.85}
+.end{position:absolute;left:0;right:0;text-align:center}
+.end .lock{display:flex;justify-content:center;align-items:center;gap:36px}
+.end .sep{width:2px;height:110px;background:rgba(255,255,255,.45)}
+.cta{font-family:Cairo;font-weight:800;direction:rtl}
+.pill{display:inline-block;margin-top:22px;font-family:Cairo;font-weight:800;font-size:44px;padding:10px 40px 14px;border-radius:999px;border:2.5px solid var(--org);direction:rtl}
+</style></head>
+<body><div id="stage">
+  <img id="bg">
+  <div id="behind" class="L"></div>
+  <div id="fg"></div>
+  <div id="front" class="L"></div>
+</div>
+<script>
+const $ = (t, cls, parent, css, html) => { const e = document.createElement(t); if (cls) e.className = cls; if (css) e.style.cssText = css; if (html != null) e.innerHTML = html; parent.appendChild(e); return e; };
+const BEH = document.getElementById('behind'), FR = document.getElementById('front'), BG = document.getElementById('bg'), FG = document.getElementById('fg');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const lerp = (a, b, k) => a + (b - a) * k;
+const isLat = s => /^[A-Za-z0-9%+.\-#@$&!?:/']+$/.test(s.replace(/[«»"،,.!?؟]/g, ''));
+let SPEC, CH = [], ELS = [], END = null;
+
+function chunks(words, cfg) {
+  const out = []; let cur = [];
+  words.forEach(w => { if (cur.length && cfg.starts.includes(w.i)) { out.push(cur); cur = []; } cur.push(w); });
+  if (cur.length) out.push(cur);
+  return out.map(ws => ({ ws, t0: ws[0].s - .04, t1: ws[ws.length - 1].e }));
+}
+
+window.init = (spec, words) => {
+  SPEC = spec; const cfg = spec.cap; const hl = new Set(cfg.hl || []);
+  CH = chunks(words, cfg);
+  CH.forEach((c, k) => { const nx = CH[k + 1]; c.t1 = nx ? Math.min(nx.t0, c.t1 + .5) : c.t1 + .4; });
+  const cap = $('div', '', FR); cap.id = 'cap'; cap.style.top = (cfg.y || 1330) + 'px';
+  CH.forEach(c => {
+    c.el = $('div', 'c', cap, 'opacity:0');
+    c.ws.forEach(w => {
+      let txt = cfg.fix && cfg.fix[w.i] != null ? cfg.fix[w.i] : w.w; if (txt === '') return;
+      txt = txt.replace(/[،,.؛]+$/, '');
+      const last = c.el.lastElementChild;
+      if (isLat(txt) && last && last.classList.contains('lat')) { last.textContent += ' ' + txt; if (hl.has(w.i)) last.classList.add('hl'); return; }
+      $('span', 'w' + (hl.has(w.i) ? ' hl' : '') + (isLat(txt) ? ' lat' : ''), c.el, '', txt);
+    });
+  });
+  if (spec.logo !== false) { const l = $('img', '', FR); l.id = 'logo'; l.src = '../../project/brand/saber-group-logo.png'; }
+  ELS = (spec.els || []).map(d => Object.assign(BUILD[d.type](d), { d }));
+  return CH.map(c => c.t0.toFixed(2) + ' ' + c.ws.map(w => (cfg.fix && cfg.fix[w.i] != null ? cfg.fix[w.i] : w.w)).join(' '));
+};
+
+const BUILD = {
+  // large type standing in the room behind the speaker; `steps` swap the word in place
+  depth(d) {
+    const root = $('div', 'depth', BEH, `top:${d.y}px;height:${d.size}px;display:none`);
+    const words = (d.steps || [[d.t0, d.text]]).map(([t, txt]) => {
+      const e = $('div', 'w', root, `font-family:${d.font || 'Bebas'};font-weight:${d.w || 400};font-size:${d.size}px;line-height:1;color:${d.color || 'var(--cream)'};letter-spacing:${d.ls ?? 2}px;opacity:0`, txt);
+      e._t = t; return e;
+    });
+    const sub = d.sub ? $('div', 'sub', root, `top:${d.size * .92 + (d.sub.dy || 0)}px;font-size:${d.sub.size || 64}px;color:${d.sub.color || 'var(--cream)'};opacity:0`, d.sub.text) : null;
+    return { root, words, sub };
+  },
+  end(d) {
+    const root = $('div', 'L', FR, 'display:none');
+    const top = $('div', 'end', root, `top:${d.y || 230}px`);
+    const lock = $('div', 'lock', top);
+    const sg = $('img', '', lock, 'width:330px'); sg.src = '../../project/brand/saber-group-logo.png';
+    const sep = $('div', 'sep', lock);
+    const mu = $('img', '', lock, 'width:250px'); mu.src = '../../project/brand/mushroom-logo.png';
+    const cta = $('div', 'end', root, `top:${d.ctaY || 1300}px`);
+    const line = $('div', 'cta', cta, 'font-size:60px', d.cta || '');
+    const pill = d.pill ? $('div', 'pill', cta, '', d.pill) : null;
+    return { root, top, cta, pill };
+  },
+};
+
+const UPD = {
+  depth(o, t) {
+    const d = o.d, din = d.din ?? .55, dout = d.dout ?? .4;
+    const on = t >= d.t0 && t <= d.t1 + dout;
+    o.root.style.display = on ? '' : 'none'; if (!on) return;
+    const kin = eo((t - d.t0) / din), kout = clamp((t - d.t1) / dout);
+    const op = (d.op ?? .92) * kin * (1 - kout);
+    // slow drift keeps it alive without drawing attention
+    const drift = (t - d.t0) * (d.drift ?? 6);
+    o.root.style.opacity = op;
+    o.root.style.transform = `translateY(${lerp(36, 0, kin) - drift}px) scale(${lerp(1.05, 1, kin)})`;
+    o.root.style.filter = `blur(${lerp(10, 0, kin) + 8 * kout}px)`;
+    // swaps: outgoing word lifts and fades, incoming rises in
+    o.words.forEach((w, k) => {
+      const nx = o.words[k + 1], a = clamp((t - w._t) / .28), b = nx ? clamp((t - nx._t) / .22) : 0;
+      w.style.opacity = k === 0 ? 1 - b : a * (1 - b);
+      w.style.transform = `translateY(${k === 0 ? -40 * b : lerp(46, 0, eo(a)) - 40 * b}px)`;
+      w.style.filter = `blur(${(k === 0 ? 0 : 8 * (1 - eo(a))) + 6 * b}px)`;
+    });
+    if (o.sub) { const q = clamp((t - d.t0 - .2) / .4); o.sub.style.opacity = eo(q); }
+  },
+  end(o, t) {
+    const d = o.d, x = t - d.t0; o.root.style.display = x >= 0 ? '' : 'none'; if (x < 0) return;
+    const k1 = eo(x / .6), k2 = eo((x - .35) / .6);
+    o.top.style.opacity = k1; o.top.style.transform = `translateY(${lerp(-20, 0, k1)}px)`;
+    o.cta.style.opacity = k2; o.cta.style.transform = `translateY(${lerp(24, 0, k2)}px)`;
+  },
+};
+
+window.render = t => {
+  const endT = ELS.find(e => e.d.type === 'end');
+  const inEnd = endT && t >= endT.d.t0;
+  CH.forEach(c => {
+    const vis = !inEnd && t >= c.t0 && t < c.t1 + .12;
+    if (!vis) { c.el.style.opacity = 0; return; }
+    const kin = eo((t - c.t0) / .16), kout = clamp((t - c.t1) / .12);
+    c.el.style.opacity = kin * (1 - kout);
+    c.el.style.transform = `translateY(${lerp(14, 0, kin)}px)`;
+  });
+  ELS.forEach(e => UPD[e.d.type](e, t));
+  const lg = document.getElementById('logo'); if (lg) lg.style.opacity = inEnd ? 0 : .85;
+  // end card: background falls away, the speaker stays lit (fg layer keeps full brightness)
+  if (endT) { const k = eio((t - endT.d.t0) / .8); BG.style.filter = inEnd ? `brightness(${lerp(1, .38, k)}) blur(${lerp(0, 6, k)}px)` : ''; }
+};
+// background frame + its matte; the fg layer re-draws the speaker over the 'behind' text
+window.setBg = (src, alpha) => new Promise(r => {
+  const im = new Image(), am = new Image(); let n = 0; const done = () => { if (++n === 2) { BG.src = src; FG.style.backgroundImage = `url(${src})`; FG.style.webkitMaskImage = FG.style.maskImage = `url(${alpha})`; r(); } };
+  im.onload = im.onerror = done; am.onload = am.onerror = done; im.src = src; am.src = alpha;
+});
+</script></body></html>

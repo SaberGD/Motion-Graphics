@@ -18,7 +18,7 @@ const frames = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.ro
     const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
     page.on('console', m => console.log(`[w${wi}]`, m.text()));
     page.on('pageerror', e => console.log(`[w${wi}] ERR`, e.message));
-    await page.goto('file://' + path.join(__dirname, 'stage.html'));
+    await page.goto('file://' + path.join(__dirname, process.env.STAGE || 'stage.html'));
     await page.evaluate(() => Promise.all(['900 100px Alex', '800 100px Alex', '600 100px Alex', '500 100px Poppins', '600 100px Poppins', '900 100px Cairo', '800 100px Cairo', '700 100px Cairo', '100px Bebas'].map(f => document.fonts.load(f, 'abc اختبار'))));
     const chunks = await page.evaluate(([s, w]) => window.init(s, w), [spec, words]);
     if (wi === 0) fs.writeFileSync(path.join(out, '_chunks.txt'), chunks.join('\n'));
@@ -26,7 +26,8 @@ const frames = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.ro
     for (let k = wi; k < frames.length; k += W) {
       const f = frames[k];
       const bf = baseFrames[Math.min(f, baseFrames.length - 1)];
-      await page.evaluate(src => window.setBg(src), 'file://' + path.join(baseDir, bf));
+      const alphaDir = process.env.ALPHA;
+      await page.evaluate(([src, al]) => window.setBg(src, al), ['file://' + path.join(baseDir, bf), alphaDir ? 'file://' + path.join(alphaDir, bf.replace('b_', 'a_')) : null]);
       await page.evaluate(t => window.render(t), f / FPS);
       await page.screenshot({ path: path.join(out, `f_${String(f).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 93 });
       if (k % 150 < W) console.log('frame', f, '/', N);

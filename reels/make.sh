@@ -8,7 +8,11 @@ if [ ! -f "$B/base.mp4" ] || [ "$R/spec.json" -nt "$B/base.mp4" ] || [ "$E/base.
   python3 "$E/base.py" "$R/spec.json" "$B/base.mp4"
   rm -rf "$B/base"; mkdir -p "$B/base"
   ffmpeg -v error -y -i "$B/base.mp4" -q:v 2 "$B/base/b_%05d.jpg"
+  if [ -f "$B/base_alpha.mp4" ]; then rm -rf "$B/alpha"; mkdir -p "$B/alpha"; ffmpeg -v error -y -i "$B/base_alpha.mp4" -q:v 2 "$B/alpha/a_%05d.jpg"; fi
 fi
+STAGE=stage.html; ALPHA=
+if grep -q '"matte"' "$R/spec.json"; then STAGE=stage_calm.html; ALPHA="$B/alpha"; fi
+export STAGE ALPHA
 rm -rf "$B/frames"
 node "$E/render.js" "$B/spec.json" "$B/words.json" "$B/base" "$B/frames" ${WORKERS:-3}
 python3 "$E/audio.py" "$R/spec.json" "$B/mix.wav"

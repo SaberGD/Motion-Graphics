@@ -20,7 +20,7 @@ SW, SH = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_
 SN = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 # base 9:16 window inside the source
 BW = min(SW, SH * 9 / 16); BH = BW * 16 / 9
-N = int(round(speech_duration(spec) * FPS))
+N = int(round((speech_duration(spec) + (spec.get('outro', {}).get('dur', 0) if spec.get('outro', {}).get('freeze') else 0)) * FPS))
 
 
 def ease(x):
@@ -76,6 +76,46 @@ for s in np.unique(seg):
         v = np.pad(arr[idx], 30, mode='edge')
         arr[idx] = np.convolve(v, g, 'same')[30:-30]
 
+# ---------- optional person matte (alpha video of the source's 9:16 window at 1080x1920) ----------
+MATTE = spec.get('matte'); acap = None
+if MATTE:
+    acap = cv2.VideoCapture(MATTE if os.path.isabs(MATTE) else os.path.join(D, MATTE))
+    AK = BW / 1080.0; AX0 = (SW - BW) / 2; AY0 = (SH - BH) / 2
+    aout = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'gray', '-s', f'{OW}x{OH}', '-r', str(FPS), '-i', '-',
+                             '-c:v', 'libx264', '-preset', 'medium', '-crf', '12', '-pix_fmt', 'yuv420p', OUT.replace('.mp4', '_alpha.mp4')], stdin=subprocess.PIPE)
+G = spec.get('look', {})
+
+
+def pro_grade(img, a):
+    """Subject-aware grade. img uint8 BGR, a float32 0..1 (person)."""
+    x = img.astype(np.float32) / 255.
+    a3 = cv2.GaussianBlur(a, (0, 0), 1.6)[..., None]
+    # background: premultiplied blur (no halo from the subject), darker, a touch cooler and less saturated
+    sig = G.get('bg_blur', 5.0)
+    a2 = a3[..., 0]
+    if sig > 0:
+        inv = 1 - a2
+        num = cv2.GaussianBlur(x * inv[..., None], (0, 0), sig)
+        den = cv2.GaussianBlur(inv, (0, 0), sig)[..., None]
+        bg = np.where(den > .02, num / np.maximum(den, 1e-3), x)
+    else:
+        bg = x
+    bg = bg * G.get('bg_gain', .80)
+    gray = bg.mean(2, keepdims=True); bg = gray + (bg - gray) * G.get('bg_sat', .92)
+    # subject: lift mids, gentle warmth, protect highlights (white shirt)
+    sb = np.power(np.clip(x, 0, 1), G.get('subj_gamma', .90)) * G.get('subj_gain', 1.04)
+    sb = sb * np.array(G.get('subj_tint', [0.985, 1.0, 1.02]), np.float32)  # BGR
+    gray = sb.mean(2, keepdims=True); sb = gray + (sb - gray) * G.get('subj_sat', 1.03)
+    o = bg * (1 - a3) + sb * a3
+    # global filmic curve: soft toe, highlight shoulder
+    o = np.clip(o, 0, None)
+    o = o / (1 + .18 * o) * 1.18                       # shoulder (roll highlights)
+    o = o + .045 * np.sin(np.pi * np.clip(o, 0, 1)) * (np.clip(o, 0, 1) - .5) * 2  # mild S
+    o = .012 + o * (1 - .012)                           # lifted black point (no crush)
+    o = o * vig
+    return np.clip(o * 255, 0, 255).astype(np.uint8)
+
+
 # ---------- grade ----------
 GRADE = spec.get('grade', 'light')
 xs = np.arange(256) / 255.
@@ -85,6 +125,8 @@ lut = (lut * 255).astype(np.uint8)
 yy, xx = np.mgrid[0:OH, 0:OW]
 vig = 1 - .28 * (((xx - OW / 2) / (OW * .62)) ** 2 + ((yy - OH * .45) / (OH * .62)) ** 2)
 vig = np.clip(vig, .62, 1).astype(np.float32)[..., None]
+if spec.get('grade') == 'pro':
+    vig = (1 - (1 - vig) * .55).astype(np.float32)
 
 
 def grade(img):
@@ -143,8 +185,12 @@ for i in range(N):
     si = min(int(round(ts[i] * FPS)), SN - 1)
     if si != cur + 1 or frame is None:
         cap.set(cv2.CAP_PROP_POS_FRAMES, si)
+        if acap is not None: acap.set(cv2.CAP_PROP_POS_FRAMES, si)
     ok, f2 = cap.read()
     if ok: frame = f2
+    if acap is not None:
+        ok2, a2 = acap.read()
+        if ok2: aframe = a2[..., 0]
     cur = si
     z = cam_zoom(t) + punch(t)
     w = BW / z; h = BH / z
@@ -162,8 +208,16 @@ for i in range(N):
     if s > 1.15:  # recover a little crispness on upscaled punch-ins
         bl = cv2.GaussianBlur(img, (0, 0), 1.2)
         img = cv2.addWeighted(img, 1.35, bl, -.35, 0)
-    img = apply_fx(grade(img), t)
+    if acap is not None:
+        MA = np.float32([[s * AK, 0, s * (AX0 - x0)], [0, s * AK, s * (AY0 - y0)]])
+        al = cv2.warpAffine(aframe, MA, (OW, OH), flags=cv2.INTER_LINEAR).astype(np.float32) / 255.
+        img = pro_grade(img, al)
+        aout.stdin.write((al * 255).astype(np.uint8).tobytes())
+        img = apply_fx(img, t)
+    else:
+        img = apply_fx(grade(img), t)
     ff.stdin.write(img.tobytes())
     if i % 150 == 0: print('base', i, '/', N, flush=True)
 ff.stdin.close(); ff.wait()
+if acap is not None: aout.stdin.close(); aout.wait()
 print('done', OUT, N, 'frames')
