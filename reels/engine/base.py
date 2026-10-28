@@ -89,6 +89,15 @@ G = spec.get('look', {})
 def pro_grade(img, a):
     """Subject-aware grade. img uint8 BGR, a float32 0..1 (person)."""
     x = img.astype(np.float32) / 255.
+    # edge clean-up: the source has a 1-px oversharpening line along the speaker's outline that zooming makes
+    # visible; in a thin band around the matte edge, take a morphological opening (removes thin bright lines)
+    if G.get('edge_clean', 4):
+        k = int(G.get('edge_clean', 4))
+        band = (cv2.dilate(a, np.ones((2 * k + 1, 2 * k + 1), np.uint8)) - cv2.erode(a, np.ones((2 * k + 1, 2 * k + 1), np.uint8)))
+        band = cv2.GaussianBlur(np.clip(band * 1.5, 0, 1), (0, 0), 1.5)[..., None]
+        ker = np.ones((5, 5), np.uint8)
+        opened = cv2.dilate(cv2.erode(x, ker), ker)
+        x = x * (1 - band) + cv2.GaussianBlur(opened, (0, 0), .8) * band
     a3 = cv2.GaussianBlur(a, (0, 0), 1.6)[..., None]
     # background: premultiplied blur (no halo from the subject), darker, a touch cooler and less saturated
     sig = G.get('bg_blur', 5.0)
