@@ -149,8 +149,8 @@ const BUILD = {
     const root = $('div', 'kin', OV, 'display:none');
     const pal = d.pal || 'ember';
     const blobs = [
-      $('div', 'blob', root, `width:900px;height:900px;background:${pal === 'red' ? '#C2301C' : '#E8571C'};opacity:.55`),
-      $('div', 'blob', root, 'width:700px;height:700px;background:#8F2017;opacity:.6'),
+      $('div', 'blob', root, `width:900px;height:900px;background:${pal === 'red' ? '#C2301C' : '#E8571C'};opacity:.42`),
+      $('div', 'blob', root, 'width:760px;height:760px;background:#8F2017;opacity:.5'),
       $('div', 'blob', root, 'width:520px;height:520px;background:#FFB067;opacity:.22'),
     ];
     $('div', 'grid', root); $('div', 'noise', root);
@@ -164,8 +164,9 @@ const BUILD = {
       if (ln.dots) dots = $('div', 'dots', root, `top:${(ln.y || 800) + (ln.size || 120) * 1.32}px;left:140px;right:140px;transform-origin:right center`);
       return { ln, row, ws, dots };
     });
+    const streak = d.streak != null ? $('div', 'abs', root, `left:-200px;width:1480px;top:${d.streak}px;height:4px;border-radius:4px;background:linear-gradient(90deg,transparent,rgba(255,170,90,.0) 10%,#FFE2C4 50%,rgba(255,140,50,.0) 90%,transparent);box-shadow:0 0 24px 6px rgba(255,120,30,.55)`) : null;
     const sparks = (d.sparks || []).map(s => $('div', 'spark', root, `left:${s[0]}px;top:${s[1]}px;width:${s[2] || 60}px;height:${s[2] || 60}px`, SPARK));
-    return { root, blobs, lines, sparks };
+    return { root, blobs, lines, sparks, streak };
   },
   chips(d) {
     const root = $('div', 'L', OV, 'display:none');
@@ -282,6 +283,7 @@ const UPD = {
       });
       if (L.dots) { const p = eio((t - at - (ln.dotsAt || .3)) / .6); L.dots.style.transform = `scaleX(${p})`; L.dots.style.opacity = (1 - gone) * (p > 0 ? 1 : 0); }
     });
+    if (o.streak) { const q = (t - d.t0 - (d.streakAt || .1)) / .7; o.streak.style.transform = `translateX(${lerp(-1300, 1300, eio(q))}px) scaleX(${.4 + Math.sin(clamp(q) * Math.PI)})`; o.streak.style.opacity = q > 0 && q < 1 ? Math.sin(q * Math.PI) : 0; }
     o.sparks.forEach((s, k) => { const x = t - d.t0 - (d.sparks[k][3] || .2); const p = back(x / .5); s.style.opacity = clamp(x / .1); s.style.transform = `scale(${clamp(p, 0, 2)}) rotate(${(t - d.t0) * 60 + k * 40}deg)`; });
   },
   chips(o, t) {
