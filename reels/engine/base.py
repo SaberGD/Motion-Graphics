@@ -100,7 +100,11 @@ def pro_grade(img, a):
         inv = np.clip(1 - ad * 1.5, 0, 1)
         num = cv2.GaussianBlur(x * inv[..., None], (0, 0), sig)
         den = cv2.GaussianBlur(inv, (0, 0), sig)[..., None]
-        bg = np.where(den > .02, num / np.maximum(den, 1e-3), x)
+        # where the speaker hides the room, fill from a much wider blur instead of the original (bright) pixel
+        num2 = cv2.GaussianBlur(x * inv[..., None], (0, 0), sig * 6); den2 = cv2.GaussianBlur(inv, (0, 0), sig * 6)[..., None]
+        fill = num2 / np.maximum(den2, 1e-4)
+        w = np.clip(den / .08, 0, 1)
+        bg = (num / np.maximum(den, 1e-4)) * w + fill * (1 - w)
     else:
         bg = x
     bg = bg * G.get('bg_gain', .80)
