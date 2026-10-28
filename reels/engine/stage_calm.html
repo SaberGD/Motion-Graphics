@@ -61,11 +61,11 @@ window.init = (spec, words) => {
   CH.forEach(c => {
     c.el = $('div', 'c', cap, 'opacity:0');
     c.ws.forEach(w => {
-      let txt = cfg.fix && cfg.fix[w.i] != null ? cfg.fix[w.i] : w.w; if (txt === '') return;
-      txt = txt.replace(/[،,.؛]+$/, '');
+      const fixed = cfg.fix && cfg.fix[w.i] != null; let txt = fixed ? cfg.fix[w.i] : w.w; if (txt === '') return;
+      if (!fixed) txt = txt.replace(/[،,.؛]+$/, '');
       const last = c.el.lastElementChild;
-      if (isLat(txt) && last && last.classList.contains('lat')) { last.textContent += ' ' + txt; if (hl.has(w.i)) last.classList.add('hl'); return; }
-      $('span', 'w' + (hl.has(w.i) ? ' hl' : '') + (isLat(txt) ? ' lat' : ''), c.el, '', txt);
+      if (isLat(txt) && /[A-Za-z]/.test(txt) && last && last.classList.contains('lat')) { last.textContent += ' ' + txt; if (hl.has(w.i)) last.classList.add('hl'); return; }
+      $('span', 'w' + (hl.has(w.i) ? ' hl' : '') + (isLat(txt) && /[A-Za-z]/.test(txt) ? ' lat' : ''), c.el, '', txt);
     });
   });
   if (spec.logo !== false) { const l = $('img', '', FR); l.id = 'logo'; l.src = '../../project/brand/saber-group-logo.png'; }
@@ -81,6 +81,10 @@ const BUILD = {
       const e = $('div', 'w', root, `font-family:${d.font || 'Bebas'};font-weight:${d.w || 400};font-size:${d.size}px;line-height:1;color:${d.color || 'var(--cream)'};letter-spacing:${d.ls ?? 2}px;opacity:0`, txt);
       e._t = t; return e;
     });
+    root.style.display = '';
+    words.forEach(e => { let fs = d.size; const span = $('span', '', e, 'display:inline-block', e.innerHTML); e.innerHTML = ''; e.appendChild(span);
+      while (span.getBoundingClientRect().width > (d.maxW || 960) && fs > 60) { fs -= 8; e.style.fontSize = fs + 'px'; } });
+    root.style.display = 'none';
     const sub = d.sub ? $('div', 'sub', root, `top:${d.size * .92 + (d.sub.dy || 0)}px;font-size:${d.sub.size || 64}px;color:${d.sub.color || 'var(--cream)'};opacity:0`, d.sub.text) : null;
     return { root, words, sub };
   },

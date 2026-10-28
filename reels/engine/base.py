@@ -94,7 +94,10 @@ def pro_grade(img, a):
     sig = G.get('bg_blur', 5.0)
     a2 = a3[..., 0]
     if sig > 0:
-        inv = 1 - a2
+        # gather background only from pixels clearly outside the speaker (dilated matte) so the bright shirt
+        # never bleeds into the blurred room as a halo
+        ad = cv2.dilate(a2, np.ones((9, 9), np.uint8), iterations=2)
+        inv = np.clip(1 - ad * 1.5, 0, 1)
         num = cv2.GaussianBlur(x * inv[..., None], (0, 0), sig)
         den = cv2.GaussianBlur(inv, (0, 0), sig)[..., None]
         bg = np.where(den > .02, num / np.maximum(den, 1e-3), x)
