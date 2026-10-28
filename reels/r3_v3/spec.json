@@ -313,5 +313,6 @@
   "gain": -21,
   "duck": -9,
   "end_fade": 1.6
- }
+ },
+ "sharpen": 0.15
 }

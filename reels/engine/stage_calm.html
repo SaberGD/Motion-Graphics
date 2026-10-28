@@ -171,9 +171,9 @@ window.render = t => {
   const endT = ELS.find(e => e.d.type === 'end');
   const inEnd = endT && t >= endT.d.t0;
   CH.forEach(c => {
-    const vis = !inEnd && t >= c.t0 && t < c.t1 + .12;
+    const vis = !inEnd && t >= c.t0 && t < c.t1;
     if (!vis) { c.el.style.opacity = 0; return; }
-    const kin = eo((t - c.t0) / .16), kout = clamp((t - c.t1) / .12);
+    const kin = eo((t - c.t0) / .14), kout = clamp((t - (c.t1 - .09)) / .09);
     c.el.style.opacity = kin * (1 - kout);
     c.el.style.transform = `translateY(${lerp(14, 0, kin)}px)`;
   });

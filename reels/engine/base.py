@@ -209,8 +209,9 @@ for i in range(N):
     M = np.float32([[s, 0, -x0 * s], [0, s, -y0 * s]])
     img = cv2.warpAffine(frame, M, (OW, OH), flags=cv2.INTER_CUBIC if s > 1 else cv2.INTER_AREA)
     if s > 1.15:  # recover a little crispness on upscaled punch-ins
-        bl = cv2.GaussianBlur(img, (0, 0), 1.2)
-        img = cv2.addWeighted(img, 1.35, bl, -.35, 0)
+        amt = spec.get('sharpen', .35)  # gentle on big upscales: strong unsharp rings on shirt/background edges
+        bl = cv2.GaussianBlur(img, (0, 0), 1.0)
+        img = cv2.addWeighted(img, 1 + amt, bl, -amt, 0)
     if acap is not None:
         MA = np.float32([[s * AK, 0, s * (AX0 - x0)], [0, s * AK, s * (AY0 - y0)]])
         al = cv2.warpAffine(aframe, MA, (OW, OH), flags=cv2.INTER_LINEAR).astype(np.float32) / 255.
