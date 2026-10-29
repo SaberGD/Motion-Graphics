@@ -24,6 +24,10 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 #cap .w.hl{color:var(--hl)}
 #cap .w.lat{font-family:Poppins;font-weight:600;font-size:.84em;direction:ltr;unicode-bidi:isolate}
 #logo{position:absolute;top:110px;left:64px;width:250px;opacity:.85}
+.depth s{text-decoration:none;background:linear-gradient(var(--org),var(--org)) no-repeat 0 58%/100% .09em}
+.illab{position:absolute;width:200px;text-align:center;font-family:Alex;font-weight:600;font-size:40px;color:rgba(244,238,232,.8);direction:rtl}
+.illtitle{position:absolute;left:0;right:0;text-align:center;font-family:Alex;font-weight:700;font-size:56px;color:rgba(244,238,232,.9);direction:rtl}
+.vfc{position:absolute;width:64px;height:64px;border-color:rgba(255,255,255,.75);border-style:solid}
 .end{position:absolute;left:0;right:0;text-align:center}
 .end .lock{display:flex;justify-content:center;align-items:center;gap:36px}
 .end .sep{width:2px;height:110px;background:rgba(255,255,255,.45)}
@@ -46,6 +50,12 @@ const lerp = (a, b, k) => a + (b - a) * k;
 const isLat = s => /^[A-Za-z0-9%+.\-#@$&!?:/']+$/.test(s.replace(/[«»"،,.!?؟]/g, ''));
 const CAR = c => `<svg viewBox="0 0 120 56" width="120" height="56"><path d="M8 40 C8 30 14 28 22 27 L36 13 C40 9 44 8 50 8 L78 8 C85 8 89 10 93 15 L104 27 C112 28 116 31 116 38 L116 42 C116 45 114 46 111 46 L9 46 C8 46 8 44 8 40Z" fill="${c}"/><circle cx="32" cy="46" r="9" fill="#1a1512"/><circle cx="92" cy="46" r="9" fill="#1a1512"/></svg>`;
 const SOFT = 'rgba(244,238,232,.34)', HERO = '#FF8A1F';
+const CUPF = (hi, cape) => { const W = 150, ryT = hi ? 42 : 9, H = hi ? 110 : 240, bw = hi ? .78 : .9, y0 = 290 - H - 20, y1 = 290 - 20, xL = 200 - W / 2, xR = 200 + W / 2, bL = 200 - W * bw / 2, bR = 200 + W * bw / 2;
+  return `<svg viewBox="0 0 400 300" width="400" height="300">${cape ? `<path d="M${xL + 8} ${y0 + 16} Q200 ${y0 + 36} ${xR - 8} ${y0 + 16} L${xR + 36} ${y1 + 6} Q200 ${y1 - 18} ${xL - 36} ${y1 + 6} Z" fill="#D83B25"/>` : ''}
+  <path d="M${xL} ${y0} L${bL} ${y1} A${W * bw / 2} ${hi ? 26 : 20} 0 0 0 ${bR} ${y1} L${xR} ${y0} Z" fill="#E9E2DC"/>
+  <ellipse cx="200" cy="${y0}" rx="${W / 2}" ry="${ryT}" fill="#3a2a22" stroke="#E9E2DC" stroke-width="4"/>
+  <path d="M${xR - 4} ${y0 + H * .25} q${hi ? 38 : 50} ${H * .1} 0 ${H * .45}" fill="none" stroke="#E9E2DC" stroke-width="${hi ? 12 : 14}" stroke-linecap="round"/>
+  ${cape ? `<text x="200" y="${y0 + H * .62}" text-anchor="middle" font-family="Bebas" font-size="${hi ? 44 : 64}" fill="#D83B25">S</text>` : ''}</svg>`; };
 let SPEC, CH = [], ELS = [], END = null;
 
 function chunks(words, cfg) {
@@ -78,7 +88,7 @@ window.init = (spec, words) => {
 const BUILD = {
   // large type standing in the room behind the speaker; `steps` swap the word in place
   depth(d) {
-    const root = $('div', 'depth', BEH, `top:${d.y}px;height:${d.size}px;display:none`);
+    const root = $('div', 'depth', BEH, `top:${d.y}px;height:${d.size}px;display:none;${d.dx ? `margin-left:${d.dx * 2}px` : ''}`);
     const words = (d.steps || [[d.t0, d.text]]).map(([t, txt]) => {
       const e = $('div', 'w', root, `font-family:${d.font || 'Bebas'};font-weight:${d.w || 400};font-size:${d.size}px;line-height:1;color:${d.color || 'var(--cream)'};letter-spacing:${d.ls ?? 2}px;opacity:0`, txt);
       e._t = t; return e;
@@ -99,11 +109,28 @@ const BUILD = {
         e._hero = hero; e._r = Math.hypot(c - 4, r - 1); its.push(e); }
     } else if (d.mode === 'cars') {
       for (let k = 0; k < 8; k++) { const hero = k === 4; const e = $('div', '', root, `position:absolute;left:0;top:${cy - 28}px;width:120px;height:56px`, CAR(hero ? HERO : SOFT)); e._hero = hero; e._k = k; its.push(e); }
+    } else if (d.mode === 'swatch') {
+      if (d.title) root._title = $('div', 'illtitle', root, `top:${cy - 170}px`, d.title);
+      const n = d.sw.length, gap = Math.min(210, 820 / n);
+      d.sw.forEach((w, k) => { const x = 540 + (k - (n - 1) / 2) * gap;
+        const e = $('div', '', root, `position:absolute;left:${x - 56}px;top:${cy - 56}px;width:112px;height:112px;border-radius:50%;background:${w[1]}`); e._t = w[0]; e._sw = 1; its.push(e);
+        if (w[2]) { const l = $('div', 'illab', root, `left:${x - 100}px;top:${cy + 72}px`, w[2]); l._t = w[0]; its.push(l); } });
+    } else if (d.mode === 'cup') {
+      (d.cups || []).forEach((c, k, arr) => { const x = arr.length === 1 ? 540 : [330, 750][k];
+        const e = $('div', '', root, `position:absolute;left:${x - 200}px;top:${cy - 150}px;width:400px;height:300px;transform-origin:50% 80%`); e._hi = c[0] === 'high'; e._cape = c[1]; e._st = -1; its.push(e);
+        if (c[2]) { const l = $('div', 'illab', root, `left:${x - 100}px;top:${cy + 150}px;width:200px`, c[2]); l._t = d.t0 + .3; its.push(l); } });
     } else if (d.mode === 'morph') {
       for (let k = 0; k < 5; k++) { const hero = k === 2; const e = $('div', '', root, `position:absolute;left:${540 + (k - 2) * 150 - 40}px;top:${cy - 40}px;width:80px;height:80px;border-radius:12px;background:${SOFT}`); e._hero = hero; e._k = k; its.push(e); }
       root._line = $('div', '', root, `position:absolute;left:170px;right:170px;top:${cy + 62}px;border-top:3px dashed rgba(244,238,232,.25)`);
     }
     return { root, its };
+  },
+  vf(d) {
+    const root = $('div', 'L', FR, 'display:none'); const m = d.inset || [230, 110, 420, 110];
+    [['top', 'left', '3px 0 0 3px'], ['top', 'right', '3px 3px 0 0'], ['bottom', 'left', '0 0 3px 3px'], ['bottom', 'right', '0 3px 3px 0']].forEach(([v, h, bw]) =>
+      $('div', 'vfc', root, `${v}:${v === 'top' ? m[0] : m[2]}px;${h}:${h === 'left' ? m[3] : m[1]}px;border-width:${bw}`));
+    root._rec = $('div', '', root, `position:absolute;top:${m[0] + 14}px;right:${m[1] + 84}px;font-family:Poppins;font-weight:600;font-size:26px;letter-spacing:3px;color:rgba(255,255,255,.8)`, '<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#D83B25;margin-right:10px"></span>REC');
+    return { root };
   },
   end(d) {
     const root = $('div', 'L', FR, 'display:none');
@@ -151,6 +178,17 @@ const UPD = {
       const sp = 70; let px = e._k * 150 - 60 - sp * x; px = ((px % 1200) + 1200) % 1200 - 120; let py = 0, sx = 1;
       if (e._hero && t > f) { const k = eo((t - f) / .7); sx = lerp(1, -1, eo((t - f) / .3)); py = -100 * k; px = (((e._k * 150 - 60 - sp * (f - d.t0)) % 1200) + 1200) % 1200 - 120 + 140 * eo((t - f) / 1.4); }
       e.style.transform = `translate(${px}px,${py}px) scaleX(${sx})`; e.style.opacity = e._hero ? 1 : lerp(1, .55, eo((t - f) / .5)); });
+    if (d.mode === 'swatch') {
+      o.its.forEach(e => { const q = t - e._t; if (e._sw) { e.style.transform = `scale(${clamp(back(q / .5), 0, 1.2)})`; e.style.opacity = clamp(q / .15) * (d.fade != null && t > d.fade ? lerp(1, .25, eo((t - d.fade) / .5)) : 1); }
+        else { e.style.opacity = eo(q / .4); e.style.transform = `translateY(${lerp(14, 0, eo(q / .4))}px)`; } });
+      if (o.root._title) o.root._title.style.opacity = eo(x / .5);
+    }
+    if (d.mode === 'cup') o.its.forEach(e => {
+      if (e._hi === undefined) { const q = t - e._t; e.style.opacity = eo(q / .4); return; }
+      const st = e._cape && t >= e._cape ? 1 : 0; if (st !== e._st) { e.innerHTML = CUPF(e._hi, st); e._st = st; }
+      const pop = e._cape && t > e._cape ? 1 + .08 * Math.sin(clamp((t - e._cape) / .4) * Math.PI) : 1;
+      e.style.transform = `scale(${clamp(back(x / .55), 0, 1.15) * (d.scale || 1) * pop})`;
+      e.style.opacity = e._hi ? .9 : 1; e.style.filter = e._hi ? 'brightness(.85)' : 'drop-shadow(0 10px 30px rgba(255,138,31,.25))'; });
     if (d.mode === 'morph') { const st = d.steps || [], k = i => st[i] != null ? eo((t - st[i]) / .45) : 0, kb = i => st[i] != null ? clamp(back((t - st[i]) / .55), 0, 1.25) : 0;
       o.its.forEach(e => { const ent = clamp(back((x - Math.abs(e._k - 2) * .08) / .5), 0, 1.2);
         if (!e._hero) { e.style.transform = `scale(${ent})`; e.style.opacity = lerp(1, .6, k(0)); return; }
@@ -158,6 +196,11 @@ const UPD = {
         e.style.transform = `translateY(${-110 * kb(3)}px) scale(${ent * lerp(1, 1.5, kb(1))})`;
         e.style.borderRadius = k(2) > .5 ? '50%' : `${lerp(12, 30, k(2) * 2)}px`; e.style.boxShadow = k(0) > .02 ? '0 8px 26px rgba(255,138,31,.35)' : ''; });
       o.root._line.style.opacity = st[3] != null ? lerp(.6, 1, k(3)) : .6; }
+  },
+  vf(o, t) {
+    const d = o.d, on = t >= d.t0 && t <= d.t1 + .3; o.root.style.display = on ? '' : 'none'; if (!on) return;
+    const k = eo((t - d.t0) / .4) * (1 - clamp((t - d.t1) / .3)); o.root.style.opacity = k; o.root.style.transform = `scale(${lerp(1.05, 1, k)})`;
+    o.root._rec.firstChild.style.opacity = Math.floor(t * 2) % 2 ? .3 : 1;
   },
   end(o, t) {
     const d = o.d, x = t - d.t0; o.root.style.display = x >= 0 ? '' : 'none'; if (x < 0) return;
