@@ -118,7 +118,7 @@ const BUILD = {
     } else if (d.mode === 'cup') {
       (d.cups || []).forEach((c, k, arr) => { const x = arr.length === 1 ? 540 : [330, 750][k];
         const e = $('div', '', root, `position:absolute;left:${x - 200}px;top:${cy - 150}px;width:400px;height:300px;transform-origin:50% 80%`); e._hi = c[0] === 'high'; e._cape = c[1]; e._st = -1; its.push(e);
-        if (c[2]) { const l = $('div', 'illab', root, `left:${x - 100}px;top:${cy + 150}px;width:200px`, c[2]); l._t = d.t0 + .3; its.push(l); } });
+        if (c[2]) { const l = $('div', 'illab', root, `left:${x - 180}px;top:${cy + 170}px;width:360px;font-size:44px`, c[2]); l._t = d.t0 + .3; its.push(l); } });
     } else if (d.mode === 'morph') {
       for (let k = 0; k < 5; k++) { const hero = k === 2; const e = $('div', '', root, `position:absolute;left:${540 + (k - 2) * 150 - 40}px;top:${cy - 40}px;width:80px;height:80px;border-radius:12px;background:${SOFT}`); e._hero = hero; e._k = k; its.push(e); }
       root._line = $('div', '', root, `position:absolute;left:170px;right:170px;top:${cy + 62}px;border-top:3px dashed rgba(244,238,232,.25)`);
