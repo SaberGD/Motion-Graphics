@@ -231,6 +231,15 @@ for i in range(N):
         img = pro_grade(img, al)
         aout.stdin.write((al * 255).astype(np.uint8).tobytes())
         img = apply_fx(img, t)
+    elif GRADE == 'spot':
+        # no matte: a soft, wide 'spotlight' that follows the face lifts the speaker gently out of the room
+        # (very feathered, never touches hair edges), then the same filmic grade as 'pro' without background blur
+        fxo = (sx[i] * SW - x0) * s; fyo = (sy[i] * SH - y0) * s
+        sm = np.zeros((OH // 8, OW // 8), np.float32)
+        cv2.ellipse(sm, (int(fxo / 8), int((fyo + G.get('spot_dy', 420)) / 8)), (int(G.get('spot_rx', 470) / 8), int(G.get('spot_ry', 980) / 8)), 0, 0, 360, 1, -1)
+        sm = cv2.GaussianBlur(sm, (0, 0), G.get('spot_feather', 22))
+        al = cv2.resize(sm, (OW, OH), interpolation=cv2.INTER_LINEAR)
+        img = apply_fx(pro_grade(img, al), t)
     else:
         img = apply_fx(grade(img), t)
     ff.stdin.write(img.tobytes())

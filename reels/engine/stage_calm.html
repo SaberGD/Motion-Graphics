@@ -23,7 +23,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 #cap .w{white-space:nowrap;text-shadow:0 2px 3px rgba(0,0,0,.35),0 4px 18px rgba(0,0,0,.55)}
 #cap .w.hl{color:var(--hl)}
 #cap .w.lat{font-family:Poppins;font-weight:600;font-size:.84em;direction:ltr;unicode-bidi:isolate}
-#logo{position:absolute;top:110px;left:64px;width:250px;opacity:.85}
+#logo{position:absolute;top:120px;left:70px;width:112px;opacity:.92;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
 .depth s{text-decoration:line-through;text-decoration-color:var(--org);text-decoration-thickness:.09em}
 .illab{position:absolute;width:200px;text-align:center;font-family:Alex;font-weight:600;font-size:40px;color:rgba(244,238,232,.8);direction:rtl}
 .illtitle{position:absolute;left:0;right:0;text-align:center;font-family:Alex;font-weight:700;font-size:56px;color:rgba(244,238,232,.9);direction:rtl}
@@ -38,11 +38,12 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
   <img id="bg">
   <div id="behind" class="L"></div>
   <div id="fg"></div>
+  <div id="ins" class="L"></div>
   <div id="front" class="L"></div>
 </div>
 <script>
 const $ = (t, cls, parent, css, html) => { const e = document.createElement(t); if (cls) e.className = cls; if (css) e.style.cssText = css; if (html != null) e.innerHTML = html; parent.appendChild(e); return e; };
-const BEH = document.getElementById('behind'), FR = document.getElementById('front'), BG = document.getElementById('bg'), FG = document.getElementById('fg');
+const INS = document.getElementById('ins'), BEH = document.getElementById('behind'), FR = document.getElementById('front'), BG = document.getElementById('bg'), FG = document.getElementById('fg');
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const eo = x => 1 - Math.pow(1 - clamp(x), 3);
 const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
@@ -80,12 +81,29 @@ window.init = (spec, words) => {
       $('span', 'w' + (hl.has(w.i) ? ' hl' : '') + (isLat(txt) && /[A-Za-z]/.test(txt) ? ' lat' : ''), c.el, '', txt);
     });
   });
-  if (spec.logo !== false) { const l = $('img', '', FR); l.id = 'logo'; l.src = '../../project/brand/saber-group-logo.png'; }
+  if (spec.logo !== false) { const l = $('img', '', FR); l.id = 'logo'; l.src = spec.logoSrc || '../assets/brand/saber-logo-trim.png'; }
   ELS = (spec.els || []).map(d => Object.assign(BUILD[d.type](d), { d }));
   return CH.map(c => c.t0.toFixed(2) + ' ' + c.ws.map(w => (cfg.fix && cfg.fix[w.i] != null ? cfg.fix[w.i] : w.w)).join(' '));
 };
 
 const BUILD = {
+  // full-screen still (optionally bg/fg layers for parallax): wipes in, slow push, cuts out on the beat
+  insert(d) {
+    const root = $('div', 'L', INS, 'display:none;overflow:hidden');
+    const mk = src => $('img', '', root, 'position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover;will-change:transform', null);
+    const bg = mk(); bg.src = '../assets/' + (d.bg || d.src);
+    const fg = d.fg ? mk() : null; if (fg) fg.src = '../assets/' + d.fg;
+    const grp = d.objsFollow ? $('div', '', root, 'position:absolute;inset:0;will-change:transform') : root;
+    const objs = (d.objs || []).map(o => { const e = $('img', '', grp, `position:absolute;left:${o.x - o.w / 2}px;top:${o.y - o.w / 2}px;width:${o.w}px;will-change:transform;opacity:0`); e.src = '../assets/' + o.src; e._o = o; return e; });
+    const title = d.title ? $('div', '', root, `position:absolute;left:0;right:0;top:${d.title.y}px;text-align:center;font-family:Alex;font-weight:800;font-size:${d.title.size || 88}px;line-height:1.25;color:#F4EEE8;direction:rtl;text-shadow:0 6px 24px rgba(0,0,0,.5);opacity:0`, d.title.html) : null;
+    const leak = d.leak ? $('img', '', INS, 'position:absolute;inset:0;width:1080px;height:1920px;mix-blend-mode:screen;display:none') : null; if (leak) leak.src = '../assets/' + d.leak;
+    return { root, bg, fg, objs, leak, title, grp };
+  },
+  // a 3D object floating over the video (top area), gentle bob
+  obj(d) {
+    const e = $('img', '', INS, `position:absolute;left:${d.x - d.w / 2}px;top:${d.y - d.w / 2}px;width:${d.w}px;display:none;will-change:transform;filter:drop-shadow(0 18px 30px rgba(0,0,0,.45))`);
+    e.src = '../assets/' + d.src; return { e };
+  },
   // large type standing in the room behind the speaker; `steps` swap the word in place
   depth(d) {
     const root = $('div', 'depth', BEH, `top:${d.y}px;height:${d.size}px;display:none;${d.dx ? `margin-left:${d.dx * 2}px` : ''}`);
@@ -136,9 +154,9 @@ const BUILD = {
     const root = $('div', 'L', FR, 'display:none');
     const top = $('div', 'end', root, `top:${d.y || 230}px`);
     const lock = $('div', 'lock', top);
-    const sg = $('img', '', lock, 'width:330px'); sg.src = '../../project/brand/saber-group-logo.png';
+    const sg = $('img', '', lock, 'width:190px;border-radius:10px'); sg.src = '../assets/brand/saber-logo-trim.png';
     const sep = $('div', 'sep', lock);
-    const mu = $('img', '', lock, 'width:250px'); mu.src = '../../project/brand/mushroom-logo.png';
+    const mu = $('img', '', lock, 'width:330px'); mu.src = '../assets/brand/mushroom-logo-trim.png';
     const cta = $('div', 'end', root, `top:${d.ctaY || 1300}px`);
     const line = $('div', 'cta', cta, 'font-size:60px', d.cta || '');
     const pill = d.pill ? $('div', 'pill', cta, '', d.pill) : null;
@@ -166,6 +184,36 @@ const UPD = {
       w.style.filter = `blur(${(k === 0 ? 0 : 8 * (1 - eo(a))) + 6 * b}px)`;
     });
     if (o.sub) { const q = clamp((t - d.t0 - .2) / .4); o.sub.style.opacity = eo(q); }
+  },
+  insert(o, t) {
+    const d = o.d, on = t >= d.t0 && t < d.t1; o.root.style.display = on ? '' : 'none';
+    const win = d.win ?? .3, x = t - d.t0;
+    if (o.leak) { const q = (t - d.t0 + .12) / .7; o.leak.style.display = q > 0 && q < 1 ? '' : 'none'; o.leak.style.opacity = (d.leakOp ?? .22) * Math.sin(clamp(q) * Math.PI); }
+    if (!on) return;
+    const k = eo(x / win);
+    const dir = d.wipe || 'up';
+    // rounded-rect reveal from one edge; out is a straight cut unless wout is given
+    const ko = d.wout ? clamp((d.t1 - t) / d.wout) : 1;
+    const r = Math.min(k, eo(ko));
+    o.root.style.clipPath = dir === 'up' ? `inset(${(1 - r) * 100}% 0 0 0 round ${40 * (1 - r)}px)` : dir === 'left' ? `inset(0 0 0 ${(1 - r) * 100}% round ${40 * (1 - r)}px)` : `inset(0 ${(1 - r) * 100}% 0 0 round ${40 * (1 - r)}px)`;
+    const p = clamp(x / (d.t1 - d.t0)), z0 = d.push ? d.push[0] : 1.04, z1 = d.push ? d.push[1] : 1.1;
+    const z = lerp(z0, z1, eio(p) * .6 + p * .4);
+    const fo = d.focus || [540, 960];
+    o.bg.style.transformOrigin = o.fg ? '50% 50%' : `${fo[0]}px ${fo[1]}px`;
+    o.bg.style.transform = `scale(${z}) translateY(${lerp(10, -10, p)}px)`;
+    if (d.objsFollow) { o.grp.style.transformOrigin = o.bg.style.transformOrigin; o.grp.style.transform = o.bg.style.transform; }
+    if (o.fg) { o.fg.style.transformOrigin = `${fo[0]}px ${fo[1]}px`; o.fg.style.transform = `scale(${z * 1.03}) translateY(${lerp(22, -22, p)}px)`; }
+    if (o.title) { const q = t - (d.title.at ?? d.t0 + .35); o.title.style.opacity = eo(q / .4); o.title.style.transform = `translateY(${lerp(24, 0, eo(q / .45))}px)`; }
+    o.objs.forEach(e => { const q = t - (e._o.at ?? d.t0 + .2); e.style.opacity = clamp(q / .25); const sc = clamp(1 + 2.6 * Math.pow(clamp(q / .45) - 1, 3) + 1.6 * Math.pow(clamp(q / .45) - 1, 2), 0, 1.2);
+      e.style.transform = `translateY(${-8 * Math.sin(t * 1.6)}px) scale(${sc}) rotate(${(e._o.rot || 0) + 1.5 * Math.sin(t * 1.1)}deg)`; });
+  },
+  obj(o, t) {
+    const d = o.d, on = t >= d.t0 && t <= d.t1 + .35; o.e.style.display = on ? '' : 'none'; if (!on) return;
+    const x = t - d.t0, q = clamp(x / .5), kout = clamp((t - d.t1) / .35);
+    const pop = clamp(1 + 2.6 * Math.pow(q - 1, 3) + 1.6 * Math.pow(q - 1, 2), 0, 1.15);
+    o.e.style.opacity = clamp(x / .2) * (1 - kout);
+    o.e.style.transform = `translateY(${lerp(30, 0, eo(q)) - 10 * Math.sin(t * 1.5 + (d.ph || 0))}px) scale(${pop * (1 - .15 * kout)}) rotate(${(d.rot || 0) + 2 * Math.sin(t * 1.1 + (d.ph || 0))}deg)`;
+    o.e.style.filter = `drop-shadow(0 18px 30px rgba(0,0,0,.45)) blur(${6 * kout}px)` + (d.dim != null && t > d.dim ? ` saturate(${lerp(1, .15, eo((t - d.dim) / .5))}) brightness(${lerp(1, .6, eo((t - d.dim) / .5))})` : '');
   },
   illus(o, t) {
     const d = o.d, on = t >= d.t0 && t <= d.t1 + .45; o.root.style.display = on ? '' : 'none'; if (!on) return;
@@ -227,6 +275,7 @@ window.render = t => {
 };
 // background frame + its matte; the fg layer re-draws the speaker over the 'behind' text
 window.setBg = (src, alpha) => new Promise(r => {
+  if (!alpha) { FG.style.display = 'none'; const im = new Image(); im.onload = im.onerror = () => { BG.src = src; r(); }; im.src = src; return; }
   const im = new Image(), am = new Image(); let n = 0; const done = () => { if (++n === 2) { BG.src = src; FG.style.backgroundImage = `url(${src})`; FG.style.webkitMaskImage = FG.style.maskImage = `url(${alpha})`; r(); } };
   im.onload = im.onerror = done; am.onload = am.onerror = done; im.src = src; am.src = alpha;
 });

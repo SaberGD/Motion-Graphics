@@ -1,0 +1,441 @@
+{
+ "title": "سيكولوجية الألوان (v4)",
+ "stage": "stage_calm",
+ "src": "../../raw/4.mp4",
+ "words": "words.json",
+ "face": "face.json",
+ "grade": "spot",
+ "look": {
+  "bg_blur": 0,
+  "bg_gain": 0.86,
+  "bg_sat": 0.94,
+  "subj_gamma": 0.92,
+  "subj_gain": 1.03,
+  "subj_sat": 1.02,
+  "edge_clean": 0
+ },
+ "sharpen": 0.1,
+ "face_y": 0.3,
+ "keep": [
+  [
+   0.15,
+   34.15
+  ]
+ ],
+ "outro": {
+  "dur": 2.6,
+  "freeze": true
+ },
+ "cam": [
+  [
+   0.0,
+   1.2
+  ],
+  [
+   6.75,
+   1.26
+  ],
+  [
+   6.8,
+   1.32
+  ],
+  [
+   13.05,
+   1.36
+  ],
+  [
+   13.85,
+   1.36
+  ],
+  [
+   13.9,
+   1.22
+  ],
+  [
+   18.35,
+   1.26
+  ],
+  [
+   19.45,
+   1.26
+  ],
+  [
+   19.5,
+   1.3
+  ],
+  [
+   27.65,
+   1.36
+  ],
+  [
+   29.15,
+   1.36
+  ],
+  [
+   29.2,
+   1.22
+  ],
+  [
+   34.0,
+   1.26
+  ],
+  [
+   36.6,
+   1.3
+  ]
+ ],
+ "punch": [],
+ "fx": [],
+ "cap": {
+  "y": 1370,
+  "starts": [
+   0,
+   3,
+   6,
+   9,
+   11,
+   14,
+   17,
+   20,
+   22,
+   25,
+   26,
+   27,
+   29,
+   31,
+   34,
+   36,
+   38,
+   40,
+   43,
+   45,
+   47,
+   49,
+   50,
+   51,
+   55,
+   57,
+   60,
+   62,
+   65,
+   67,
+   70,
+   71,
+   74,
+   77,
+   79,
+   81,
+   84,
+   86,
+   89,
+   91,
+   94,
+   96,
+   99,
+   101
+  ],
+  "hl": [
+   2,
+   15,
+   23,
+   30,
+   33,
+   37,
+   44,
+   48,
+   49,
+   50,
+   54,
+   60,
+   73,
+   85,
+   89,
+   98
+  ],
+  "fix": {
+   "16": "جداً",
+   "30": "الأزرق",
+   "33": "أبيض",
+   "34": "لإن",
+   "35": "ده هيدّي",
+   "48": "أحمر",
+   "60": "وهتجوّعني",
+   "63": "الشاطر",
+   "70": "بيقول"
+  }
+ },
+ "els": [
+  {
+   "type": "obj",
+   "t0": 0.15,
+   "t1": 2.6,
+   "src": "r4/swatch_fan_green.png",
+   "x": 540,
+   "y": 400,
+   "w": 600,
+   "dim": 1.97
+  },
+  {
+   "type": "obj",
+   "t0": 3.45,
+   "t1": 5.8,
+   "src": "r4/swatch_card_green.png",
+   "x": 540,
+   "y": 410,
+   "w": 440,
+   "rot": -6
+  },
+  {
+   "type": "insert",
+   "t0": 5.95,
+   "t1": 7.85,
+   "bg": "r4/medical_poster_bg.png",
+   "fg": "r4/medical_poster_poster.png",
+   "wipe": "up",
+   "leak": "common/light_leak_1.png",
+   "push": [
+    1.03,
+    1.09
+   ],
+   "focus": [
+    540,
+    900
+   ]
+  },
+  {
+   "type": "obj",
+   "t0": 7.9,
+   "t1": 8.7,
+   "src": "r4/medical_props.png",
+   "x": 540,
+   "y": 400,
+   "w": 520
+  },
+  {
+   "type": "obj",
+   "t0": 8.79,
+   "t1": 12.75,
+   "src": "r4/swatch_card_blue.png",
+   "x": 390,
+   "y": 420,
+   "w": 360,
+   "rot": -5
+  },
+  {
+   "type": "obj",
+   "t0": 9.83,
+   "t1": 12.75,
+   "src": "r4/swatch_card_white.png",
+   "x": 690,
+   "y": 420,
+   "w": 360,
+   "rot": 5,
+   "ph": 1.2
+  },
+  {
+   "type": "insert",
+   "t0": 13.15,
+   "t1": 14.8,
+   "bg": "r4/burger_warm_bg.png",
+   "fg": "r4/burger_warm_burger.png",
+   "wipe": "left",
+   "leak": "common/light_leak_2.png",
+   "push": [
+    1.03,
+    1.1
+   ],
+   "focus": [
+    540,
+    950
+   ]
+  },
+  {
+   "type": "obj",
+   "t0": 14.89,
+   "t1": 18.4,
+   "src": "r4/swatch_card_red.png",
+   "x": 270,
+   "y": 440,
+   "w": 300,
+   "rot": -6
+  },
+  {
+   "type": "obj",
+   "t0": 15.37,
+   "t1": 18.4,
+   "src": "r4/swatch_card_yellow.png",
+   "x": 540,
+   "y": 420,
+   "w": 300,
+   "ph": 1.0
+  },
+  {
+   "type": "obj",
+   "t0": 15.99,
+   "t1": 18.4,
+   "src": "r4/swatch_card_orange.png",
+   "x": 810,
+   "y": 440,
+   "w": 300,
+   "rot": 6,
+   "ph": 2.0
+  },
+  {
+   "type": "depth",
+   "t0": 17.21,
+   "t1": 18.4,
+   "y": 175,
+   "size": 90,
+   "font": "Alex",
+   "w": 800,
+   "ls": 0,
+   "steps": [
+    [
+     17.21,
+     "ألوان <span style='color:#FF8A1F'>دافية</span>"
+    ]
+   ]
+  },
+  {
+   "type": "insert",
+   "t0": 18.45,
+   "t1": 19.18,
+   "src": "r4/burger_cold.png",
+   "wipe": "up",
+   "push": [
+    1.06,
+    1.08
+   ],
+   "focus": [
+    540,
+    950
+   ]
+  },
+  {
+   "type": "insert",
+   "t0": 19.18,
+   "t1": 20.3,
+   "bg": "r4/burger_warm_bg.png",
+   "fg": "r4/burger_warm_burger.png",
+   "win": 0.001,
+   "push": [
+    1.08,
+    1.12
+   ],
+   "focus": [
+    540,
+    950
+   ],
+   "leak": "common/light_leak_3.png",
+   "leakOp": 0.18
+  },
+  {
+   "type": "depth",
+   "t0": 22.43,
+   "t1": 24.15,
+   "y": 190,
+   "size": 220,
+   "font": "Alex",
+   "w": 800,
+   "ls": 0,
+   "steps": [
+    [
+     22.43,
+     "حلو"
+    ],
+    [
+     22.85,
+     "<s>حلو</s>"
+    ],
+    [
+     23.41,
+     "<span style='color:#FF8A1F'>مناسب</span>"
+    ]
+   ]
+  },
+  {
+   "type": "insert",
+   "t0": 27.75,
+   "t1": 30.75,
+   "bg": "common/backdrop_9x16.png",
+   "wipe": "up",
+   "leak": "common/light_leak_1.png",
+   "push": [
+    1.02,
+    1.06
+   ],
+   "objs": [
+    {
+     "src": "r4/booklet_blank.png",
+     "x": 540,
+     "y": 980,
+     "w": 900,
+     "at": 28.0
+    }
+   ],
+   "title": {
+    "html": "سيكولوجية <span style='color:#FF8A1F'>الألوان</span>",
+    "y": 330,
+    "size": 96,
+    "at": 28.25
+   }
+  },
+  {
+   "type": "end",
+   "t0": 34.0,
+   "y": 230,
+   "ctaY": 1270,
+   "cta": "ملف سيكولوجية الألوان<br><span style='color:#FF8A1F'>في أول كومنت</span>",
+   "pill": "حمّله مجاناً"
+  }
+ ],
+ "voice_af": "highpass=f=80,equalizer=f=170:t=q:w=1:g=-1,equalizer=f=320:t=q:w=1.1:g=-3,equalizer=f=3600:t=q:w=0.9:g=4,treble=g=2.5:f=9000,deesser=i=0.3,acompressor=threshold=-21dB:ratio=3:attack=6:release=120:makeup=4dB",
+ "sfx": [
+  {
+   "t": 5.85,
+   "type": "whoosh",
+   "g": -14
+  },
+  {
+   "t": 13.05,
+   "type": "whoosh",
+   "g": -14
+  },
+  {
+   "t": 18.35,
+   "type": "whoosh",
+   "g": -14
+  },
+  {
+   "t": 23.41,
+   "type": "impact",
+   "g": -14
+  },
+  {
+   "t": 27.65,
+   "type": "whoosh",
+   "g": -14
+  },
+  {
+   "t": 34.05,
+   "type": "shimmer",
+   "g": -10
+  }
+ ],
+ "music": {
+  "file": "../../project/brand/top_flow_the_funky.mp3",
+  "segs": [
+   [
+    9.35,
+    42.2
+   ],
+   [
+    53.44,
+    60.0
+   ]
+  ],
+  "gain": -21,
+  "duck": -9,
+  "end_fade": 1.6
+ }
+}

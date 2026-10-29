@@ -9,7 +9,7 @@ if [ ! -f "$B/base.mp4" ] || [ "$R/spec.json" -nt "$B/base.mp4" ] || [ "$E/base.
   rm -rf "$B/base"; mkdir -p "$B/base"; ffmpeg -v error -y -i "$B/base.mp4" -q:v 2 "$B/base/b_%05d.jpg"
   if [ -f "$B/base_alpha.mp4" ]; then rm -rf "$B/alpha"; mkdir -p "$B/alpha"; ffmpeg -v error -y -i "$B/base_alpha.mp4" -q:v 2 "$B/alpha/a_%05d.jpg"; fi
 fi
-if grep -q '"matte"' "$R/spec.json"; then export STAGE=stage_calm.html ALPHA="$B/alpha"; fi
+if grep -q '"matte"' "$R/spec.json"; then export STAGE=stage_calm.html ALPHA="$B/alpha"; elif grep -q 'stage_calm' "$R/spec.json"; then export STAGE=stage_calm.html; fi
 rm -rf "$B/pv"; TIMES=$2 node "$E/render.js" "$B/spec.json" "$B/words.json" "$B/base" "$B/pv" 4 2>&1 | grep -E "ERR" || true
 python3 - "$B" <<'PY'
 import sys, glob

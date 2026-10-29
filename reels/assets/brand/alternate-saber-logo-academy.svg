@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="saberBgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="50%" stop-color="#120101"/>
+      <stop offset="100%" stop-color="#3b0606"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#saberBgGrad)"/>
+  
+  <g fill="#FFFFFF" text-anchor="middle" font-family="'Impact', 'Arial Black', 'Oswald', sans-serif">
+    <!-- SABER -->
+    <text x="250" y="205" font-size="120" font-weight="900" letter-spacing="1">SABER</text>
+    <!-- ® -->
+    <text x="432" y="125" font-size="28" font-weight="bold" font-family="Arial, sans-serif">®</text>
+    <!-- GROUP -->
+    <text x="256" y="320" font-size="120" font-weight="900" letter-spacing="1">GROUP</text>
+  </g>
+  
+  <g fill="#FFFFFF" text-anchor="middle" font-family="'Arial', 'Helvetica', sans-serif">
+    <!-- COURSES ACADEMY -->
+    <text x="256" y="388" font-size="34" font-weight="700" letter-spacing="2.5">COURSES ACADEMY</text>
+    <!-- أكاديمية تدريب -->
+    <text x="256" y="445" font-size="38" font-weight="bold" font-family="'Cairo', 'Tahoma', 'Arial', sans-serif">أكاديمية تدريب</text>
+  </g>
+</svg>
