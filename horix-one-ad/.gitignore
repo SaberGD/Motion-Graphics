@@ -1,2 +1,6 @@
 assets/
-capture/
+capture/raw/
+capture/sheets/
+build/stills/
+build/spread.png
+build/*.mp4
