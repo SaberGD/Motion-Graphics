@@ -294,7 +294,8 @@
      17.21,
      "ألوان <span style='color:#FF8A1F'>دافية</span>"
     ]
-   ]
+   ],
+   "maxW": 700
   },
   {
    "type": "insert",
@@ -351,7 +352,8 @@
      23.41,
      "<span style='color:#FF8A1F'>مناسب</span>"
     ]
-   ]
+   ],
+   "maxW": 700
   },
   {
    "type": "insert",
