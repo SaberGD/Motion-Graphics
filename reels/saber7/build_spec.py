@@ -163,9 +163,11 @@ spec = {
     'els': ELS,
     'outro': {'dur': OUTRO},
     'sfx': SFX, 'sfx_off': ['whoosh', 'whoosh_dn', 'riser', 'glitch', 'impact', 'pop', 'pop_lo', 'click', 'tick', 'shimmer', 'shutter'],
-    # music: the track from 0 to the end, one constant low level under the voice (no ducking), short fade at the end
+    # music: the track from 0 to the end. A bit louder, follows the voice with a gentle, slow dip (no pumping), and a
+    # static EQ pocket at 1-4 kHz so the voice stays clearly on top; short fade at the end
     'music': {'file': '../../raw/s7/music/liosound_This-Funk-Groove/liosound_This-Funk-Groove_main.wav', 'at': 0,
-              'segs': [[0, SPEECH + OUTRO + .5]], 'gain': -33, 'duck': 0, 'end_fade': 1.2},
+              'segs': [[0, SPEECH + OUTRO + .5]], 'gain': -23.5, 'duck': -4, 'duck_smooth': .6, 'end_fade': 1.2,
+              'af': 'equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5'},
 }
 json.dump(spec, open(os.path.join(HERE, 'spec.json'), 'w'), ensure_ascii=False, indent=1)
 print('speech', SPEECH, 'total', round(SPEECH + OUTRO, 3), 'cuts', C1, C2, CK, C3, 'kin', ELS[3]['t0'], ELS[3]['t1'], 'ad', ad1['t0'], ad2['t0'], ad2['t1'])

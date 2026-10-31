@@ -235,7 +235,7 @@ M = spec.get('music')
 if M:
     mf = os.path.join(D, M['file']); pos = int(M.get('at', 0) * SR); XF = int(.03 * SR)
     for m0, m1 in M['segs']:
-        seg = load(mf, m0, m1 - m0 + .03)
+        seg = load(mf, m0, m1 - m0 + .03, af=M.get('af'))
         seg[:XF] *= np.linspace(0, 1, XF)[:, None]; seg[-XF:] *= np.linspace(1, 0, XF)[:, None]
         seg = seg[:max(0, N - pos)]; mus[pos:pos + len(seg)] += seg; pos += len(seg) - XF
     # beat-stops
@@ -250,7 +250,7 @@ if M:
     env = np.abs(voice); w = int(.05 * SR)
     env = np.convolve(env, np.ones(w) / w, 'same')
     speaking = (env > db(-42)).astype(np.float32)
-    k = int(.25 * SR); speaking = np.convolve(speaking, np.ones(k) / k, 'same')  # smooth attack/release
+    k = int(M.get('duck_smooth', .25) * SR); speaking = np.convolve(speaking, np.ones(k) / k, 'same')  # smooth attack/release
     duck = db(M.get('duck', -9) * np.clip(speaking * 1.6, 0, 1))
     mus *= (g * duck * db(M.get('gain', -16)))[:, None]
 

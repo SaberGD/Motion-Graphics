@@ -1006,8 +1006,10 @@
     44.747
    ]
   ],
-  "gain": -33,
-  "duck": 0,
-  "end_fade": 1.2
+  "gain": -23.5,
+  "duck": -4,
+  "duck_smooth": 0.6,
+  "end_fade": 1.2,
+  "af": "equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5"
  }
 }

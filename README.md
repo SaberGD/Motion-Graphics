@@ -55,7 +55,7 @@ Same Saber Group × Mushroom style as *SaberGroup_Reel_v6* (`reels/STYLE.md`), b
 
 **Edit:** the dead air at 3.16–3.40 (after the whole "Perfect"), 18.28–18.48, 22.58–22.66 (hidden under the motion scene, which stays up until the voice comes back) and 35.26–35.80 s is cut. Every cut sits after the word has fully ended, including its unvoiced tail. The tail is trimmed so the end card lands on a beat. Cuts are hidden by zoom-blur, a light leak or the cutaways. There are no left/right moves. The camera zooms in and out slowly, never past 1.14× on this 1080p source, with Lanczos scaling and zoom-aware sharpening.
 
-**Music:** *This Funk Groove* (liosound), main mix, played from 0:00 to the end of the video at one constant low level with no ducking. It sits about 16 dB under the voice and fades over the last 1.2 s. The tempo is about 153 BPM. Cutaways, the motion scene, cards and leaks snap to beats; the groove drop at 8.37 s gets a small punch-in.
+**Music:** *This Funk Groove* (liosound), main mix, played from 0:00 to the end of the video. It follows the voice with a gentle, slow dip of 4 dB (0.6 s smoothing, so it doesn't pump). A static EQ pocket at 1.5 and 3 kHz keeps the voice clearly on top: the voice is about 11 dB above the music overall and about 18.5 dB above it in the 1–4 kHz speech band. The music fades over the last 1.2 s. The tempo is about 153 BPM. Cutaways, the motion scene, cards and leaks snap to beats; the groove drop at 8.37 s gets a small punch-in.
 
 **Voice:** the camera mic is dull: 2–4 kHz sits about 22 dB under 500 Hz–1 kHz. The chain is a de-mud cut at 180/380 Hz, presence at 1.8/3.4/5.5 kHz, an air shelf, light denoise, a de-esser and gentle compression. The master is −14 LUFS.
 
