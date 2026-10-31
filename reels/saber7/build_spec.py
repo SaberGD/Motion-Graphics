@@ -21,8 +21,8 @@ def snap(t, maxd=.2):
     return round(b, 3) if abs(b - t) <= maxd else t
 
 
-# ---- edit: jump cuts remove the dead air (2.9-3.38, 18.24-18.5, the breath after "Hierarchy" 22.40-22.64, 35.2-35.82)
-KEEP = [[0.10, 2.90], [3.38, 18.24], [18.50, 22.40], [22.64, 35.20], [35.82, 41.92]]
+# ---- edit: jump cuts remove the dead air (3.16-3.40 after the whole "Perfect", 18.24-18.5, the breath after "Hierarchy" 22.40-22.64, 35.2-35.82)
+KEEP = [[0.10, 3.16], [3.40, 18.28], [18.48, 22.58], [22.66, 35.26], [35.80, 41.92]]
 OUTRO = 3.4
 
 
@@ -39,7 +39,7 @@ def o(t):
 _sp = sum(e - s for s, e in KEEP); _b = BEAT0 + BEAT * -(-(_sp - BEAT0) // BEAT)
 KEEP[-1][1] = round(KEEP[-1][1] + _b - _sp, 3)
 SPEECH = round(sum(e - s for s, e in KEEP), 3)
-C1, C2, CK, C3 = o(2.90), o(18.24), o(22.40), o(35.20)        # cut points on the output timeline
+C1, C2, CK, C3 = o(3.16), o(18.28), o(22.58), o(35.26)        # cut points on the output timeline
 
 # ---- restaurant ad mock-up: A = everything equally loud (2x2), B = visual hierarchy
 ITEMS = [

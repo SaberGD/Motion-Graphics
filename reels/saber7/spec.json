@@ -6,23 +6,23 @@
  "keep": [
   [
    0.1,
-   2.9
+   3.16
   ],
   [
-   3.38,
-   18.24
+   3.4,
+   18.28
   ],
   [
-   18.5,
-   22.4
+   18.48,
+   22.58
   ],
   [
-   22.64,
-   35.2
+   22.66,
+   35.26
   ],
   [
-   35.82,
-   42.156
+   35.8,
+   42.007
   ]
  ],
  "cam": [
@@ -31,83 +31,83 @@
    1.0
   ],
   [
-   2.79,
+   3.0500000000000003,
    1.05
   ],
   [
-   2.8,
+   3.06,
    1.12
   ],
   [
-   8.92,
+   9.16,
    1.07
   ],
   [
-   9.52,
+   9.76,
    1.07
   ],
   [
-   11.32,
+   11.56,
    1.12
   ],
   [
-   17.65,
+   17.93,
    1.13
   ],
   [
-   17.66,
+   17.94,
    1.0
   ],
   [
-   20.46,
+   20.76,
    1.08
   ],
   [
-   21.549999999999997,
+   22.029999999999998,
    1.08
   ],
   [
-   21.56,
+   22.04,
    1.03
   ],
   [
-   23.32,
+   23.78,
    1.08
   ],
   [
-   24.72,
+   25.18,
    1.08
   ],
   [
-   24.73,
+   25.19,
    1.0
   ],
   [
-   29.92,
+   30.38,
    1.0
   ],
   [
-   34.11,
+   34.63,
    1.04
   ],
   [
-   34.12,
+   34.64,
    1.12
   ],
   [
-   35.0,
+   35.54,
    1.13
   ],
   [
-   36.72,
+   37.26,
    1.14
   ],
   [
-   37.5,
+   38.04,
    1.03
   ],
   [
-   40.456,
+   40.847,
    1.05
   ]
  ],
@@ -123,29 +123,29 @@
    0.03
   ],
   [
-   9.02,
-   9.38,
+   9.26,
+   9.62,
    0.04
   ],
   [
-   32.92,
-   33.42,
+   33.38,
+   33.88,
    0.03
   ],
   [
-   39.06,
-   39.4,
+   39.6,
+   39.94,
    0.03
   ]
  ],
  "fx": [
   {
-   "t": 2.8,
+   "t": 3.06,
    "type": "zoomblur",
    "d": 0.18
   },
   {
-   "t": 34.12,
+   "t": 34.64,
    "type": "zoomblur",
    "d": 0.18
   }
@@ -290,8 +290,8 @@
  "els": [
   {
    "type": "chips",
-   "t0": 3.28,
-   "t1": 4.52,
+   "t0": 3.52,
+   "t1": 4.76,
    "y": 262,
    "x": 70,
    "items": [
@@ -302,13 +302,13 @@
     }
    ],
    "at": [
-    3.38
+    3.62
    ]
   },
   {
    "type": "chips",
-   "t0": 5.87,
-   "t1": 10.32,
+   "t0": 6.11,
+   "t1": 10.56,
    "y": 262,
    "x": 70,
    "items": [
@@ -325,15 +325,15 @@
     }
    ],
    "at": [
-    6.0,
-    6.48,
-    9.04
+    6.24,
+    6.72,
+    9.28
    ]
   },
   {
    "type": "admock",
    "t0": 11.888,
-   "t1": 17.96,
+   "t1": 18.240000000000002,
    "y": 250,
    "h": 820,
    "title": "إعلان مطعم",
@@ -353,7 +353,7 @@
       470
      ],
      "boxB": false,
-     "at": 12.36
+     "at": 12.6
     },
     {
      "html": "<div style=\"text-align:center;line-height:.86\"><div style=\"font-family:Bebas;font-size:1.25em;color:#FFC36B\">99</div><div style=\"font-family:Cairo;font-weight:900;font-size:.3em;color:#F6F3F2\">جنيه بس!</div></div>",
@@ -370,7 +370,7 @@
       196
      ],
      "fs": 0.5,
-     "at": 12.88
+     "at": 13.12
     },
     {
      "html": "<div style=\"display:grid;place-items:center;gap:.08em\"><div style=\"width:1.1em;height:1.1em;border-radius:50%;background:#F6F3F2;display:grid;place-items:center;font-family:Bebas;color:#D83B25;font-size:1em;line-height:1;padding-top:.08em\">BH</div><div style=\"font-family:Poppins;font-weight:600;font-size:.2em;letter-spacing:.14em;color:#F6F3F2\">BURGER HOUSE</div></div>",
@@ -387,7 +387,7 @@
       160
      ],
      "fs": 0.42,
-     "at": 13.54
+     "at": 13.78
     },
     {
      "html": "<div style=\"transform:rotate(-6deg);background:linear-gradient(135deg,#E2462E,#B5301E);border-radius:.18em;padding:.06em .3em .14em;font-family:Cairo;font-weight:900;font-size:.62em;color:#fff;box-shadow:0 0 .4em rgba(216,59,37,.6);white-space:nowrap;direction:rtl\">خصم 30%</div>",
@@ -404,36 +404,36 @@
       120
      ],
      "fs": 0.42,
-     "at": 14.2
+     "at": 14.44
     }
    ],
    "pulse": [
-    15.56,
-    16.1
+    15.8,
+    16.34
    ],
    "eye": [
     [
-     16.52,
+     16.76,
      620.0,
      261.0
     ],
     [
-     16.78,
+     17.02,
      220.0,
      621.0
-    ],
-    [
-     17.0,
-     220.0,
-     261.0
     ],
     [
      17.24,
+     220.0,
+     261.0
+    ],
+    [
+     17.48,
      620.0,
      621.0
     ],
     [
-     17.48,
+     17.72,
      620.0,
      261.0
     ]
@@ -441,23 +441,23 @@
    "eyeHold": 0.25,
    "q": [
     [
-     16.87,
+     17.11,
      330,
      380,
-     17.96
+     18.240000000000002
     ],
     [
-     17.22,
+     17.46,
      700,
      420,
-     17.96
+     18.240000000000002
     ]
    ]
   },
   {
    "type": "kin",
-   "t0": 20.106,
-   "t1": 21.88,
+   "t0": 20.498,
+   "t1": 22.36,
    "din": 0.3,
    "dout": 0.26,
    "iris": true,
@@ -469,7 +469,7 @@
      "w": 800,
      "font": "Poppins",
      "anim": "blur",
-     "at": 0.5139999999999993,
+     "at": 0.4220000000000006,
      "stagger": 0.28,
      "hl": [
       1
@@ -506,8 +506,8 @@
   },
   {
    "type": "admock",
-   "t0": 23.237,
-   "t1": 27.15,
+   "t0": 23.628,
+   "t1": 27.933,
    "y": 250,
    "h": 820,
    "title": "إعلان مطعم",
@@ -527,7 +527,7 @@
       470
      ],
      "boxB": false,
-     "at": 23.34
+     "at": 23.8
     },
     {
      "html": "<div style=\"text-align:center;line-height:.86\"><div style=\"font-family:Bebas;font-size:1.25em;color:#FFC36B\">99</div><div style=\"font-family:Cairo;font-weight:900;font-size:.3em;color:#F6F3F2\">جنيه بس!</div></div>",
@@ -544,7 +544,7 @@
       196
      ],
      "fs": 0.5,
-     "at": 23.39
+     "at": 23.85
     },
     {
      "html": "<div style=\"display:grid;place-items:center;gap:.08em\"><div style=\"width:1.1em;height:1.1em;border-radius:50%;background:#F6F3F2;display:grid;place-items:center;font-family:Bebas;color:#D83B25;font-size:1em;line-height:1;padding-top:.08em\">BH</div><div style=\"font-family:Poppins;font-weight:600;font-size:.2em;letter-spacing:.14em;color:#F6F3F2\">BURGER HOUSE</div></div>",
@@ -561,7 +561,7 @@
       160
      ],
      "fs": 0.42,
-     "at": 23.44
+     "at": 23.9
     },
     {
      "html": "<div style=\"transform:rotate(-6deg);background:linear-gradient(135deg,#E2462E,#B5301E);border-radius:.18em;padding:.06em .3em .14em;font-family:Cairo;font-weight:900;font-size:.62em;color:#fff;box-shadow:0 0 .4em rgba(216,59,37,.6);white-space:nowrap;direction:rtl\">خصم 30%</div>",
@@ -578,54 +578,54 @@
       120
      ],
      "fs": 0.42,
-     "at": 23.49
+     "at": 23.95
     }
    ],
    "morph": [
-    23.47,
+    23.93,
     0.75
    ],
    "nums": [
     [
-     24.2,
+     24.66,
      0
     ],
     [
-     25.14,
+     25.6,
      1
     ],
     [
-     25.78,
+     26.24,
      2
     ],
     [
-     26.4,
+     26.86,
      3
     ]
    ],
    "eye": [
     [
-     23.92,
+     24.38,
      420.0,
      319.0
     ],
     [
-     24.2,
+     24.66,
      420.0,
      319.0
     ],
     [
-     25.14,
+     25.6,
      615.0,
      684.0
     ],
     [
-     25.78,
+     26.24,
      335.0,
      686.0
     ],
     [
-     26.4,
+     26.86,
      140.0,
      686.0
     ]
@@ -634,8 +634,8 @@
   },
   {
    "type": "chips",
-   "t0": 27.37,
-   "t1": 29.02,
+   "t0": 27.83,
+   "t1": 29.48,
    "y": 262,
    "x": 70,
    "items": [
@@ -644,13 +644,13 @@
     }
    ],
    "at": [
-    27.47
+    27.93
    ]
   },
   {
    "type": "pie",
-   "t0": 30.281,
-   "t1": 34.06,
+   "t0": 30.672,
+   "t1": 34.52,
    "x": 676,
    "y": 292,
    "w": 360,
@@ -660,42 +660,42 @@
      "label": "البطل",
      "v": 50,
      "color": "#FF8A1F",
-     "at": 30.27
+     "at": 30.73
     },
     {
      "label": "السعر",
      "v": 25,
      "color": "#D83B25",
-     "at": 30.57
+     "at": 31.03
     },
     {
      "label": "اللوجو",
      "v": 15,
      "color": "#A9A8AE",
-     "at": 30.87
+     "at": 31.33
     },
     {
      "label": "الخصم",
      "v": 10,
      "color": "#5A514C",
-     "at": 31.17
+     "at": 31.63
     }
    ],
    "hero": 0,
-   "heroAt": 32.1,
+   "heroAt": 32.56,
    "center": "<span style=\"color:#FF8A1F\">البطل</span>"
   },
   {
    "type": "vf",
-   "t0": 34.977,
-   "t1": 36.72,
+   "t0": 35.368,
+   "t1": 37.26,
    "label": "REC",
    "meta": "ISO 800 · F/1.8 · 1/60"
   },
   {
    "type": "book",
-   "t0": 37.325,
-   "t1": 40.506,
+   "t0": 38.108,
+   "t1": 40.897,
    "x": 745,
    "y": 300,
    "w": 280,
@@ -707,7 +707,7 @@
   },
   {
    "type": "outro",
-   "t0": 40.456,
+   "t0": 40.847,
    "logos": [
     [
      "../saber7/brand/saber_red.png",
@@ -722,7 +722,7 @@
   },
   {
    "type": "leak",
-   "t": 2.8,
+   "t": 3.06,
    "d": 0.45,
    "img": "../saber7/assets/leak1.jpg",
    "amt": 0.3,
@@ -730,21 +730,21 @@
   },
   {
    "type": "leak",
-   "t": 20.106,
+   "t": 20.498,
    "d": 0.45,
    "img": "../saber7/assets/leak3.jpg",
    "amt": 0.3
   },
   {
    "type": "leak",
-   "t": 34.12,
+   "t": 34.64,
    "d": 0.45,
    "img": "../saber7/assets/leak1.jpg",
    "amt": 0.3
   },
   {
    "type": "leak",
-   "t": 40.456,
+   "t": 40.847,
    "d": 0.45,
    "img": "../saber7/assets/leak3.jpg",
    "amt": 0.3,
@@ -756,25 +756,25 @@
  },
  "sfx": [
   {
-   "t": 3.4,
+   "t": 3.64,
    "file": "sfx/error_004.ogg",
    "g": -28,
    "rate": 1.0
   },
   {
-   "t": 6.02,
+   "t": 6.26,
    "file": "sfx/select_004.ogg",
    "g": -29,
    "rate": 1.0
   },
   {
-   "t": 6.5,
+   "t": 6.74,
    "file": "sfx/select_004.ogg",
    "g": -30,
    "rate": 1.12
   },
   {
-   "t": 9.06,
+   "t": 9.3,
    "file": "sfx/error_004.ogg",
    "g": -28,
    "rate": 1.0
@@ -786,67 +786,61 @@
    "rate": 1.0
   },
   {
-   "t": 17.54,
+   "t": 17.82,
    "file": "sfx/minimize_006.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 23.177,
+   "t": 23.568,
    "file": "sfx/maximize_006.ogg",
    "g": -29,
    "rate": 1.0
   },
   {
-   "t": 26.73,
+   "t": 27.513,
    "file": "sfx/minimize_006.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 12.36,
+   "t": 12.6,
    "file": "sfx/drop_002.ogg",
    "g": -25,
    "rate": 1.0
   },
   {
-   "t": 12.88,
+   "t": 13.12,
    "file": "sfx/drop_003.ogg",
    "g": -26,
    "rate": 1.0
   },
   {
-   "t": 13.54,
+   "t": 13.78,
    "file": "sfx/drop_004.ogg",
    "g": -26,
    "rate": 1.0
   },
   {
-   "t": 14.2,
+   "t": 14.44,
    "file": "sfx/drop_001.ogg",
    "g": -27,
    "rate": 1.0
   },
   {
-   "t": 15.56,
+   "t": 15.8,
    "file": "sfx/glass_001.ogg",
    "g": -31,
    "rate": 0.8
   },
   {
-   "t": 16.1,
+   "t": 16.34,
    "file": "sfx/glass_001.ogg",
    "g": -31,
    "rate": 0.8
   },
   {
-   "t": 16.73,
-   "file": "sfx/tick_004.ogg",
-   "g": -31,
-   "rate": 1.0
-  },
-  {
-   "t": 16.95,
+   "t": 16.97,
    "file": "sfx/tick_004.ogg",
    "g": -31,
    "rate": 1.0
@@ -864,121 +858,127 @@
    "rate": 1.0
   },
   {
-   "t": 16.87,
+   "t": 17.67,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 17.11,
    "file": "sfx/question_001.ogg",
    "g": -28,
    "rate": 1.0
   },
   {
-   "t": 17.22,
+   "t": 17.46,
    "file": "sfx/question_003.ogg",
    "g": -30,
    "rate": 1.0
   },
   {
-   "t": 23.47,
+   "t": 23.93,
    "file": "sfx/toggle_001.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 24.2,
+   "t": 24.66,
    "file": "sfx/glass_001.ogg",
    "g": -25,
    "rate": 1.0
   },
   {
-   "t": 25.14,
+   "t": 25.6,
    "file": "sfx/glass_001.ogg",
    "g": -25,
    "rate": 1.125
   },
   {
-   "t": 25.78,
+   "t": 26.24,
    "file": "sfx/glass_001.ogg",
    "g": -25,
    "rate": 1.25
   },
   {
-   "t": 26.4,
+   "t": 26.86,
    "file": "sfx/glass_001.ogg",
    "g": -25,
    "rate": 1.5
   },
   {
-   "t": 20.62,
+   "t": 20.92,
    "file": "sfx/maximize_008.ogg",
    "g": -28,
    "rate": 1.0
   },
   {
-   "t": 20.66,
+   "t": 20.96,
    "file": "sfx/glass_004.ogg",
    "g": -33,
    "rate": 1.0
   },
   {
-   "t": 27.49,
+   "t": 27.95,
    "file": "sfx/confirmation_003.ogg",
    "g": -29,
    "rate": 1.0
   },
   {
-   "t": 30.27,
+   "t": 30.73,
    "file": "sfx/tick_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 30.57,
+   "t": 31.03,
    "file": "sfx/tick_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 30.87,
+   "t": 31.33,
    "file": "sfx/tick_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 31.17,
+   "t": 31.63,
    "file": "sfx/tick_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 32.1,
+   "t": 32.56,
    "file": "sfx/confirmation_002.ogg",
    "g": -28,
    "rate": 1.0
   },
   {
-   "t": 34.977,
+   "t": 35.368,
    "file": "sfx/switch_002.ogg",
    "g": -30,
    "rate": 1.0
   },
   {
-   "t": 37.375,
+   "t": 38.158,
    "file": "sfx/open_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 37.825,
+   "t": 38.608,
    "file": "sfx/select_005.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 40.576,
+   "t": 40.967,
    "file": "sfx/confirmation_004.ogg",
    "g": -27,
    "rate": 1.0
   },
   {
-   "t": 40.556,
+   "t": 40.947,
    "file": "sfx/bong_001.ogg",
    "g": -30,
    "rate": 0.8
@@ -1003,7 +1003,7 @@
   "segs": [
    [
     0,
-    44.356
+    44.747
    ]
   ],
   "gain": -33,

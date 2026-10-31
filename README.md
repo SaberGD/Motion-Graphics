@@ -53,7 +53,7 @@ Same Saber Group × Mushroom style as *SaberGroup_Reel_v6* (`reels/STYLE.md`), b
 | `assets/` | burger, hierarchy icon, booklet and light leaks from the asset pack |
 | `sfx/` | recorded UI sounds from *Kenney Interface Sounds* (CC0, licence included) |
 
-**Edit:** the dead air at 2.9–3.38, 18.24–18.5, 22.40–22.64 (the breath after "Hierarchy", hidden under the motion scene, which stays up until the voice comes back) and 35.2–35.82 s is cut. The tail is trimmed so the end card lands on a beat. Cuts are hidden by zoom-blur, a light leak or the cutaways. There are no left/right moves. The camera zooms in and out slowly, never past 1.14× on this 1080p source, with Lanczos scaling and zoom-aware sharpening.
+**Edit:** the dead air at 3.16–3.40 (after the whole "Perfect"), 18.28–18.48, 22.58–22.66 (hidden under the motion scene, which stays up until the voice comes back) and 35.26–35.80 s is cut. Every cut sits after the word has fully ended, including its unvoiced tail. The tail is trimmed so the end card lands on a beat. Cuts are hidden by zoom-blur, a light leak or the cutaways. There are no left/right moves. The camera zooms in and out slowly, never past 1.14× on this 1080p source, with Lanczos scaling and zoom-aware sharpening.
 
 **Music:** *This Funk Groove* (liosound), main mix, played from 0:00 to the end of the video at one constant low level with no ducking. It sits about 16 dB under the voice and fades over the last 1.2 s. The tempo is about 153 BPM. Cutaways, the motion scene, cards and leaks snap to beats; the groove drop at 8.37 s gets a small punch-in.
 
