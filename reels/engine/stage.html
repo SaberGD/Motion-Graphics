@@ -14,6 +14,7 @@
 html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 #stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,Poppins,sans-serif;color:#fff}
 #bg{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover}
+#grain{position:absolute;inset:-60px;z-index:7;pointer-events:none;mix-blend-mode:overlay;opacity:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.4 -.2'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>")}
 .abs{position:absolute}
 .L{position:absolute;inset:0}
 /* --- brand chrome --- */
@@ -190,6 +191,7 @@ window.init = (spec, words) => {
   // chrome
   if (spec.logo !== false) { const l = $('img', '', OV); l.id = 'logo'; l.src = spec.logo_src || '../../project/brand/saber-group-logo.png'; if (spec.logo_css) l.style.cssText = spec.logo_css; }
   const p = $('div', '', OV); p.id = 'prog';
+  if (spec.grain) { const g = $('div', '', document.getElementById('stage')); g.id = 'grain'; g.style.opacity = spec.grain; }
   // elements
   ELS = (spec.els || []).map(d => Object.assign(BUILD[d.type](d), { d }));
   // kinetic lines: shrink until each fits on one line inside the side margins
@@ -396,14 +398,16 @@ const UPD = {
     const lt = t - d.t0;
     // entry/exit: iris/scale from the video
     const inK = eo((t - d.t0) / (d.din ?? .18)), outK = eo((d.t1 - t) / (d.dout ?? .18));
-    o.root.style.clipPath = d.iris ? `circle(${lerp(0, 1300, Math.min(inK, outK))}px at 50% 50%)` : '';
-    o.root.style.opacity = d.iris ? 1 : Math.min(inK, outK);
+    // iris in; soft exit (fade + blur + slight push) so the cut back to the speaker never slices through the type
+    o.root.style.clipPath = d.iris ? `circle(${lerp(0, 1300, inK)}px at 50% 50%)` : '';
+    o.root.style.opacity = d.iris ? outK : Math.min(inK, outK);
+    o.root.style.filter = d.iris && outK < 1 ? `blur(${14 * (1 - outK)}px)` : '';
     // drifting ember light
     const [b1, b2, b3] = o.blobs;
     b1.style.transform = `translate(${-650 + 160 * Math.sin(lt * .7)}px,${-800 + 120 * Math.cos(lt * .5)}px)`;
     b2.style.transform = `translate(${160 + 140 * Math.cos(lt * .6)}px,${950 + 160 * Math.sin(lt * .8)}px)`;
     b3.style.transform = `translate(${90 + 260 * Math.sin(lt * .9)}px,${450 + 200 * Math.cos(lt * .7)}px)`;
-    o.root.style.transform = `scale(${1.04 - .04 * eo(lt / 1.2)})`;
+    o.root.style.transform = `scale(${(1.04 - .04 * eo(lt / 1.2)) * (1 + .06 * (1 - outK))})`;
     o.lines.forEach(L => {
       const ln = L.ln, at = d.t0 + (ln.at || 0), anim = ln.anim || 'blur', st = ln.stagger ?? .09;
       const gone = ln.out != null ? eo((t - (d.t0 + ln.out)) / .25) : 0;
@@ -693,8 +697,14 @@ window.render = (t) => {
   const lg = document.getElementById('logo');
   if (lg) lg.style.opacity = inOutro || ELS.some(e => e.d.type === 'kin' && t > e.d.t0 && t < e.d.t1) ? 0 : .92;
   // background treatment
-  BG.style.filter = inOutro ? `blur(${lerp(0, 26, eo((t - outro.d.t0) / .6))}px) brightness(${lerp(1, .42, eo((t - outro.d.t0) / .6))})` : '';
-  BG.style.transform = inOutro ? `scale(${1.08 + .02 * (t - outro.d.t0)})` : '';
+  const gr = document.getElementById('grain'); if (gr) gr.style.transform = `translate(${(Math.floor(t * 30) * 37) % 60 - 30}px,${(Math.floor(t * 30) * 53) % 60 - 30}px)`;
+  let push = 0;
+  ELS.forEach(e => { if (e.d.type !== 'admock') return; const d = e.d;
+    if (t >= d.t0 - .05 && t <= d.t0 + .45) push = Math.max(push, eo((t - d.t0 + .05) / .5));
+    if (t >= d.t1 - .4 && t <= d.t1) push = Math.max(push, eo((d.t1 - t) / .4)); });
+  if (!inOutro && push > 0) { BG.style.filter = `blur(${10 * push}px) brightness(${1 - .25 * push})`; BG.style.transform = `scale(${1 + .1 * push})`; }
+  else BG.style.filter = inOutro ? `blur(${lerp(0, 26, eo((t - outro.d.t0) / .6))}px) brightness(${lerp(1, .42, eo((t - outro.d.t0) / .6))})` : '';
+  if (inOutro || !(push > 0)) BG.style.transform = inOutro ? `scale(${1.08 + .02 * (t - outro.d.t0)})` : '';
 };
 window.setBg = src => new Promise(r => { if (BG.getAttribute('src') === src) return r(); BG.onload = () => r(); BG.onerror = () => r(); BG.src = src; });
 </script></body></html>

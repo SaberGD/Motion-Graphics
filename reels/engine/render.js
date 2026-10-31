@@ -29,7 +29,7 @@ const frames = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.ro
       const alphaDir = process.env.ALPHA;
       await page.evaluate(([src, al]) => window.setBg(src, al), ['file://' + path.join(baseDir, bf), alphaDir ? 'file://' + path.join(alphaDir, bf.replace('b_', 'a_')) : null]);
       await page.evaluate(t => window.render(t), f / FPS);
-      await page.screenshot({ path: path.join(out, `f_${String(f).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 93 });
+      await page.screenshot({ path: path.join(out, `f_${String(f).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 97 });
       if (k % 150 < W) console.log('frame', f, '/', N);
     }
     await page.close();

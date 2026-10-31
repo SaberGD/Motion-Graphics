@@ -14,11 +14,15 @@
   ],
   [
    18.5,
+   22.4
+  ],
+  [
+   22.64,
    35.2
   ],
   [
    35.82,
-   41.95
+   42.156
   ]
  ],
  "cam": [
@@ -28,105 +32,110 @@
   ],
   [
    2.79,
-   1.06
+   1.05
   ],
   [
    2.8,
-   1.14
+   1.12
   ],
   [
    8.92,
-   1.08
+   1.07
   ],
   [
    9.52,
-   1.08
+   1.07
   ],
   [
    11.32,
-   1.16
+   1.12
   ],
   [
    17.65,
-   1.18
+   1.13
   ],
   [
    17.66,
    1.0
   ],
   [
-   20.24,
-   1.12
+   20.46,
+   1.08
   ],
   [
-   20.96,
-   1.12
+   21.549999999999997,
+   1.08
   ],
   [
-   20.97,
-   1.02
-  ],
-  [
-   23.56,
-   1.09
-  ],
-  [
-   24.96,
-   1.09
-  ],
-  [
-   24.97,
-   1.0
-  ],
-  [
-   30.16,
-   1.0
-  ],
-  [
-   34.35,
-   1.05
-  ],
-  [
-   34.36,
-   1.14
-  ],
-  [
-   35.24,
-   1.16
-  ],
-  [
-   36.96,
-   1.18
-  ],
-  [
-   37.74,
+   21.56,
    1.03
   ],
   [
-   40.49,
-   1.06
+   23.32,
+   1.08
+  ],
+  [
+   24.72,
+   1.08
+  ],
+  [
+   24.73,
+   1.0
+  ],
+  [
+   29.92,
+   1.0
+  ],
+  [
+   34.11,
+   1.04
+  ],
+  [
+   34.12,
+   1.12
+  ],
+  [
+   35.0,
+   1.13
+  ],
+  [
+   36.72,
+   1.14
+  ],
+  [
+   37.5,
+   1.03
+  ],
+  [
+   40.456,
+   1.05
   ]
  ],
  "punch": [
   [
    2.2,
    2.6,
-   0.04
+   0.035
+  ],
+  [
+   8.366,
+   8.666,
+   0.03
   ],
   [
    9.02,
    9.38,
-   0.05
+   0.04
   ],
   [
-   33.16,
-   33.66,
-   0.035
+   32.92,
+   33.42,
+   0.03
   ],
   [
-   39.3,
-   39.64,
-   0.035
+   39.06,
+   39.4,
+   0.03
   ]
  ],
  "fx": [
@@ -136,13 +145,35 @@
    "d": 0.18
   },
   {
-   "t": 34.36,
+   "t": 34.12,
    "type": "zoomblur",
    "d": 0.18
   }
  ],
- "grade": "light",
- "sharpen": 0.25,
+ "grade": "none",
+ "sharpen": 0.3,
+ "grain": 0.07,
+ "cine": {
+  "contrast": 0.07,
+  "black": 0.006,
+  "white": 1.0,
+  "spot": 0.17,
+  "room": 0,
+  "sat": 1.12,
+  "skin_sat": 1.02,
+  "vig": 0.55,
+  "shadow_tint": [
+   0.006,
+   0.002,
+   0.002
+  ],
+  "high_tint": [
+   -0.016,
+   0.002,
+   0.018
+  ]
+ },
+ "voice_af": "highpass=f=85,afftdn=nr=10:nf=-44,equalizer=f=180:t=q:w=1.1:g=-4,equalizer=f=380:t=q:w=1.2:g=-2,equalizer=f=1800:t=q:w=1.0:g=4,equalizer=f=3400:t=q:w=0.9:g=9,equalizer=f=5500:t=q:w=1.0:g=7,highshelf=f=7500:g=6,deesser=i=0.35:m=0.5:f=0.5,acompressor=threshold=-22dB:ratio=2.4:attack=6:release=120:makeup=2.5dB",
  "logo_src": "../saber7/brand/saber_white.png",
  "logo_css": "top:96px;left:60px;width:118px",
  "cap": {
@@ -301,7 +332,7 @@
   },
   {
    "type": "admock",
-   "t0": 11.52,
+   "t0": 11.888,
    "t1": 17.96,
    "y": 250,
    "h": 820,
@@ -425,10 +456,10 @@
   },
   {
    "type": "kin",
-   "t0": 20.26,
-   "t1": 21.61,
+   "t0": 20.106,
+   "t1": 21.88,
    "din": 0.3,
-   "dout": 0.2,
+   "dout": 0.26,
    "iris": true,
    "lines": [
     {
@@ -438,7 +469,7 @@
      "w": 800,
      "font": "Poppins",
      "anim": "blur",
-     "at": 0.35999999999999943,
+     "at": 0.5139999999999993,
      "stagger": 0.28,
      "hl": [
       1
@@ -475,8 +506,8 @@
   },
   {
    "type": "admock",
-   "t0": 23.56,
-   "t1": 27.56,
+   "t0": 23.237,
+   "t1": 27.15,
    "y": 250,
    "h": 820,
    "title": "إعلان مطعم",
@@ -496,7 +527,7 @@
       470
      ],
      "boxB": false,
-     "at": 23.58
+     "at": 23.34
     },
     {
      "html": "<div style=\"text-align:center;line-height:.86\"><div style=\"font-family:Bebas;font-size:1.25em;color:#FFC36B\">99</div><div style=\"font-family:Cairo;font-weight:900;font-size:.3em;color:#F6F3F2\">جنيه بس!</div></div>",
@@ -513,7 +544,7 @@
       196
      ],
      "fs": 0.5,
-     "at": 23.63
+     "at": 23.39
     },
     {
      "html": "<div style=\"display:grid;place-items:center;gap:.08em\"><div style=\"width:1.1em;height:1.1em;border-radius:50%;background:#F6F3F2;display:grid;place-items:center;font-family:Bebas;color:#D83B25;font-size:1em;line-height:1;padding-top:.08em\">BH</div><div style=\"font-family:Poppins;font-weight:600;font-size:.2em;letter-spacing:.14em;color:#F6F3F2\">BURGER HOUSE</div></div>",
@@ -530,7 +561,7 @@
       160
      ],
      "fs": 0.42,
-     "at": 23.68
+     "at": 23.44
     },
     {
      "html": "<div style=\"transform:rotate(-6deg);background:linear-gradient(135deg,#E2462E,#B5301E);border-radius:.18em;padding:.06em .3em .14em;font-family:Cairo;font-weight:900;font-size:.62em;color:#fff;box-shadow:0 0 .4em rgba(216,59,37,.6);white-space:nowrap;direction:rtl\">خصم 30%</div>",
@@ -547,54 +578,54 @@
       120
      ],
      "fs": 0.42,
-     "at": 23.73
+     "at": 23.49
     }
    ],
    "morph": [
-    23.71,
+    23.47,
     0.75
    ],
    "nums": [
     [
-     24.44,
+     24.2,
      0
     ],
     [
-     25.38,
+     25.14,
      1
     ],
     [
-     26.02,
+     25.78,
      2
     ],
     [
-     26.64,
+     26.4,
      3
     ]
    ],
    "eye": [
     [
-     24.16,
+     23.92,
      420.0,
      319.0
     ],
     [
-     24.44,
+     24.2,
      420.0,
      319.0
     ],
     [
-     25.38,
+     25.14,
      615.0,
      684.0
     ],
     [
-     26.02,
+     25.78,
      335.0,
      686.0
     ],
     [
-     26.64,
+     26.4,
      140.0,
      686.0
     ]
@@ -603,8 +634,8 @@
   },
   {
    "type": "chips",
-   "t0": 27.61,
-   "t1": 29.26,
+   "t0": 27.37,
+   "t1": 29.02,
    "y": 262,
    "x": 70,
    "items": [
@@ -613,13 +644,13 @@
     }
    ],
    "at": [
-    27.71
+    27.47
    ]
   },
   {
    "type": "pie",
-   "t0": 30.36,
-   "t1": 34.3,
+   "t0": 30.281,
+   "t1": 34.06,
    "x": 676,
    "y": 292,
    "w": 360,
@@ -629,42 +660,42 @@
      "label": "البطل",
      "v": 50,
      "color": "#FF8A1F",
-     "at": 30.51
+     "at": 30.27
     },
     {
      "label": "السعر",
      "v": 25,
      "color": "#D83B25",
-     "at": 30.81
+     "at": 30.57
     },
     {
      "label": "اللوجو",
      "v": 15,
      "color": "#A9A8AE",
-     "at": 31.11
+     "at": 30.87
     },
     {
      "label": "الخصم",
      "v": 10,
      "color": "#5A514C",
-     "at": 31.41
+     "at": 31.17
     }
    ],
    "hero": 0,
-   "heroAt": 32.34,
+   "heroAt": 32.1,
    "center": "<span style=\"color:#FF8A1F\">البطل</span>"
   },
   {
    "type": "vf",
-   "t0": 35.24,
-   "t1": 36.96,
+   "t0": 34.977,
+   "t1": 36.72,
    "label": "REC",
    "meta": "ISO 800 · F/1.8 · 1/60"
   },
   {
    "type": "book",
-   "t0": 37.69,
-   "t1": 40.54,
+   "t0": 37.325,
+   "t1": 40.506,
    "x": 745,
    "y": 300,
    "w": 280,
@@ -676,7 +707,7 @@
   },
   {
    "type": "outro",
-   "t0": 40.49,
+   "t0": 40.456,
    "logos": [
     [
      "../saber7/brand/saber_red.png",
@@ -694,44 +725,29 @@
    "t": 2.8,
    "d": 0.45,
    "img": "../saber7/assets/leak1.jpg",
-   "amt": 0.55,
+   "amt": 0.3,
    "flip": true
   },
   {
    "type": "leak",
-   "t": 11.52,
-   "d": 0.45,
-   "img": "../saber7/assets/leak2.jpg",
-   "amt": 0.55
-  },
-  {
-   "type": "leak",
-   "t": 20.26,
+   "t": 20.106,
    "d": 0.45,
    "img": "../saber7/assets/leak3.jpg",
-   "amt": 0.55
+   "amt": 0.3
   },
   {
    "type": "leak",
-   "t": 23.56,
-   "d": 0.45,
-   "img": "../saber7/assets/leak2.jpg",
-   "amt": 0.55,
-   "flip": true
-  },
-  {
-   "type": "leak",
-   "t": 34.36,
+   "t": 34.12,
    "d": 0.45,
    "img": "../saber7/assets/leak1.jpg",
-   "amt": 0.55
+   "amt": 0.3
   },
   {
    "type": "leak",
-   "t": 40.49,
+   "t": 40.456,
    "d": 0.45,
    "img": "../saber7/assets/leak3.jpg",
-   "amt": 0.55,
+   "amt": 0.3,
    "flipY": true
   }
  ],
@@ -740,169 +756,232 @@
  },
  "sfx": [
   {
-   "t": 3.41,
-   "type": "err",
-   "g": 0
+   "t": 3.4,
+   "file": "sfx/error_004.ogg",
+   "g": -28,
+   "rate": 1.0
   },
   {
-   "t": 9.07,
-   "type": "err",
-   "g": 0
+   "t": 6.02,
+   "file": "sfx/select_004.ogg",
+   "g": -29,
+   "rate": 1.0
+  },
+  {
+   "t": 6.5,
+   "file": "sfx/select_004.ogg",
+   "g": -30,
+   "rate": 1.12
+  },
+  {
+   "t": 9.06,
+   "file": "sfx/error_004.ogg",
+   "g": -28,
+   "rate": 1.0
+  },
+  {
+   "t": 11.828,
+   "file": "sfx/maximize_006.ogg",
+   "g": -29,
+   "rate": 1.0
+  },
+  {
+   "t": 17.54,
+   "file": "sfx/minimize_006.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 23.177,
+   "file": "sfx/maximize_006.ogg",
+   "g": -29,
+   "rate": 1.0
+  },
+  {
+   "t": 26.73,
+   "file": "sfx/minimize_006.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
    "t": 12.36,
-   "type": "pop",
-   "g": 0
+   "file": "sfx/drop_002.ogg",
+   "g": -25,
+   "rate": 1.0
   },
   {
    "t": 12.88,
-   "type": "pop_lo",
-   "g": 0
+   "file": "sfx/drop_003.ogg",
+   "g": -26,
+   "rate": 1.0
   },
   {
    "t": 13.54,
-   "type": "pop",
-   "g": 0
+   "file": "sfx/drop_004.ogg",
+   "g": -26,
+   "rate": 1.0
   },
   {
    "t": 14.2,
-   "type": "pop_lo",
-   "g": 0
+   "file": "sfx/drop_001.ogg",
+   "g": -27,
+   "rate": 1.0
   },
   {
    "t": 15.56,
-   "type": "pop_lo",
-   "g": -3
+   "file": "sfx/glass_001.ogg",
+   "g": -31,
+   "rate": 0.8
   },
   {
    "t": 16.1,
-   "type": "pop_lo",
-   "g": -3
+   "file": "sfx/glass_001.ogg",
+   "g": -31,
+   "rate": 0.8
   },
   {
-   "t": 16.78,
-   "type": "tick",
-   "g": 2
+   "t": 16.73,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 17.0,
-   "type": "tick",
-   "g": 2
+   "t": 16.95,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 17.24,
-   "type": "tick",
-   "g": 2
+   "t": 17.19,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 17.48,
-   "type": "tick",
-   "g": 2
+   "t": 17.43,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
    "t": 16.87,
-   "type": "pop_lo",
-   "g": -4
+   "file": "sfx/question_001.ogg",
+   "g": -28,
+   "rate": 1.0
   },
   {
-   "t": 24.44,
-   "type": "chime0",
-   "g": 0
+   "t": 17.22,
+   "file": "sfx/question_003.ogg",
+   "g": -30,
+   "rate": 1.0
   },
   {
-   "t": 25.38,
-   "type": "chime1",
-   "g": 0
+   "t": 23.47,
+   "file": "sfx/toggle_001.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 26.02,
-   "type": "chime2",
-   "g": 0
+   "t": 24.2,
+   "file": "sfx/glass_001.ogg",
+   "g": -25,
+   "rate": 1.0
   },
   {
-   "t": 26.64,
-   "type": "chime3",
-   "g": 0
+   "t": 25.14,
+   "file": "sfx/glass_001.ogg",
+   "g": -25,
+   "rate": 1.125
   },
   {
-   "t": 23.71,
-   "type": "bloom",
-   "g": -2
+   "t": 25.78,
+   "file": "sfx/glass_001.ogg",
+   "g": -25,
+   "rate": 1.25
   },
   {
-   "t": 11.17,
-   "type": "bloom",
-   "g": 0
-  },
-  {
-   "t": 23.21,
-   "type": "bloom",
-   "g": 0
+   "t": 26.4,
+   "file": "sfx/glass_001.ogg",
+   "g": -25,
+   "rate": 1.5
   },
   {
    "t": 20.62,
-   "type": "soft_hit",
-   "g": -2
+   "file": "sfx/maximize_008.ogg",
+   "g": -28,
+   "rate": 1.0
   },
   {
-   "t": 20.64,
-   "type": "shimmer",
-   "g": -4
+   "t": 20.66,
+   "file": "sfx/glass_004.ogg",
+   "g": -33,
+   "rate": 1.0
   },
   {
-   "t": 27.73,
-   "type": "ding",
-   "g": -2
+   "t": 27.49,
+   "file": "sfx/confirmation_003.ogg",
+   "g": -29,
+   "rate": 1.0
   },
   {
-   "t": 30.51,
-   "type": "tick",
-   "g": 3
+   "t": 30.27,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 30.81,
-   "type": "tick",
-   "g": 3
+   "t": 30.57,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 31.11,
-   "type": "tick",
-   "g": 3
+   "t": 30.87,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 31.41,
-   "type": "tick",
-   "g": 3
+   "t": 31.17,
+   "file": "sfx/tick_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 32.34,
-   "type": "chime4",
-   "g": -2
+   "t": 32.1,
+   "file": "sfx/confirmation_002.ogg",
+   "g": -28,
+   "rate": 1.0
   },
   {
-   "t": 37.74,
-   "type": "paper",
-   "g": 0
+   "t": 34.977,
+   "file": "sfx/switch_002.ogg",
+   "g": -30,
+   "rate": 1.0
   },
   {
-   "t": 38.14,
-   "type": "ding",
-   "g": -3
+   "t": 37.375,
+   "file": "sfx/open_004.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 40.64,
-   "type": "soft_hit",
-   "g": 0
+   "t": 37.825,
+   "file": "sfx/select_005.ogg",
+   "g": -31,
+   "rate": 1.0
   },
   {
-   "t": 2.35,
-   "type": "bloom",
-   "g": -3
+   "t": 40.576,
+   "file": "sfx/confirmation_004.ogg",
+   "g": -27,
+   "rate": 1.0
   },
   {
-   "t": 33.91,
-   "type": "bloom",
-   "g": -3
+   "t": 40.556,
+   "file": "sfx/bong_001.ogg",
+   "g": -30,
+   "rate": 0.8
   }
  ],
  "sfx_off": [
@@ -910,27 +989,25 @@
   "whoosh_dn",
   "riser",
   "glitch",
-  "impact"
+  "impact",
+  "pop",
+  "pop_lo",
+  "click",
+  "tick",
+  "shimmer",
+  "shutter"
  ],
  "music": {
   "file": "../../raw/s7/music/liosound_This-Funk-Groove/liosound_This-Funk-Groove_main.wav",
   "at": 0,
   "segs": [
    [
-    6.53,
-    25.585
-   ],
-   [
-    64.719,
-    85.068
-   ],
-   [
-    96.026,
-    100.95
+    0,
+    44.356
    ]
   ],
-  "gain": -22,
-  "duck": -12,
-  "end_fade": 0.8
+  "gain": -33,
+  "duck": 0,
+  "end_fade": 1.2
  }
 }

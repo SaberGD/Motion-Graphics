@@ -37,23 +37,32 @@ Four reels with the funk bed ("Radio Feelings"): beat 1 from 4:19.6, beat 2 from
 
 # Reel: الـ Visual Hierarchy (`reels/saber7/`)
 
-Same Saber Group × Mushroom style as *SaberGroup_Reel_v6* (`reels/STYLE.md`), built on the reel engine (`reels/engine/`). The source is 1080×1920 at 30 fps, and the output keeps 1080×1920 at 30 fps.
+Same Saber Group × Mushroom style as *SaberGroup_Reel_v6* (`reels/STYLE.md`), built on the reel engine (`reels/engine/`). The source is 1080×1920 at 30 fps, and the output keeps 1080×1920 at 30 fps. There are two looks:
+
+| Output | Look |
+|---|---|
+| `out/saber7_original_colors.mp4` | footage colours untouched |
+| `out/saber7_graded.mp4` | `GRADE=cine`: soft face-follow light, gentle S-curve, cool highlights / neutral shadows, skin-safe saturation, light vignette |
 
 | File | Role |
 |---|---|
-| `build_spec.py` | writes `spec.json`. Every time is written in **source** seconds, taken from `words.json`, and mapped through the jump cuts |
-| `words.json` / `face.json` | Whisper large-v3 word timings (with the dropped "ودي"/"والـ" re-timed) and the YuNet face track |
+| `build_spec.py` | writes `spec.json`. Every time is written in **source** seconds, taken from `words.json`, and mapped through the jump cuts. Free visual events snap to the music's beat grid |
+| `render.sh` | builds the audio once, then each look (base plate, graphics, encode) |
+| `words.json` / `face.json` | Whisper large-v3 word timings (with the dropped words re-timed) and the YuNet face track |
 | `brand/` | white Saber Group mark for the corner (cut out of the agency logo), the red agency logo and the Mushroom logo for the outro |
 | `assets/` | burger, hierarchy icon, booklet and light leaks from the asset pack |
+| `sfx/` | recorded UI sounds from *Kenney Interface Sounds* (CC0, licence included) |
 
-**Edit:** the dead air at 2.9–3.38, 18.24–18.5 and 35.2–35.82 s plus the tail is cut, which gives 40.5 s of speech and a 3.4 s end card. Each cut is hidden by a zoom-blur, a cutaway or a light leak. There are no left/right whips.
+**Edit:** the dead air at 2.9–3.38, 18.24–18.5, 22.40–22.64 (the breath after "Hierarchy", hidden under the motion scene, which stays up until the voice comes back) and 35.2–35.82 s is cut. The tail is trimmed so the end card lands on a beat. Cuts are hidden by zoom-blur, a light leak or the cutaways. There are no left/right moves. The camera zooms in and out slowly, never past 1.14× on this 1080p source, with Lanczos scaling and zoom-aware sharpening.
 
-**Music:** *This Funk Groove* (liosound), main mix, at about 153 BPM (one bar is 1.565 s). It runs from 6.53 s so the build bar sits under the hook and the groove drops on "التصميم Perfect". It then jumps on a downbeat to the stop bar at 64.72, which goes quiet under "مهمة قوي اسمها الـ", and the lift at 66.28 lands on **Visual Hierarchy**. The last segment uses the track's own ending under the end card. The music sits at −19 dB and is ducked 10 dB more under the voice.
+**Music:** *This Funk Groove* (liosound), main mix, played from 0:00 to the end of the video at one constant low level with no ducking. It sits about 16 dB under the voice and fades over the last 1.2 s. The tempo is about 153 BPM. Cutaways, the motion scene, cards and leaks snap to beats; the groove drop at 8.37 s gets a small punch-in.
 
-**SFX:** soft sounds only: pops, ticks, rising chimes for the reading order 1→2→3→4, a bell for info, a soft "nope" for ✗, a tonal bloom on transitions and a page sound for the PDF. Whooshes and risers are switched off.
+**Voice:** the camera mic is dull: 2–4 kHz sits about 22 dB under 500 Hz–1 kHz. The chain is a de-mud cut at 180/380 Hz, presence at 1.8/3.4/5.5 kHz, an air shelf, light denoise, a de-esser and gentle compression. The master is −14 LUFS.
+
+**SFX:** recorded UI sounds, one per on-screen motion, kept low (peaks about −25 to −33 dBFS before the master). Drops for the ad items, question sounds for the "؟", rising glass notes for the reading order 1→2→3→4, confirmations for ✓, a soft error for ✗, and maximize/minimize for the cutaways. No whooshes.
 
 ```bash
-python3 reels/saber7/build_spec.py
-BUILD_ROOT=/tmp/reels_build reels/make.sh reels/saber7      # → reels/saber7/out/saber7.mp4
+BUILD_ROOT=/tmp/reels_build reels/saber7/render.sh          # both looks
+BUILD_ROOT=/tmp/reels_build reels/saber7/render.sh cine     # graded only
 ```
 Source files go in `raw/s7/` (not in git): `saber7.mp4` and `music/liosound_This-Funk-Groove/…_main.wav`.

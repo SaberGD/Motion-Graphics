@@ -201,8 +201,20 @@ for f in spec.get('fx', []):
     if f['type'] in ('zoomblur', 'whip'): events.append((f['t'] - .2, 'whoosh'))
 for p in spec.get('punch', []):
     if len(p) > 3 and p[3] == 'hit': events.append((p[0], 'impact'))
-for e in spec.get('sfx', []): events.append((e['t'], e['type'], e.get('g', 0)))
+for e in spec.get('sfx', []):
+    if 'file' not in e: events.append((e['t'], e['type'], e.get('g', 0)))
 off = set(spec.get('sfx_off', []))
+_cache = {}
+
+
+def sample(path, rate=1.0):
+    """recorded SFX (mono), optional pitch/speed change by resampling, peak-normalised to 1"""
+    k = (path, rate)
+    if k not in _cache:
+        x = load(os.path.join(D, path), ch=1)[:, 0]
+        if rate != 1.0: x = np.interp(np.arange(0, len(x) - 1, rate), np.arange(len(x)), x).astype(np.float32)
+        _cache[k] = x / (np.abs(x).max() + 1e-9)
+    return _cache[k]
 
 sfx = np.zeros(N, np.float32)
 for ev in events:
@@ -211,6 +223,11 @@ for ev in events:
     s = SYN[ty]().astype(np.float32); s /= np.sqrt((s ** 2).mean()) + 1e-9  # unit RMS, then place at its target level
     s *= db(GAIN[ty] + (ev[2] if len(ev) > 2 else 0) + spec.get('sfx_gain', 0))
     i = int(t * SR); s = s[:max(0, N - i)]; sfx[i:i + len(s)] += s
+# recorded samples: g = peak level in dBFS (pre-master; the voice peaks around -6 dBFS)
+for e in spec.get('sfx', []):
+    if 'file' not in e: continue
+    s = sample(e['file'], e.get('rate', 1.0)) * db(e.get('g', -24) + spec.get('sfx_gain', 0))
+    i = int(e['t'] * SR); s = s[:max(0, N - i)]; sfx[i:i + len(s)] += s
 
 # ---------- music ----------
 mus = np.zeros((N, 2), np.float32)

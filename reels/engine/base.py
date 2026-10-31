@@ -133,7 +133,7 @@ def pro_grade(img, a):
 
 
 # ---------- grade ----------
-GRADE = spec.get('grade', 'light')
+GRADE = os.environ.get('GRADE') or spec.get('grade', 'light')
 xs = np.arange(256) / 255.
 lut_curve = np.clip(xs - .03 * np.sin(2 * np.pi * xs), 0, 1)  # gentle S
 lut = np.stack([np.clip(lut_curve * 1.0 + .006, 0, 1), lut_curve, np.clip(lut_curve * .985, 0, 1)], 1)  # BGR: tiny warm
@@ -141,8 +141,41 @@ lut = (lut * 255).astype(np.uint8)
 yy, xx = np.mgrid[0:OH, 0:OW]
 vig = 1 - .28 * (((xx - OW / 2) / (OW * .62)) ** 2 + ((yy - OH * .45) / (OH * .62)) ** 2)
 vig = np.clip(vig, .62, 1).astype(np.float32)[..., None]
-if spec.get('grade') == 'pro':
+if GRADE == 'pro':
     vig = (1 - (1 - vig) * .55).astype(np.float32)
+
+
+CG = spec.get('cine', {})
+_x = np.arange(256, dtype=np.float32) / 255.
+# filmic curve: lifted toe, soft shoulder, mid contrast
+_t = np.clip(_x, 0, 1)
+_curve = _t + CG.get('contrast', .06) * np.sin(2 * np.pi * _t) * -1   # S around 0.5
+_curve = np.clip(_curve, 0, 1)
+_curve = CG.get('black', .018) + _curve * (1 - CG.get('black', .018)) * CG.get('white', .985)
+yy2, xx2 = np.mgrid[0:OH:8, 0:OW:8].astype(np.float32)
+
+
+def cine(img, fx_, fy_):
+    x = img.astype(np.float32) / 255.
+    # face-follow light: very soft lift where the speaker is (computed small, upsampled)
+    d2 = ((xx2 - fx_) / 430) ** 2 + ((yy2 - fy_ - 380) / 900) ** 2
+    spot = cv2.resize(np.exp(-d2 * 1.6).astype(np.float32), (OW, OH), interpolation=cv2.INTER_LINEAR)[..., None]
+    x = x * (1 + CG.get('spot', .10) * spot) * (1 - CG.get('room', .06) * (1 - spot))
+    # tone curve on luminance, keep hue
+    lum = x @ np.array([.114, .587, .299], np.float32)
+    lc = np.interp(np.clip(lum, 0, 1), _x, _curve).astype(np.float32)
+    x = x * (lc / np.maximum(lum, 1e-4))[..., None]
+    lum = lc
+    # split tone: cool shadows, warm highlights (BGR)
+    sh = np.clip(1 - lum / .45, 0, 1)[..., None]; hi = np.clip((lum - .55) / .45, 0, 1)[..., None]
+    x = x + sh * np.array(CG.get('shadow_tint', [.022, .006, -.012]), np.float32) * .6 + hi * np.array(CG.get('high_tint', [-.02, .0, .022]), np.float32)
+    # saturation, less on skin-ish hues (orange) so faces stay natural
+    g = x.mean(2, keepdims=True)
+    skin = np.clip(1 - np.abs((x[..., 2] - x[..., 0]) - .12) / .12, 0, 1)[..., None] * np.clip((x[..., 2] - x[..., 1]) * 6, 0, 1)[..., None]
+    sat = CG.get('sat', 1.08) * (1 - skin) + CG.get('skin_sat', .98) * skin
+    x = g + (x - g) * sat
+    x = x * (1 - (1 - vig) * CG.get('vig', .7))
+    return np.clip(x * 255 + .5, 0, 255).astype(np.uint8)
 
 
 def grade(img):
@@ -193,7 +226,7 @@ def apply_fx(img, t):
 # ---------- render ----------
 FACE_Y = spec.get('face_y', .30)  # where the face sits (fraction of frame height) when zoomed
 ff = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'bgr24', '-s', f'{OW}x{OH}', '-r', str(FPS),
-                       '-i', '-', '-c:v', 'libx264', '-preset', 'medium', '-crf', '14', '-pix_fmt', 'yuv420p', OUT],
+                       '-i', '-', '-c:v', 'libx264', '-preset', 'medium', '-crf', '10', '-pix_fmt', 'yuv420p', OUT],
                       stdin=subprocess.PIPE)
 cur = -1; frame = None
 for i in range(N):
@@ -220,10 +253,10 @@ for i in range(N):
     x0 = np.clip(cx - w / 2, 0, SW - w); y0 = np.clip(cy - h / 2, 0, SH - h)
     s = OW / w
     M = np.float32([[s, 0, -x0 * s], [0, s, -y0 * s]])
-    img = cv2.warpAffine(frame, M, (OW, OH), flags=cv2.INTER_CUBIC if s > 1 else cv2.INTER_AREA)
-    if s > 1.15:  # recover a little crispness on upscaled punch-ins
-        amt = spec.get('sharpen', .35)  # gentle on big upscales: strong unsharp rings on shirt/background edges
-        bl = cv2.GaussianBlur(img, (0, 0), 1.0)
+    img = cv2.warpAffine(frame, M, (OW, OH), flags=cv2.INTER_LANCZOS4 if s > 1.001 else cv2.INTER_AREA)
+    if s > 1.02:  # recover crispness lost to the upscale, proportional to the zoom (no halos at small zooms)
+        amt = min(spec.get('sharpen', .35), spec.get('sharpen', .35) * (s - 1) / .15)
+        bl = cv2.GaussianBlur(img, (0, 0), .9)
         img = cv2.addWeighted(img, 1 + amt, bl, -amt, 0)
     if acap is not None:
         MA = np.float32([[s * AK, 0, s * (AX0 - x0)], [0, s * AK, s * (AY0 - y0)]])
@@ -240,6 +273,8 @@ for i in range(N):
         sm = cv2.GaussianBlur(sm, (0, 0), G.get('spot_feather', 22))
         al = cv2.resize(sm, (OW, OH), interpolation=cv2.INTER_LINEAR)
         img = apply_fx(pro_grade(img, al), t)
+    elif GRADE == 'cine':
+        img = apply_fx(cine(img, (sx[i] * SW - x0) * s, (sy[i] * SH - y0) * s), t)
     else:
         img = apply_fx(grade(img), t)
     ff.stdin.write(img.tobytes())
