@@ -1,0 +1,936 @@
+{
+ "title": "الـ Visual Hierarchy",
+ "src": "../../raw/s7/saber7.mp4",
+ "words": "words.json",
+ "face": "face.json",
+ "keep": [
+  [
+   0.1,
+   2.9
+  ],
+  [
+   3.38,
+   18.24
+  ],
+  [
+   18.5,
+   35.2
+  ],
+  [
+   35.82,
+   41.95
+  ]
+ ],
+ "cam": [
+  [
+   0,
+   1.0
+  ],
+  [
+   2.79,
+   1.06
+  ],
+  [
+   2.8,
+   1.14
+  ],
+  [
+   8.92,
+   1.08
+  ],
+  [
+   9.52,
+   1.08
+  ],
+  [
+   11.32,
+   1.16
+  ],
+  [
+   17.65,
+   1.18
+  ],
+  [
+   17.66,
+   1.0
+  ],
+  [
+   20.24,
+   1.12
+  ],
+  [
+   20.96,
+   1.12
+  ],
+  [
+   20.97,
+   1.02
+  ],
+  [
+   23.56,
+   1.09
+  ],
+  [
+   24.96,
+   1.09
+  ],
+  [
+   24.97,
+   1.0
+  ],
+  [
+   30.16,
+   1.0
+  ],
+  [
+   34.35,
+   1.05
+  ],
+  [
+   34.36,
+   1.14
+  ],
+  [
+   35.24,
+   1.16
+  ],
+  [
+   36.96,
+   1.18
+  ],
+  [
+   37.74,
+   1.03
+  ],
+  [
+   40.49,
+   1.06
+  ]
+ ],
+ "punch": [
+  [
+   2.2,
+   2.6,
+   0.04
+  ],
+  [
+   9.02,
+   9.38,
+   0.05
+  ],
+  [
+   33.16,
+   33.66,
+   0.035
+  ],
+  [
+   39.3,
+   39.64,
+   0.035
+  ]
+ ],
+ "fx": [
+  {
+   "t": 2.8,
+   "type": "zoomblur",
+   "d": 0.18
+  },
+  {
+   "t": 34.36,
+   "type": "zoomblur",
+   "d": 0.18
+  }
+ ],
+ "grade": "light",
+ "sharpen": 0.25,
+ "logo_src": "../saber7/brand/saber_white.png",
+ "logo_css": "top:96px;left:60px;width:118px",
+ "cap": {
+  "starts": [
+   0,
+   3,
+   6,
+   9,
+   11,
+   14,
+   18,
+   21,
+   23,
+   26,
+   28,
+   30,
+   33,
+   35,
+   37,
+   39,
+   41,
+   43,
+   44,
+   45,
+   46,
+   49,
+   51,
+   53,
+   55,
+   58,
+   60,
+   62,
+   63,
+   66,
+   68,
+   70,
+   72,
+   74,
+   77,
+   79,
+   81,
+   83,
+   85,
+   88,
+   89,
+   92,
+   94,
+   96,
+   99,
+   100,
+   102,
+   104,
+   106,
+   109,
+   111,
+   113,
+   115,
+   118
+  ],
+  "hl": [
+   2,
+   8,
+   11,
+   20,
+   29,
+   30,
+   36,
+   40,
+   42,
+   43,
+   44,
+   45,
+   48,
+   50,
+   54,
+   57,
+   60,
+   64,
+   65,
+   67,
+   73,
+   75,
+   78,
+   80,
+   82,
+   87,
+   93,
+   94,
+   97,
+   99,
+   105,
+   106,
+   114,
+   117
+  ],
+  "fix": {
+   "13": "جدًا",
+   "31": "اللي",
+   "32": "أقوله،",
+   "39": "إعلان",
+   "45": "والخصم",
+   "67": "الأساسية",
+   "70": "إنك",
+   "76": "الأول",
+   "92": "إنك",
+   "97": "أكبر",
+   "104": "إزاي",
+   "111": "أخوك",
+   "113": "سايبلك",
+   "116": "أول",
+   "121": ""
+  }
+ },
+ "els": [
+  {
+   "type": "chips",
+   "t0": 3.28,
+   "t1": 4.52,
+   "y": 262,
+   "x": 70,
+   "items": [
+    {
+     "text": "مشكلة كبيرة",
+     "icon": "x",
+     "cls": "bad"
+    }
+   ],
+   "at": [
+    3.38
+   ]
+  },
+  {
+   "type": "chips",
+   "t0": 5.87,
+   "t1": 10.32,
+   "y": 262,
+   "x": 70,
+   "items": [
+    {
+     "text": "كل حاجة Perfect"
+    },
+    {
+     "text": "وحلوة قوي"
+    },
+    {
+     "text": "النتيجة: مش حلو",
+     "icon": "x",
+     "cls": "bad"
+    }
+   ],
+   "at": [
+    6.0,
+    6.48,
+    9.04
+   ]
+  },
+  {
+   "type": "admock",
+   "t0": 11.52,
+   "t1": 17.96,
+   "y": 250,
+   "h": 820,
+   "title": "إعلان مطعم",
+   "items": [
+    {
+     "html": "<img src=\"../saber7/assets/burger.png\" style=\"width:86%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))\">",
+     "A": [
+      440,
+      96,
+      360,
+      330
+     ],
+     "B": [
+      60,
+      84,
+      720,
+      470
+     ],
+     "boxB": false,
+     "at": 12.36
+    },
+    {
+     "html": "<div style=\"text-align:center;line-height:.86\"><div style=\"font-family:Bebas;font-size:1.25em;color:#FFC36B\">99</div><div style=\"font-family:Cairo;font-weight:900;font-size:.3em;color:#F6F3F2\">جنيه بس!</div></div>",
+     "A": [
+      40,
+      96,
+      360,
+      330
+     ],
+     "B": [
+      450,
+      586,
+      330,
+      196
+     ],
+     "fs": 0.5,
+     "at": 12.88
+    },
+    {
+     "html": "<div style=\"display:grid;place-items:center;gap:.08em\"><div style=\"width:1.1em;height:1.1em;border-radius:50%;background:#F6F3F2;display:grid;place-items:center;font-family:Bebas;color:#D83B25;font-size:1em;line-height:1;padding-top:.08em\">BH</div><div style=\"font-family:Poppins;font-weight:600;font-size:.2em;letter-spacing:.14em;color:#F6F3F2\">BURGER HOUSE</div></div>",
+     "A": [
+      440,
+      456,
+      360,
+      330
+     ],
+     "B": [
+      250,
+      606,
+      170,
+      160
+     ],
+     "fs": 0.42,
+     "at": 13.54
+    },
+    {
+     "html": "<div style=\"transform:rotate(-6deg);background:linear-gradient(135deg,#E2462E,#B5301E);border-radius:.18em;padding:.06em .3em .14em;font-family:Cairo;font-weight:900;font-size:.62em;color:#fff;box-shadow:0 0 .4em rgba(216,59,37,.6);white-space:nowrap;direction:rtl\">خصم 30%</div>",
+     "A": [
+      40,
+      456,
+      360,
+      330
+     ],
+     "B": [
+      60,
+      626,
+      160,
+      120
+     ],
+     "fs": 0.42,
+     "at": 14.2
+    }
+   ],
+   "pulse": [
+    15.56,
+    16.1
+   ],
+   "eye": [
+    [
+     16.52,
+     620.0,
+     261.0
+    ],
+    [
+     16.78,
+     220.0,
+     621.0
+    ],
+    [
+     17.0,
+     220.0,
+     261.0
+    ],
+    [
+     17.24,
+     620.0,
+     621.0
+    ],
+    [
+     17.48,
+     620.0,
+     261.0
+    ]
+   ],
+   "eyeHold": 0.25,
+   "q": [
+    [
+     16.87,
+     330,
+     380,
+     17.96
+    ],
+    [
+     17.22,
+     700,
+     420,
+     17.96
+    ]
+   ]
+  },
+  {
+   "type": "kin",
+   "t0": 20.26,
+   "t1": 21.61,
+   "din": 0.3,
+   "dout": 0.2,
+   "iris": true,
+   "lines": [
+    {
+     "text": "Visual Hierarchy",
+     "y": 930,
+     "size": 118,
+     "w": 800,
+     "font": "Poppins",
+     "anim": "blur",
+     "at": 0.35999999999999943,
+     "stagger": 0.28,
+     "hl": [
+      1
+     ]
+    },
+    {
+     "text": "التسلسل البصري",
+     "y": 1100,
+     "size": 74,
+     "w": 800,
+     "anim": "rise",
+     "at": 0.78,
+     "stagger": 0.1,
+     "color": "#CBC7C5"
+    }
+   ],
+   "imgs": [
+    {
+     "src": "../saber7/assets/hierarchy.png",
+     "x": 400,
+     "y": 560,
+     "w": 280,
+     "at": 0.05
+    }
+   ],
+   "sparks": [
+    [
+     820,
+     620,
+     50,
+     0.7
+    ]
+   ]
+  },
+  {
+   "type": "admock",
+   "t0": 23.56,
+   "t1": 27.56,
+   "y": 250,
+   "h": 820,
+   "title": "إعلان مطعم",
+   "items": [
+    {
+     "html": "<img src=\"../saber7/assets/burger.png\" style=\"width:86%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))\">",
+     "A": [
+      440,
+      96,
+      360,
+      330
+     ],
+     "B": [
+      60,
+      84,
+      720,
+      470
+     ],
+     "boxB": false,
+     "at": 23.58
+    },
+    {
+     "html": "<div style=\"text-align:center;line-height:.86\"><div style=\"font-family:Bebas;font-size:1.25em;color:#FFC36B\">99</div><div style=\"font-family:Cairo;font-weight:900;font-size:.3em;color:#F6F3F2\">جنيه بس!</div></div>",
+     "A": [
+      40,
+      96,
+      360,
+      330
+     ],
+     "B": [
+      450,
+      586,
+      330,
+      196
+     ],
+     "fs": 0.5,
+     "at": 23.63
+    },
+    {
+     "html": "<div style=\"display:grid;place-items:center;gap:.08em\"><div style=\"width:1.1em;height:1.1em;border-radius:50%;background:#F6F3F2;display:grid;place-items:center;font-family:Bebas;color:#D83B25;font-size:1em;line-height:1;padding-top:.08em\">BH</div><div style=\"font-family:Poppins;font-weight:600;font-size:.2em;letter-spacing:.14em;color:#F6F3F2\">BURGER HOUSE</div></div>",
+     "A": [
+      440,
+      456,
+      360,
+      330
+     ],
+     "B": [
+      250,
+      606,
+      170,
+      160
+     ],
+     "fs": 0.42,
+     "at": 23.68
+    },
+    {
+     "html": "<div style=\"transform:rotate(-6deg);background:linear-gradient(135deg,#E2462E,#B5301E);border-radius:.18em;padding:.06em .3em .14em;font-family:Cairo;font-weight:900;font-size:.62em;color:#fff;box-shadow:0 0 .4em rgba(216,59,37,.6);white-space:nowrap;direction:rtl\">خصم 30%</div>",
+     "A": [
+      40,
+      456,
+      360,
+      330
+     ],
+     "B": [
+      60,
+      626,
+      160,
+      120
+     ],
+     "fs": 0.42,
+     "at": 23.73
+    }
+   ],
+   "morph": [
+    23.71,
+    0.75
+   ],
+   "nums": [
+    [
+     24.44,
+     0
+    ],
+    [
+     25.38,
+     1
+    ],
+    [
+     26.02,
+     2
+    ],
+    [
+     26.64,
+     3
+    ]
+   ],
+   "eye": [
+    [
+     24.16,
+     420.0,
+     319.0
+    ],
+    [
+     24.44,
+     420.0,
+     319.0
+    ],
+    [
+     25.38,
+     615.0,
+     684.0
+    ],
+    [
+     26.02,
+     335.0,
+     686.0
+    ],
+    [
+     26.64,
+     140.0,
+     686.0
+    ]
+   ],
+   "eyeHold": 0.6
+  },
+  {
+   "type": "chips",
+   "t0": 27.61,
+   "t1": 29.26,
+   "y": 262,
+   "x": 70,
+   "items": [
+    {
+     "text": "تبيع المنتج بتاعك"
+    }
+   ],
+   "at": [
+    27.71
+   ]
+  },
+  {
+   "type": "pie",
+   "t0": 30.36,
+   "t1": 34.3,
+   "x": 676,
+   "y": 292,
+   "w": 360,
+   "title": "حلاوة التصميم",
+   "slices": [
+    {
+     "label": "البطل",
+     "v": 50,
+     "color": "#FF8A1F",
+     "at": 30.51
+    },
+    {
+     "label": "السعر",
+     "v": 25,
+     "color": "#D83B25",
+     "at": 30.81
+    },
+    {
+     "label": "اللوجو",
+     "v": 15,
+     "color": "#A9A8AE",
+     "at": 31.11
+    },
+    {
+     "label": "الخصم",
+     "v": 10,
+     "color": "#5A514C",
+     "at": 31.41
+    }
+   ],
+   "hero": 0,
+   "heroAt": 32.34,
+   "center": "<span style=\"color:#FF8A1F\">البطل</span>"
+  },
+  {
+   "type": "vf",
+   "t0": 35.24,
+   "t1": 36.96,
+   "label": "REC",
+   "meta": "ISO 800 · F/1.8 · 1/60"
+  },
+  {
+   "type": "book",
+   "t0": 37.69,
+   "t1": 40.54,
+   "x": 745,
+   "y": 300,
+   "w": 280,
+   "img": "../saber7/assets/booklet.png",
+   "tag": "PDF",
+   "title": "Visual<br>Hierarchy",
+   "sub": "إزاي توجّه عين المشاهد",
+   "pill": "PDF · ملف"
+  },
+  {
+   "type": "outro",
+   "t0": 40.49,
+   "logos": [
+    [
+     "../saber7/brand/saber_red.png",
+     300
+    ],
+    [
+     "../saber7/brand/mushroom.png",
+     380
+    ]
+   ],
+   "cta": "ملف الـ <span style='color:#FF8A1F;font-family:Poppins;font-weight:600'>Visual Hierarchy</span><br>في أول كومنت ⬇"
+  },
+  {
+   "type": "leak",
+   "t": 2.8,
+   "d": 0.45,
+   "img": "../saber7/assets/leak1.jpg",
+   "amt": 0.55,
+   "flip": true
+  },
+  {
+   "type": "leak",
+   "t": 11.52,
+   "d": 0.45,
+   "img": "../saber7/assets/leak2.jpg",
+   "amt": 0.55
+  },
+  {
+   "type": "leak",
+   "t": 20.26,
+   "d": 0.45,
+   "img": "../saber7/assets/leak3.jpg",
+   "amt": 0.55
+  },
+  {
+   "type": "leak",
+   "t": 23.56,
+   "d": 0.45,
+   "img": "../saber7/assets/leak2.jpg",
+   "amt": 0.55,
+   "flip": true
+  },
+  {
+   "type": "leak",
+   "t": 34.36,
+   "d": 0.45,
+   "img": "../saber7/assets/leak1.jpg",
+   "amt": 0.55
+  },
+  {
+   "type": "leak",
+   "t": 40.49,
+   "d": 0.45,
+   "img": "../saber7/assets/leak3.jpg",
+   "amt": 0.55,
+   "flipY": true
+  }
+ ],
+ "outro": {
+  "dur": 3.4
+ },
+ "sfx": [
+  {
+   "t": 3.41,
+   "type": "err",
+   "g": 0
+  },
+  {
+   "t": 9.07,
+   "type": "err",
+   "g": 0
+  },
+  {
+   "t": 12.36,
+   "type": "pop",
+   "g": 0
+  },
+  {
+   "t": 12.88,
+   "type": "pop_lo",
+   "g": 0
+  },
+  {
+   "t": 13.54,
+   "type": "pop",
+   "g": 0
+  },
+  {
+   "t": 14.2,
+   "type": "pop_lo",
+   "g": 0
+  },
+  {
+   "t": 15.56,
+   "type": "pop_lo",
+   "g": -3
+  },
+  {
+   "t": 16.1,
+   "type": "pop_lo",
+   "g": -3
+  },
+  {
+   "t": 16.78,
+   "type": "tick",
+   "g": 2
+  },
+  {
+   "t": 17.0,
+   "type": "tick",
+   "g": 2
+  },
+  {
+   "t": 17.24,
+   "type": "tick",
+   "g": 2
+  },
+  {
+   "t": 17.48,
+   "type": "tick",
+   "g": 2
+  },
+  {
+   "t": 16.87,
+   "type": "pop_lo",
+   "g": -4
+  },
+  {
+   "t": 24.44,
+   "type": "chime0",
+   "g": 0
+  },
+  {
+   "t": 25.38,
+   "type": "chime1",
+   "g": 0
+  },
+  {
+   "t": 26.02,
+   "type": "chime2",
+   "g": 0
+  },
+  {
+   "t": 26.64,
+   "type": "chime3",
+   "g": 0
+  },
+  {
+   "t": 23.71,
+   "type": "bloom",
+   "g": -2
+  },
+  {
+   "t": 11.17,
+   "type": "bloom",
+   "g": 0
+  },
+  {
+   "t": 23.21,
+   "type": "bloom",
+   "g": 0
+  },
+  {
+   "t": 20.62,
+   "type": "soft_hit",
+   "g": -2
+  },
+  {
+   "t": 20.64,
+   "type": "shimmer",
+   "g": -4
+  },
+  {
+   "t": 27.73,
+   "type": "ding",
+   "g": -2
+  },
+  {
+   "t": 30.51,
+   "type": "tick",
+   "g": 3
+  },
+  {
+   "t": 30.81,
+   "type": "tick",
+   "g": 3
+  },
+  {
+   "t": 31.11,
+   "type": "tick",
+   "g": 3
+  },
+  {
+   "t": 31.41,
+   "type": "tick",
+   "g": 3
+  },
+  {
+   "t": 32.34,
+   "type": "chime4",
+   "g": -2
+  },
+  {
+   "t": 37.74,
+   "type": "paper",
+   "g": 0
+  },
+  {
+   "t": 38.14,
+   "type": "ding",
+   "g": -3
+  },
+  {
+   "t": 40.64,
+   "type": "soft_hit",
+   "g": 0
+  },
+  {
+   "t": 2.35,
+   "type": "bloom",
+   "g": -3
+  },
+  {
+   "t": 33.91,
+   "type": "bloom",
+   "g": -3
+  }
+ ],
+ "sfx_off": [
+  "whoosh",
+  "whoosh_dn",
+  "riser",
+  "glitch",
+  "impact"
+ ],
+ "music": {
+  "file": "../../raw/s7/music/liosound_This-Funk-Groove/liosound_This-Funk-Groove_main.wav",
+  "at": 0,
+  "segs": [
+   [
+    6.53,
+    25.585
+   ],
+   [
+    64.719,
+    85.068
+   ],
+   [
+    96.026,
+    100.95
+   ]
+  ],
+  "gain": -22,
+  "duck": -12,
+  "end_fade": 0.8
+ }
+}

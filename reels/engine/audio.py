@@ -1,0 +1,256 @@
+"""Audio: jump-cut voice + synthesised SFX (auto from the graphics spec) + music edit ducked under the voice.
+
+usage: audio.py <spec.json> <out.wav>
+spec.music = {"file":, "segs": [[m0, m1], ...] (music-file ranges, concatenated from out t=0), "gain": dB,
+              "duck": dB, "stops": [[t0, t1], ...] (music mutes for a beat-stop), "end_fade": s}
+spec.sfx   = extra [{"t":, "type":, "g": dB}], spec.sfx_off = [types to suppress]
+"""
+import json, os, subprocess, sys
+import numpy as np
+sys.path.insert(0, os.path.dirname(__file__))
+from timeline import load_spec, keeps, out_duration, speech_duration
+
+SR = 48000
+spec = load_spec(sys.argv[1]); OUT = sys.argv[2]; D = spec['_dir']
+DUR = out_duration(spec); N = int(DUR * SR) + SR // 10
+rng = np.random.RandomState(7)
+
+
+def load(path, ss=None, t=None, ch=2, af=None):
+    cmd = ['ffmpeg', '-v', 'error']
+    if ss is not None: cmd += ['-ss', str(ss)]
+    if t is not None: cmd += ['-t', str(t)]
+    cmd += ['-i', path, '-vn']
+    if af: cmd += ['-af', af]
+    cmd += ['-f', 'f32le', '-ac', str(ch), '-ar', str(SR), '-']
+    a = np.frombuffer(subprocess.run(cmd, capture_output=True, check=True).stdout, np.float32)
+    return a.reshape(-1, ch).copy()
+
+
+db = lambda x: 10 ** (x / 20)
+
+# ---------- voice: jump cuts with 12 ms crossfades ----------
+VOICE_AF = spec.get('voice_af', 'highpass=f=75,lowpass=f=15000,afftdn=nr=8:nf=-42,acompressor=threshold=-20dB:ratio=2.6:attack=8:release=140:makeup=3dB,equalizer=f=3200:t=q:w=1.2:g=2,equalizer=f=220:t=q:w=1:g=-1.5')
+raw = load(os.path.join(D, spec['src']), ch=1, af=VOICE_AF)[:, 0]
+voice = np.zeros(N, np.float32); pos = 0; XF = int(.012 * SR)
+for s, e in keeps(spec):
+    seg = raw[int(s * SR):int(e * SR)].copy()
+    seg[:XF] *= np.linspace(0, 1, XF); seg[-XF:] *= np.linspace(1, 0, XF)
+    voice[pos:pos + len(seg)] += seg[:N - pos]; pos += len(seg) - XF // 2
+voice *= db(spec.get('voice_gain', 0))
+
+# ---------- SFX synthesis ----------
+t_ = lambda d: np.arange(int(d * SR)) / SR
+
+
+def noise(d):
+    return rng.randn(int(d * SR)).astype(np.float32)
+
+
+def bandsweep(x, f0, f1):
+    """crude time-varying one-pole lowpass sweep."""
+    out = np.empty_like(x); y = 0
+    fs = np.geomspace(f0, f1, len(x))
+    a = np.exp(-2 * np.pi * fs / SR)
+    for i in range(len(x)):
+        y = a[i] * y + (1 - a[i]) * x[i]; out[i] = y
+    return out
+
+
+def whoosh(d=.55, up=True):
+    n = noise(d); env = np.sin(np.linspace(0, np.pi, len(n))) ** 2
+    s = bandsweep(n, 300, 6000) if up else bandsweep(n, 6000, 300)
+    s = s - bandsweep(s, 120, 120)
+    return s * env * 2.2
+
+
+def riser(d=1.2):
+    t = t_(d); f = 200 * (2 ** (t / d * 3)); ph = 2 * np.pi * np.cumsum(f) / SR
+    s = .35 * np.sin(ph) + .25 * bandsweep(noise(d), 400, 9000)
+    return s * (t / d) ** 2
+
+
+def impact(d=.9):
+    t = t_(d); f = 120 * np.exp(-t * 9) + 42; ph = 2 * np.pi * np.cumsum(f) / SR
+    body = np.sin(ph) * np.exp(-t * 5.5)
+    hit = bandsweep(noise(d), 4000, 300) * np.exp(-t * 22) * .8
+    return (body * 1.1 + hit)
+
+
+def pop(f=900, d=.09):
+    t = t_(d); return np.sin(2 * np.pi * (f + 900 * np.exp(-t * 60)) * t) * np.exp(-t * 55)
+
+
+def click(d=.03):
+    t = t_(d); return (noise(d) * .6 + np.sin(2 * np.pi * 2400 * t)) * np.exp(-t * 260)
+
+
+def tick(d=.02):
+    t = t_(d); return noise(d) * np.exp(-t * 400) * .5
+
+
+def shimmer(d=.9):
+    t = t_(d); s = sum(np.sin(2 * np.pi * f * t + k) * np.exp(-t * (4 + k)) for k, f in enumerate([2093, 2637, 3136, 4186, 5274]))
+    return s * .25 * np.minimum(1, t / .01)
+
+
+def glitch(d=.25):
+    s = noise(d); blocks = np.repeat(rng.choice([0, 1], int(d * 60)), int(SR / 60))[:len(s)]
+    s[:len(blocks)] *= blocks
+    s = np.round(s * 4) / 4
+    return s * .5 * np.exp(-t_(d) * 6)
+
+
+def shutter():
+    return np.concatenate([click() * 1.2, np.zeros(int(.05 * SR)), click() * .9])
+
+
+def bell(f, d=1.1, bright=1.0):
+    """soft mallet/bell: a few inharmonic partials with fast attack and gentle decay"""
+    t = t_(d); parts = [(1, 1, 3.2), (2.0, .35 * bright, 5), (3.01, .18 * bright, 7), (4.2, .08 * bright, 9)]
+    s = sum(a * np.sin(2 * np.pi * f * r * t) * np.exp(-t * dk) for r, a, dk in parts)
+    return s * np.minimum(1, t / .004)
+
+
+def ding():  # light "info" notification
+    s = bell(1318.5, .9); h = .6 * np.concatenate([np.zeros(int(.07 * SR)), bell(1975.5, .83)]); n = min(len(s), len(h)); s[:n] += h[:n]
+    return s
+
+
+def chime(n=0):  # rising reading-order notes (C major pentatonic)
+    f = [523.25, 659.25, 783.99, 1046.5, 1318.5][min(n, 4)]
+    s = bell(f, 1.0); s[:int(.6 * SR)] += .25 * bell(f * 2, .6)
+    return s
+
+
+def err():  # soft two-note "nope"
+    return np.concatenate([bell(392, .18, .5)[:int(.14 * SR)], bell(311.1, .7, .5)])
+
+
+def bloom(d=.9):  # soft tonal swell for transitions (no noise whoosh)
+    t = t_(d); env = np.sin(np.pi * np.clip(t / d, 0, 1)) ** 2
+    s = sum(np.sin(2 * np.pi * f * t + k) for k, f in enumerate([261.6, 392.0, 523.3, 659.3])) / 4
+    return s * env * (.6 + .4 * np.sin(2 * np.pi * 5 * t))
+
+
+def soft_hit(d=.8):  # warm low thump for the reveal / outro (no click)
+    t = t_(d); f = 90 * np.exp(-t * 7) + 48; ph = 2 * np.pi * np.cumsum(f) / SR
+    return np.sin(ph) * np.exp(-t * 6) * np.minimum(1, t / .006)
+
+
+def paper(d=.35):  # page / card slide
+    n = noise(d); s = bandsweep(n, 2500, 900) - bandsweep(n, 400, 400)
+    return s * np.sin(np.linspace(0, np.pi, len(n))) ** 3
+
+
+SYN = dict(whoosh=lambda: whoosh(), whoosh_dn=lambda: whoosh(.45, False), riser=riser, impact=impact, pop=pop,
+           pop_lo=lambda: pop(500, .12), click=click, tick=tick, shimmer=shimmer, glitch=glitch, shutter=shutter,
+           ding=ding, err=err, bloom=bloom, soft_hit=soft_hit, paper=paper,
+           chime0=lambda: chime(0), chime1=lambda: chime(1), chime2=lambda: chime(2), chime3=lambda: chime(3), chime4=lambda: chime(4))
+# target RMS (dBFS, pre-master) per sound; voice sits around -20 dBFS RMS, so SFX stay ~13-20 dB under it
+GAIN = dict(whoosh=-35, whoosh_dn=-37, riser=-36, impact=-32, pop=-36, pop_lo=-34, click=-37, tick=-41, shimmer=-38,
+            glitch=-37, shutter=-34,
+            ding=-38, err=-37, bloom=-40, soft_hit=-34, paper=-40, chime0=-38, chime1=-38, chime2=-38, chime3=-38, chime4=-38)
+
+events = []
+for el in spec.get('els', []):
+    ty = el['type']
+    if ty == 'kin':
+        events.append((el['t0'] - .25, 'whoosh'))
+        for ln in el.get('lines', []):
+            at = el['t0'] + ln.get('at', 0); an = ln.get('anim', 'blur'); n = len(ln['text'].split()); st = ln.get('stagger', .09)
+            if an == 'slam': events.append((at, 'impact'))
+            elif an == 'pop':
+                for k in range(n): events.append((at + k * st, 'pop'))
+            elif an == 'type':
+                for k in range(n): events.append((at + k * st, 'tick'))
+            elif an == 'glitch': events.append((at, 'glitch'))
+            elif an in ('blur', 'rise', 'scatter'): events.append((at, 'pop_lo'))
+        for s in el.get('sparks', []): events.append((el['t0'] + (s[3] if len(s) > 3 else .2), 'shimmer'))
+        events.append((el['t1'] - .12, 'whoosh_dn'))
+    elif ty == 'chips':
+        if el.get('title'): events.append((el['t0'], 'pop_lo'))
+        for k in range(len(el['items'])): events.append(((el['at'][k] if el.get('at') else el['t0'] + .15 + k * .2), 'pop'))
+    elif ty == 'prompt':
+        ts = el.get('ts', el['t0'] + .45); te = el.get('te', ts + len(el['text']) * .045)
+        events.append((el['t0'], 'whoosh'))
+        for k in range(len(el['text'])):
+            if el['text'][k] != ' ': events.append((ts + (te - ts) * k / len(el['text']), 'tick'))
+        sk = el.get('send', te + .25); events += [(sk, 'click'), (sk + .05, 'shimmer')]
+    elif ty in ('card', 'toast', 'stat', 'bars'):
+        events.append((el['t0'] - .05, 'whoosh'))
+        if ty == 'stat':
+            if el.get('steps'): events += [(st, 'pop') for st, _ in el['steps']]
+            else: events.append((el['t0'] + el.get('count', 1), 'pop'))
+    elif ty == 'demo':
+        events.append((el['t0'] - .05, 'whoosh'))
+        if el.get('focus') is not None: events += [(el['focus'], 'pop_lo'), (el['focus'] + .02, 'shimmer', 4)]
+        for st in el.get('steps', []): events.append((st, 'pop'))
+        for sw in el.get('sw', []): events.append((sw[0], 'pop'))
+        if el.get('stamp') is not None: events.append((el['stamp'], 'impact', -6))
+        for c in el.get('cups', []):
+            if c[1]: events += [(c[1], 'pop_lo'), (c[1] + .03, 'shimmer')]
+        for m in el.get('marks', []): events.append((m, 'pop'))
+    elif ty == 'vf':
+        events.append((el['t0'], 'shutter'))
+    elif ty == 'sweep':
+        events.append((el['t'] - el.get('d', .5) * .6, 'whoosh'))
+    elif ty == 'outro':
+        events += [(el['t0'] - .9, 'riser'), (el['t0'] + .15, 'impact'), (el['t0'] + .4, 'shimmer')]
+for f in spec.get('fx', []):
+    if f['type'] in ('zoomblur', 'whip'): events.append((f['t'] - .2, 'whoosh'))
+for p in spec.get('punch', []):
+    if len(p) > 3 and p[3] == 'hit': events.append((p[0], 'impact'))
+for e in spec.get('sfx', []): events.append((e['t'], e['type'], e.get('g', 0)))
+off = set(spec.get('sfx_off', []))
+
+sfx = np.zeros(N, np.float32)
+for ev in events:
+    t, ty = ev[0], ev[1]
+    if ty in off or t < 0: continue
+    s = SYN[ty]().astype(np.float32); s /= np.sqrt((s ** 2).mean()) + 1e-9  # unit RMS, then place at its target level
+    s *= db(GAIN[ty] + (ev[2] if len(ev) > 2 else 0) + spec.get('sfx_gain', 0))
+    i = int(t * SR); s = s[:max(0, N - i)]; sfx[i:i + len(s)] += s
+
+# ---------- music ----------
+mus = np.zeros((N, 2), np.float32)
+M = spec.get('music')
+if M:
+    mf = os.path.join(D, M['file']); pos = int(M.get('at', 0) * SR); XF = int(.03 * SR)
+    for m0, m1 in M['segs']:
+        seg = load(mf, m0, m1 - m0 + .03)
+        seg[:XF] *= np.linspace(0, 1, XF)[:, None]; seg[-XF:] *= np.linspace(1, 0, XF)[:, None]
+        seg = seg[:max(0, N - pos)]; mus[pos:pos + len(seg)] += seg; pos += len(seg) - XF
+    # beat-stops
+    g = np.ones(N, np.float32)
+    for a, b in M.get('stops', []):
+        i0, i1 = int(a * SR), int(b * SR); r = int(.02 * SR)
+        g[i0:i1] = 0; g[i0 - r:i0] = np.minimum(g[i0 - r:i0], np.linspace(1, 0, r)); g[i1:i1 + r] = np.linspace(0, 1, r)
+    # end fade
+    ef = M.get('end_fade', 1.5); ie = int(DUR * SR)
+    g[ie - int(ef * SR):ie] *= np.linspace(1, 0, int(ef * SR)); g[ie:] = 0
+    # duck under voice: envelope follower on the voice
+    env = np.abs(voice); w = int(.05 * SR)
+    env = np.convolve(env, np.ones(w) / w, 'same')
+    speaking = (env > db(-42)).astype(np.float32)
+    k = int(.25 * SR); speaking = np.convolve(speaking, np.ones(k) / k, 'same')  # smooth attack/release
+    duck = db(M.get('duck', -9) * np.clip(speaking * 1.6, 0, 1))
+    mus *= (g * duck * db(M.get('gain', -16)))[:, None]
+
+if os.environ.get('STEMS'):  # QC: write each stem as heard in the mix
+    for nm, st in (('voice', voice), ('sfx', sfx), ('music', mus)):
+        st = st if st.ndim == 2 else np.repeat(st[:, None], 2, 1)
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ac', '2', '-ar', str(SR), '-i', '-', f'{OUT}.{nm}.wav'],
+                       input=st[:int(DUR * SR)].astype(np.float32).tobytes(), check=True)
+mix = mus + (voice + sfx)[:, None]
+mix = mix[:int(DUR * SR)]
+tmp = OUT + '.pre.wav'
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ac', '2', '-ar', str(SR), '-i', '-', tmp], input=mix.astype(np.float32).tobytes(), check=True)
+# loudness: -14 LUFS integrated, -1 dBTP
+st = subprocess.run(['ffmpeg', '-hide_banner', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9:print_format=json', '-f', 'null', '-'], capture_output=True, text=True).stderr
+js = json.loads(st[st.rindex('{'):st.rindex('}') + 1])
+af = (f"loudnorm=I=-14:TP=-1.2:LRA=9:measured_I={js['input_i']}:measured_TP={js['input_tp']}:measured_LRA={js['input_lra']}"
+      f":measured_thresh={js['input_thresh']}:offset={js['target_offset']}:linear=true,aresample=48000")
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', tmp, '-af', af, '-c:a', 'pcm_s24le', OUT], check=True)
+os.remove(tmp)
+print('audio', OUT, f'{DUR:.2f}s', len(events), 'sfx events', 'in', js['input_i'], 'LUFS')

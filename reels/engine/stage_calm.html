@@ -1,0 +1,282 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Cairo;src:url(../../project/fonts/Cairo.ttf);font-weight:200 1000}
+@font-face{font-family:Alex;src:url(../../project/fonts/Alexandria.ttf);font-weight:100 900}
+@font-face{font-family:Poppins;src:url(../../project/fonts/Poppins-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Poppins;src:url(../../project/fonts/Poppins-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../project/fonts/BebasNeue-Regular.ttf)}
+:root{--org:#FF8A1F;--hl:#FF9C3F;--cream:#F4EEE8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;color:#fff}
+.L{position:absolute;inset:0}
+#bg{position:absolute;inset:0;width:1080px;height:1920px}
+#fg{position:absolute;inset:0;background-size:100% 100%;-webkit-mask-size:100% 100%;mask-size:100% 100%;mask-mode:luminance}
+/* text placed in the room, behind the speaker */
+.depth{position:absolute;left:0;right:0;text-align:center;white-space:nowrap;will-change:transform,opacity,filter}
+.depth .w{position:absolute;left:0;right:0;text-align:center}
+.depth .sub{position:absolute;left:0;right:0;text-align:center;font-family:Alex;font-weight:600;direction:rtl}
+/* captions */
+#cap{position:absolute;left:80px;right:80px;display:flex;justify-content:center;direction:rtl}
+#cap .c{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:0 16px;direction:rtl;flex-wrap:wrap;font-family:Cairo;font-weight:800;font-size:62px;line-height:1.3;text-align:center}
+#cap .w{white-space:nowrap;text-shadow:0 2px 3px rgba(0,0,0,.35),0 4px 18px rgba(0,0,0,.55)}
+#cap .w.hl{color:var(--hl)}
+#cap .w.lat{font-family:Poppins;font-weight:600;font-size:.84em;direction:ltr;unicode-bidi:isolate}
+#logo{position:absolute;top:120px;left:70px;width:112px;opacity:.92;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.depth s{text-decoration:line-through;text-decoration-color:var(--org);text-decoration-thickness:.09em}
+.illab{position:absolute;width:200px;text-align:center;font-family:Alex;font-weight:600;font-size:40px;color:rgba(244,238,232,.8);direction:rtl}
+.illtitle{position:absolute;left:0;right:0;text-align:center;font-family:Alex;font-weight:700;font-size:56px;color:rgba(244,238,232,.9);direction:rtl}
+.vfc{position:absolute;width:64px;height:64px;border-color:rgba(255,255,255,.75);border-style:solid}
+.end{position:absolute;left:0;right:0;text-align:center}
+.end .lock{display:flex;justify-content:center;align-items:center;gap:36px}
+.end .sep{width:2px;height:110px;background:rgba(255,255,255,.45)}
+.cta{font-family:Cairo;font-weight:800;direction:rtl;line-height:1.35;padding:0 80px}
+.pill{display:inline-block;margin-top:22px;font-family:Cairo;font-weight:800;font-size:44px;padding:10px 40px 14px;border-radius:999px;border:2.5px solid var(--org);direction:rtl}
+</style></head>
+<body><div id="stage">
+  <img id="bg">
+  <div id="behind" class="L"></div>
+  <div id="fg"></div>
+  <div id="ins" class="L"></div>
+  <div id="front" class="L"></div>
+</div>
+<script>
+const $ = (t, cls, parent, css, html) => { const e = document.createElement(t); if (cls) e.className = cls; if (css) e.style.cssText = css; if (html != null) e.innerHTML = html; parent.appendChild(e); return e; };
+const INS = document.getElementById('ins'), BEH = document.getElementById('behind'), FR = document.getElementById('front'), BG = document.getElementById('bg'), FG = document.getElementById('fg');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const eo = x => 1 - Math.pow(1 - clamp(x), 3);
+const eio = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const lerp = (a, b, k) => a + (b - a) * k;
+const isLat = s => /^[A-Za-z0-9%+.\-#@$&!?:/']+$/.test(s.replace(/[«»"،,.!?؟]/g, ''));
+const CAR = c => `<svg viewBox="0 0 120 56" width="120" height="56"><path d="M8 40 C8 30 14 28 22 27 L36 13 C40 9 44 8 50 8 L78 8 C85 8 89 10 93 15 L104 27 C112 28 116 31 116 38 L116 42 C116 45 114 46 111 46 L9 46 C8 46 8 44 8 40Z" fill="${c}"/><circle cx="32" cy="46" r="9" fill="#1a1512"/><circle cx="92" cy="46" r="9" fill="#1a1512"/></svg>`;
+const SOFT = 'rgba(244,238,232,.34)', HERO = '#FF8A1F';
+const CUPF = (hi, cape) => { const W = 150, ryT = hi ? 42 : 9, H = hi ? 110 : 240, bw = hi ? .78 : .9, y0 = 290 - H - 20, y1 = 290 - 20, xL = 200 - W / 2, xR = 200 + W / 2, bL = 200 - W * bw / 2, bR = 200 + W * bw / 2;
+  return `<svg viewBox="0 0 400 300" width="400" height="300">${cape ? `<path d="M${xL + 8} ${y0 + 16} Q200 ${y0 + 36} ${xR - 8} ${y0 + 16} L${xR + 36} ${y1 + 6} Q200 ${y1 - 18} ${xL - 36} ${y1 + 6} Z" fill="#D83B25"/>` : ''}
+  <path d="M${xL} ${y0} L${bL} ${y1} A${W * bw / 2} ${hi ? 26 : 20} 0 0 0 ${bR} ${y1} L${xR} ${y0} Z" fill="#E9E2DC"/>
+  <ellipse cx="200" cy="${y0}" rx="${W / 2}" ry="${ryT}" fill="#3a2a22" stroke="#E9E2DC" stroke-width="4"/>
+  <path d="M${xR - 4} ${y0 + H * .25} q${hi ? 38 : 50} ${H * .1} 0 ${H * .45}" fill="none" stroke="#E9E2DC" stroke-width="${hi ? 12 : 14}" stroke-linecap="round"/>
+  ${cape ? `<text x="200" y="${y0 + H * .62}" text-anchor="middle" font-family="Bebas" font-size="${hi ? 44 : 64}" fill="#D83B25">S</text>` : ''}</svg>`; };
+let SPEC, CH = [], ELS = [], END = null;
+
+function chunks(words, cfg) {
+  const out = []; let cur = [];
+  words.forEach(w => { if (cur.length && cfg.starts.includes(w.i)) { out.push(cur); cur = []; } cur.push(w); });
+  if (cur.length) out.push(cur);
+  return out.map(ws => ({ ws, t0: ws[0].s - .04, t1: ws[ws.length - 1].e }));
+}
+
+window.init = (spec, words) => {
+  SPEC = spec; const cfg = spec.cap; const hl = new Set(cfg.hl || []);
+  CH = chunks(words, cfg);
+  CH.forEach((c, k) => { const nx = CH[k + 1]; c.t1 = nx ? Math.min(nx.t0, c.t1 + .5) : c.t1 + .4; });
+  const cap = $('div', '', FR); cap.id = 'cap'; cap.style.top = (cfg.y || 1330) + 'px';
+  CH.forEach(c => {
+    c.el = $('div', 'c', cap, 'opacity:0');
+    c.ws.forEach(w => {
+      const fixed = cfg.fix && cfg.fix[w.i] != null; let txt = fixed ? cfg.fix[w.i] : w.w; if (txt === '') return;
+      if (!fixed) txt = txt.replace(/[،,.؛]+$/, '');
+      const last = c.el.lastElementChild;
+      if (isLat(txt) && /[A-Za-z]/.test(txt) && last && last.classList.contains('lat')) { last.textContent += ' ' + txt; if (hl.has(w.i)) last.classList.add('hl'); return; }
+      $('span', 'w' + (hl.has(w.i) ? ' hl' : '') + (isLat(txt) && /[A-Za-z]/.test(txt) ? ' lat' : ''), c.el, '', txt);
+    });
+  });
+  if (spec.logo !== false) { const l = $('img', '', FR); l.id = 'logo'; l.src = spec.logoSrc || '../assets/brand/saber-logo-trim.png'; }
+  ELS = (spec.els || []).map(d => Object.assign(BUILD[d.type](d), { d }));
+  return CH.map(c => c.t0.toFixed(2) + ' ' + c.ws.map(w => (cfg.fix && cfg.fix[w.i] != null ? cfg.fix[w.i] : w.w)).join(' '));
+};
+
+const BUILD = {
+  // full-screen still (optionally bg/fg layers for parallax): wipes in, slow push, cuts out on the beat
+  insert(d) {
+    const root = $('div', 'L', INS, 'display:none;overflow:hidden');
+    const mk = src => $('img', '', root, 'position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover;will-change:transform', null);
+    const bg = mk(); bg.src = '../assets/' + (d.bg || d.src);
+    const fg = d.fg ? mk() : null; if (fg) fg.src = '../assets/' + d.fg;
+    const grp = d.objsFollow ? $('div', '', root, 'position:absolute;inset:0;will-change:transform') : root;
+    const objs = (d.objs || []).map(o => { const e = $('img', '', grp, `position:absolute;left:${o.x - o.w / 2}px;top:${o.y - o.w / 2}px;width:${o.w}px;will-change:transform;opacity:0`); e.src = '../assets/' + o.src; e._o = o; return e; });
+    const title = d.title ? $('div', '', root, `position:absolute;left:0;right:0;top:${d.title.y}px;text-align:center;font-family:Alex;font-weight:800;font-size:${d.title.size || 88}px;line-height:1.25;color:#F4EEE8;direction:rtl;text-shadow:0 6px 24px rgba(0,0,0,.5);opacity:0`, d.title.html) : null;
+    const leak = d.leak ? $('img', '', INS, 'position:absolute;inset:0;width:1080px;height:1920px;mix-blend-mode:screen;display:none') : null; if (leak) leak.src = '../assets/' + d.leak;
+    return { root, bg, fg, objs, leak, title, grp };
+  },
+  // a 3D object floating over the video (top area), gentle bob
+  obj(d) {
+    const e = $('img', '', INS, `position:absolute;left:${d.x - d.w / 2}px;top:${d.y - d.w / 2}px;width:${d.w}px;display:none;will-change:transform;filter:drop-shadow(0 18px 30px rgba(0,0,0,.45))`);
+    e.src = '../assets/' + d.src; return { e };
+  },
+  // large type standing in the room behind the speaker; `steps` swap the word in place
+  depth(d) {
+    const root = $('div', 'depth', BEH, `top:${d.y}px;height:${d.size}px;display:none;${d.dx ? `margin-left:${d.dx * 2}px` : ''}`);
+    const words = (d.steps || [[d.t0, d.text]]).map(([t, txt]) => {
+      const e = $('div', 'w', root, `font-family:${d.font || 'Bebas'};font-weight:${d.w || 400};font-size:${d.size}px;line-height:1;color:${d.color || 'var(--cream)'};letter-spacing:${d.ls ?? 2}px;opacity:0`, txt);
+      e._t = t; return e;
+    });
+    root.style.display = '';
+    words.forEach(e => { let fs = d.size; const span = $('span', '', e, 'display:inline-block', e.innerHTML); e.innerHTML = ''; e.appendChild(span);
+      while (span.getBoundingClientRect().width > (d.maxW || 960) && fs > 60) { fs -= 8; e.style.fontSize = fs + 'px'; } });
+    root.style.display = 'none';
+    const sub = d.sub ? $('div', 'sub', root, `top:${d.size * .92 + (d.sub.dy || 0)}px;font-size:${d.sub.size || 64}px;color:${d.sub.color || 'var(--cream)'};opacity:0`, d.sub.text) : null;
+    return { root, words, sub };
+  },
+  // flat illustrations standing in the room (behind the speaker): 'dots' | 'cars' | 'morph'
+  illus(d) {
+    const root = $('div', 'L', BEH, 'display:none'); const its = []; const cy = d.y;
+    if (d.mode === 'dots') {
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 9; c++) { const hero = r === 1 && c === 4;
+        const e = $('div', '', root, `position:absolute;left:${540 + (c - 4) * 96 - 15}px;top:${cy + (r - 1) * 90 - 15}px;width:30px;height:30px;border-radius:50%;background:${hero ? HERO : SOFT}`);
+        e._hero = hero; e._r = Math.hypot(c - 4, r - 1); its.push(e); }
+    } else if (d.mode === 'cars') {
+      for (let k = 0; k < 8; k++) { const hero = k === 4; const e = $('div', '', root, `position:absolute;left:0;top:${cy - 28}px;width:120px;height:56px`, CAR(hero ? HERO : SOFT)); e._hero = hero; e._k = k; its.push(e); }
+    } else if (d.mode === 'swatch') {
+      if (d.title) root._title = $('div', 'illtitle', root, `top:${cy - 170}px`, d.title);
+      const n = d.sw.length, gap = Math.min(210, 820 / n);
+      d.sw.forEach((w, k) => { const x = 540 + (k - (n - 1) / 2) * gap;
+        const e = $('div', '', root, `position:absolute;left:${x - 56}px;top:${cy - 56}px;width:112px;height:112px;border-radius:50%;background:${w[1]}`); e._t = w[0]; e._sw = 1; its.push(e);
+        if (w[2]) { const l = $('div', 'illab', root, `left:${x - 100}px;top:${cy + 72}px`, w[2]); l._t = w[0]; its.push(l); } });
+    } else if (d.mode === 'cup') {
+      (d.cups || []).forEach((c, k, arr) => { const x = arr.length === 1 ? 540 : [330, 750][k];
+        const e = $('div', '', root, `position:absolute;left:${x - 200}px;top:${cy - 150}px;width:400px;height:300px;transform-origin:50% 80%`); e._hi = c[0] === 'high'; e._cape = c[1]; e._st = -1; its.push(e);
+        if (c[2]) { const l = $('div', 'illab', root, `left:${x - 180}px;top:${cy + 170}px;width:360px;font-size:44px`, c[2]); l._t = d.t0 + .3; its.push(l); } });
+    } else if (d.mode === 'morph') {
+      for (let k = 0; k < 5; k++) { const hero = k === 2; const e = $('div', '', root, `position:absolute;left:${540 + (k - 2) * 150 - 40}px;top:${cy - 40}px;width:80px;height:80px;border-radius:12px;background:${SOFT}`); e._hero = hero; e._k = k; its.push(e); }
+      root._line = $('div', '', root, `position:absolute;left:170px;right:170px;top:${cy + 62}px;border-top:3px dashed rgba(244,238,232,.25)`);
+    }
+    return { root, its };
+  },
+  vf(d) {
+    const root = $('div', 'L', FR, 'display:none'); const m = d.inset || [230, 110, 420, 110];
+    [['top', 'left', '3px 0 0 3px'], ['top', 'right', '3px 3px 0 0'], ['bottom', 'left', '0 0 3px 3px'], ['bottom', 'right', '0 3px 3px 0']].forEach(([v, h, bw]) =>
+      $('div', 'vfc', root, `${v}:${v === 'top' ? m[0] : m[2]}px;${h}:${h === 'left' ? m[3] : m[1]}px;border-width:${bw}`));
+    root._rec = $('div', '', root, `position:absolute;top:${m[0] + 14}px;right:${m[1] + 84}px;font-family:Poppins;font-weight:600;font-size:26px;letter-spacing:3px;color:rgba(255,255,255,.8)`, '<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#D83B25;margin-right:10px"></span>REC');
+    return { root };
+  },
+  end(d) {
+    const root = $('div', 'L', FR, 'display:none');
+    const top = $('div', 'end', root, `top:${d.y || 230}px`);
+    const lock = $('div', 'lock', top);
+    const sg = $('img', '', lock, 'width:190px;border-radius:10px'); sg.src = '../assets/brand/saber-logo-trim.png';
+    const sep = $('div', 'sep', lock);
+    const mu = $('img', '', lock, 'width:330px'); mu.src = '../assets/brand/mushroom-logo-trim.png';
+    const cta = $('div', 'end', root, `top:${d.ctaY || 1300}px`);
+    const line = $('div', 'cta', cta, 'font-size:60px', d.cta || '');
+    const pill = d.pill ? $('div', 'pill', cta, '', d.pill) : null;
+    return { root, top, cta, pill };
+  },
+};
+
+const UPD = {
+  depth(o, t) {
+    const d = o.d, din = d.din ?? .55, dout = d.dout ?? .4;
+    const on = t >= d.t0 && t <= d.t1 + dout;
+    o.root.style.display = on ? '' : 'none'; if (!on) return;
+    const kin = eo((t - d.t0) / din), kout = clamp((t - d.t1) / dout);
+    const op = (d.op ?? .92) * kin * (1 - kout);
+    // slow drift keeps it alive without drawing attention
+    const drift = (t - d.t0) * (d.drift ?? 6);
+    o.root.style.opacity = op;
+    o.root.style.transform = `translateY(${lerp(36, 0, kin) - drift}px) scale(${lerp(1.05, 1, kin)})`;
+    o.root.style.filter = `blur(${lerp(10, 0, kin) + 8 * kout}px)`;
+    // swaps: outgoing word lifts and fades, incoming rises in
+    o.words.forEach((w, k) => {
+      const nx = o.words[k + 1], a = clamp((t - w._t) / .28), b = nx ? clamp((t - nx._t) / .22) : 0;
+      w.style.opacity = k === 0 ? 1 - b : a * (1 - b);
+      w.style.transform = `translateY(${k === 0 ? -40 * b : lerp(46, 0, eo(a)) - 40 * b}px)`;
+      w.style.filter = `blur(${(k === 0 ? 0 : 8 * (1 - eo(a))) + 6 * b}px)`;
+    });
+    if (o.sub) { const q = clamp((t - d.t0 - .2) / .4); o.sub.style.opacity = eo(q); }
+  },
+  insert(o, t) {
+    const d = o.d, on = t >= d.t0 && t < d.t1; o.root.style.display = on ? '' : 'none';
+    const win = d.win ?? .3, x = t - d.t0;
+    if (o.leak) { const q = (t - d.t0 + .12) / .7; o.leak.style.display = q > 0 && q < 1 ? '' : 'none'; o.leak.style.opacity = (d.leakOp ?? .22) * Math.sin(clamp(q) * Math.PI); }
+    if (!on) return;
+    const k = eo(x / win);
+    const dir = d.wipe || 'up';
+    // rounded-rect reveal from one edge; out is a straight cut unless wout is given
+    const ko = d.wout ? clamp((d.t1 - t) / d.wout) : 1;
+    const r = Math.min(k, eo(ko));
+    o.root.style.clipPath = dir === 'up' ? `inset(${(1 - r) * 100}% 0 0 0 round ${40 * (1 - r)}px)` : dir === 'left' ? `inset(0 0 0 ${(1 - r) * 100}% round ${40 * (1 - r)}px)` : `inset(0 ${(1 - r) * 100}% 0 0 round ${40 * (1 - r)}px)`;
+    const p = clamp(x / (d.t1 - d.t0)), z0 = d.push ? d.push[0] : 1.04, z1 = d.push ? d.push[1] : 1.1;
+    const z = lerp(z0, z1, eio(p) * .6 + p * .4);
+    const fo = d.focus || [540, 960];
+    o.bg.style.transformOrigin = o.fg ? '50% 50%' : `${fo[0]}px ${fo[1]}px`;
+    o.bg.style.transform = `scale(${z}) translateY(${lerp(10, -10, p)}px)`;
+    if (d.objsFollow) { o.grp.style.transformOrigin = o.bg.style.transformOrigin; o.grp.style.transform = o.bg.style.transform; }
+    if (o.fg) { o.fg.style.transformOrigin = `${fo[0]}px ${fo[1]}px`; o.fg.style.transform = `scale(${z * 1.03}) translateY(${lerp(22, -22, p)}px)`; }
+    if (o.title) { const q = t - (d.title.at ?? d.t0 + .35); o.title.style.opacity = eo(q / .4); o.title.style.transform = `translateY(${lerp(24, 0, eo(q / .45))}px)`; }
+    o.objs.forEach(e => { const q = t - (e._o.at ?? d.t0 + .2); e.style.opacity = clamp(q / .25); const sc = clamp(1 + 2.6 * Math.pow(clamp(q / .45) - 1, 3) + 1.6 * Math.pow(clamp(q / .45) - 1, 2), 0, 1.2);
+      e.style.transform = `translateY(${-8 * Math.sin(t * 1.6)}px) scale(${sc}) rotate(${(e._o.rot || 0) + 1.5 * Math.sin(t * 1.1)}deg)`; });
+  },
+  obj(o, t) {
+    const d = o.d, on = t >= d.t0 && t <= d.t1 + .35; o.e.style.display = on ? '' : 'none'; if (!on) return;
+    const x = t - d.t0, q = clamp(x / .5), kout = clamp((t - d.t1) / .35);
+    const pop = clamp(1 + 2.6 * Math.pow(q - 1, 3) + 1.6 * Math.pow(q - 1, 2), 0, 1.15);
+    o.e.style.opacity = clamp(x / .2) * (1 - kout);
+    o.e.style.transform = `translateY(${lerp(30, 0, eo(q)) - 10 * Math.sin(t * 1.5 + (d.ph || 0))}px) scale(${pop * (1 - .15 * kout)}) rotate(${(d.rot || 0) + 2 * Math.sin(t * 1.1 + (d.ph || 0))}deg)`;
+    o.e.style.filter = `drop-shadow(0 18px 30px rgba(0,0,0,.45)) blur(${6 * kout}px)` + (d.dim != null && t > d.dim ? ` saturate(${lerp(1, .15, eo((t - d.dim) / .5))}) brightness(${lerp(1, .6, eo((t - d.dim) / .5))})` : '');
+  },
+  illus(o, t) {
+    const d = o.d, on = t >= d.t0 && t <= d.t1 + .45; o.root.style.display = on ? '' : 'none'; if (!on) return;
+    const x = t - d.t0, kin = eo(x / .6), kout = clamp((t - d.t1) / .45), f = d.focus ?? 1e9;
+    o.root.style.opacity = kin * (1 - kout); o.root.style.transform = `translateY(${lerp(30, 0, kin) - x * 4}px)`; o.root.style.filter = `blur(${8 * kout}px)`;
+    const back = q => { q = clamp(q); const c = 1.6; return 1 + (c + 1) * Math.pow(q - 1, 3) + c * Math.pow(q - 1, 2); };
+    if (d.mode === 'dots') o.its.forEach(e => { const s = clamp(back((x - e._r * .05) / .5), 0, 1.2); const h = e._hero ? 1 + 1.1 * eo((t - f) / .45) : 1;
+      e.style.transform = `scale(${s * h})`; e.style.opacity = e._hero ? 1 : lerp(1, .55, eo((t - f) / .5)); e.style.boxShadow = e._hero ? `0 6px 24px rgba(255,138,31,${.45 * eo((t - f) / .45)})` : ''; });
+    if (d.mode === 'cars') o.its.forEach(e => {
+      const sp = 70; let px = e._k * 150 - 60 - sp * x; px = ((px % 1200) + 1200) % 1200 - 120; let py = 0, sx = 1;
+      if (e._hero && t > f) { const k = eo((t - f) / .7); sx = lerp(1, -1, eo((t - f) / .3)); py = -100 * k; px = (((e._k * 150 - 60 - sp * (f - d.t0)) % 1200) + 1200) % 1200 - 120 + 140 * eo((t - f) / 1.4); }
+      e.style.transform = `translate(${px}px,${py}px) scaleX(${sx})`; e.style.opacity = e._hero ? 1 : lerp(1, .55, eo((t - f) / .5)); });
+    if (d.mode === 'swatch') {
+      o.its.forEach(e => { const q = t - e._t; if (e._sw) { e.style.transform = `scale(${clamp(back(q / .5), 0, 1.2)})`; e.style.opacity = clamp(q / .15) * (d.fade != null && t > d.fade ? lerp(1, .25, eo((t - d.fade) / .5)) : 1); }
+        else { e.style.opacity = eo(q / .4); e.style.transform = `translateY(${lerp(14, 0, eo(q / .4))}px)`; } });
+      if (o.root._title) o.root._title.style.opacity = eo(x / .5);
+    }
+    if (d.mode === 'cup') o.its.forEach(e => {
+      if (e._hi === undefined) { const q = t - e._t; e.style.opacity = eo(q / .4); return; }
+      const st = e._cape && t >= e._cape ? 1 : 0; if (st !== e._st) { e.innerHTML = CUPF(e._hi, st); e._st = st; }
+      const pop = e._cape && t > e._cape ? 1 + .08 * Math.sin(clamp((t - e._cape) / .4) * Math.PI) : 1;
+      e.style.transform = `scale(${clamp(back(x / .55), 0, 1.15) * (d.scale || 1) * pop})`;
+      e.style.opacity = e._hi ? .9 : 1; e.style.filter = e._hi ? 'brightness(.85)' : 'drop-shadow(0 10px 30px rgba(255,138,31,.25))'; });
+    if (d.mode === 'morph') { const st = d.steps || [], k = i => st[i] != null ? eo((t - st[i]) / .45) : 0, kb = i => st[i] != null ? clamp(back((t - st[i]) / .55), 0, 1.25) : 0;
+      o.its.forEach(e => { const ent = clamp(back((x - Math.abs(e._k - 2) * .08) / .5), 0, 1.2);
+        if (!e._hero) { e.style.transform = `scale(${ent})`; e.style.opacity = lerp(1, .6, k(0)); return; }
+        e.style.background = k(0) > .02 ? HERO : SOFT; e.style.opacity = 1;
+        e.style.transform = `translateY(${-110 * kb(3)}px) scale(${ent * lerp(1, 1.5, kb(1))})`;
+        e.style.borderRadius = k(2) > .5 ? '50%' : `${lerp(12, 30, k(2) * 2)}px`; e.style.boxShadow = k(0) > .02 ? '0 8px 26px rgba(255,138,31,.35)' : ''; });
+      o.root._line.style.opacity = st[3] != null ? lerp(.6, 1, k(3)) : .6; }
+  },
+  vf(o, t) {
+    const d = o.d, on = t >= d.t0 && t <= d.t1 + .3; o.root.style.display = on ? '' : 'none'; if (!on) return;
+    const k = eo((t - d.t0) / .4) * (1 - clamp((t - d.t1) / .3)); o.root.style.opacity = k; o.root.style.transform = `scale(${lerp(1.05, 1, k)})`;
+    o.root._rec.firstChild.style.opacity = Math.floor(t * 2) % 2 ? .3 : 1;
+  },
+  end(o, t) {
+    const d = o.d, x = t - d.t0; o.root.style.display = x >= 0 ? '' : 'none'; if (x < 0) return;
+    const k1 = eo(x / .6), k2 = eo((x - .35) / .6);
+    o.top.style.opacity = k1; o.top.style.transform = `translateY(${lerp(-20, 0, k1)}px)`;
+    o.cta.style.opacity = k2; o.cta.style.transform = `translateY(${lerp(24, 0, k2)}px)`;
+  },
+};
+
+window.render = t => {
+  const endT = ELS.find(e => e.d.type === 'end');
+  const inEnd = endT && t >= endT.d.t0;
+  CH.forEach(c => {
+    const vis = !inEnd && t >= c.t0 && t < c.t1;
+    if (!vis) { c.el.style.opacity = 0; return; }
+    const kin = eo((t - c.t0) / .14), kout = clamp((t - (c.t1 - .09)) / .09);
+    c.el.style.opacity = kin * (1 - kout);
+    c.el.style.transform = `translateY(${lerp(14, 0, kin)}px)`;
+  });
+  ELS.forEach(e => UPD[e.d.type](e, t));
+  const lg = document.getElementById('logo'); if (lg) lg.style.opacity = inEnd ? 0 : .85;
+  // end card: background falls away, the speaker stays lit (fg layer keeps full brightness)
+  if (endT) { const k = eio((t - endT.d.t0) / .8); BG.style.filter = inEnd ? `brightness(${lerp(1, .38, k)}) blur(${lerp(0, 6, k)}px)` : ''; }
+};
+// background frame + its matte; the fg layer re-draws the speaker over the 'behind' text
+window.setBg = (src, alpha) => new Promise(r => {
+  if (!alpha) { FG.style.display = 'none'; const im = new Image(); im.onload = im.onerror = () => { BG.src = src; r(); }; im.src = src; return; }
+  const im = new Image(), am = new Image(); let n = 0; const done = () => { if (++n === 2) { BG.src = src; FG.style.backgroundImage = `url(${src})`; FG.style.webkitMaskImage = FG.style.maskImage = `url(${alpha})`; r(); } };
+  im.onload = im.onerror = done; am.onload = am.onerror = done; im.src = src; am.src = alpha;
+});
+</script></body></html>
