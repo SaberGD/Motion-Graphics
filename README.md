@@ -50,7 +50,7 @@ Same Saber Group × Mushroom style as *SaberGroup_Reel_v6* (`reels/STYLE.md`), b
 | `render.sh` | builds the audio once, then each look (base plate, graphics, encode) |
 | `words.json` / `face.json` | Whisper large-v3 word timings (with the dropped words re-timed) and the YuNet face track |
 | `brand/` | white Saber Group mark for the corner (cut out of the agency logo), the red agency logo and the Mushroom logo for the outro |
-| `assets/` | burger, hierarchy icon, booklet and light leaks from the asset pack |
+| `assets/` | burger, hierarchy icon and light leaks from the asset pack; `pdf_cover.jpg` is the real cover of the PDF shown on "سايبلك ملف" |
 | `sfx/` | recorded UI sounds from *Kenney Interface Sounds* (CC0, licence included) |
 
 **Edit:** the dead air at 3.16–3.40 (after the whole "Perfect"), 18.28–18.48, 22.58–22.66 (hidden under the motion scene, which stays up until the voice comes back) and 35.26–35.80 s is cut. Every cut sits after the word has fully ended, including its unvoiced tail. The tail is trimmed so the end card lands on a beat. Cuts are hidden by zoom-blur, a light leak or the cutaways. There are no left/right moves. The camera zooms in and out slowly, never past 1.14× on this 1080p source, with Lanczos scaling and zoom-aware sharpening.

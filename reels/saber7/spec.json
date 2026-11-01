@@ -698,13 +698,11 @@
    "type": "book",
    "t0": 38.108,
    "t1": 40.897,
-   "x": 745,
+   "x": 732,
    "y": 300,
-   "w": 280,
-   "img": "../saber7/assets/booklet.png",
-   "tag": "PDF",
-   "title": "Visual<br>Hierarchy",
-   "sub": "إزاي توجّه عين المشاهد",
+   "w": 308,
+   "cover": "../saber7/assets/pdf_cover.jpg",
+   "ratio": 1.456439393939394,
    "pill": "PDF · ملف"
   },
   {

@@ -98,8 +98,7 @@ ELS = [
          hero=0, heroAt=o(33.18), center='<span style="color:#FF8A1F">البطل</span>'),
     # "guide the viewer's eye" -> viewfinder, then the file
     dict(type='vf', t0=snap(o(36.70)), t1=o(38.42), label='REC', meta='ISO 800 · F/1.8 · 1/60'),
-    dict(type='book', t0=snap(o(39.15)), t1=SPEECH + .05, x=745, y=300, w=280, img=A + 'booklet.png', tag='PDF', title='Visual<br>Hierarchy',
-         sub='إزاي توجّه عين المشاهد', pill='PDF · ملف'),
+    dict(type='book', t0=snap(o(39.15)), t1=SPEECH + .05, x=732, y=300, w=308, cover=A + 'pdf_cover.jpg', ratio=1538 / 1056, pill='PDF · ملف'),
     dict(type='outro', t0=SPEECH, logos=[[BR + 'saber_red.png', 300], [BR + 'mushroom.png', 380]],
          cta="ملف الـ <span style='color:#FF8A1F;font-family:Poppins;font-weight:600'>Visual Hierarchy</span><br>في أول كومنت ⬇"),
 ]
