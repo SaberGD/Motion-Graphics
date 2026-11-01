@@ -1,5 +1,8 @@
 # Motion-Graphics: Reel montage pipeline
 
+> **New videos:** follow the reel motion system in [`reels/SYSTEM.md`](reels/SYSTEM.md) and start with `reels/new_reel.sh`.
+> The reference implementation is [`reels/saber7/`](reels/saber7/), and the references are in [`reels/references/`](reels/references/).
+
 `output/montaj1_reel.mp4` is the finished 1080×1920 reel (30 fps, −14 LUFS).
 
 ## Pipeline (`project/`)

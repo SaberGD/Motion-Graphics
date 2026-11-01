@@ -1,5 +1,15 @@
 # Saber Group × Mushroom: Reel Style Guide
 
+> **Superseded in parts by [`SYSTEM.md`](SYSTEM.md)**, which holds the client's feedback from saber7. In particular:
+> * no whoosh or riser SFX: recorded UI sounds instead
+> * no whip/slide transitions
+> * music from the track's start, low and following the voice (not an edit with beat-stops)
+> * the motion-scene exit is a fade, not an iris
+> * lighter leaks
+> * two looks per delivery
+>
+> The palette, type and component vocabulary below still apply.
+
 How these reels look and move. It combines three references:
 1. **"VibeDocX" product film (Hlib Trazanov)**: the motion language. Dark stage, one neon accent with soft glow, kinetic typography, glass UI elements, light-sweep transitions, a CTA end card.
 2. **SaberGroup_Reel_v6 (earlier AI edit)**: the reel format. Talking head in the dark office, 2–3-word bold captions with one orange keyword, chips and pills on top, a dual-logo outro with a comment CTA.
