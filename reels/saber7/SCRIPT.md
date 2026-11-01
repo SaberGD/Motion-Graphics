@@ -35,3 +35,12 @@
 | 0:34.7 | وعشان تعرف إزاي توجه عين اللي بيتفرج على التصميم | إطار REC |
 | 0:37.3 | أخوك الجدع سايبلك ملف في أول كومنت زي كل مرة | غلاف الـ PDF الحقيقي (إزاي تحرّك عين المشاهد؟ · Visual Hierarchy) |
 | 0:40.8 | (End card) | SABER GROUP × MUSHROOM: "ملف الـ Visual Hierarchy في أول كومنت ⬇" |
+
+---
+
+## Thumbnail / Cover
+
+- `thumbnail/thumbnail_a.png`: "كل حاجة Perfect / والتصميم مش حلو؟" on the pointing frame
+- `thumbnail/thumbnail_b.png`: "عين المشاهد / بتبص فين؟" on the open-hands frame
+- `thumbnail/stills/`: 8 poses, each with `_original` (the footage colours) and `_graded` (same grade as the graded video), 1080×1920
+- re-render the covers: `node reels/saber7/thumbnail/render_thumb.js`. All the text sits inside the 3:4 profile-grid crop
