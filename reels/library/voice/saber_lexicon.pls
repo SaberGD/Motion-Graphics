@@ -11,6 +11,9 @@
   <lexeme><grapheme>SABER GROUP</grapheme><alias>صابر جروب</alias></lexeme>
   <lexeme><grapheme>Saber Group</grapheme><alias>صابر جروب</alias></lexeme>
   <lexeme><grapheme>MARO</grapheme><alias>مارو</alias></lexeme>
+  <lexeme><grapheme>White Friday Festival</grapheme><alias>وايت فرايداي فِستِڤال</alias></lexeme>
+  <lexeme><grapheme>White Friday</grapheme><alias>وايت فرايداي</alias></lexeme>
+  <lexeme><grapheme>Festival</grapheme><alias>فِستِڤال</alias></lexeme>
   <lexeme><grapheme>ElevenLabs</grapheme><alias>إيلِيفِن لابز</alias></lexeme>
   <lexeme><grapheme>Designers</grapheme><alias>ديزاينرز</alias></lexeme>
   <lexeme><grapheme>Designer</grapheme><alias>ديزاينر</alias></lexeme>

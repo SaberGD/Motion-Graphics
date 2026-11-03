@@ -186,6 +186,12 @@ When starting any piece, **say which style it is** (SG EDIT or SG MOTION) and wh
 - `speed` has little effect on `eleven_v4`: the clone runs ~20% slower than Saber's real 4.9 s. To fit a pickup into the original timing, time-stretch afterwards (`atempo` ≤ 1.15), or cut the pauses.
 - Short Egyptian words such as `دَه` can be misheard by Whisper. Judge those by ear.
 
+**Lessons from the White Friday VO** (`motion/white-friday-festival/`):
+- For a full script, generate **one take** of the whole text so the tone stays consistent.
+- To fix a line, regenerate **only that line** with the same settings, plus tashkeel on the misheard word, and splice it into a pause: 100 ms after the last loud frame, with a natural 0.3–0.45 s gap.
+- Lower stability (`energetic`) adds energy but costs pronunciation (مسابقة → مسادقة, البوست → الكوست). For long scripts use `pickup` at stability **.55**.
+- QC: run Whisper with a short context prompt and diff the words against the script. Ignore spelling variants such as معانا/معنا, then check the real differences by ear.
+
 **When to use it:**
 - **SG EDIT:** patch a word that was flubbed, clipped or missing (a "pickup") instead of reshooting. Match the timing to the original, put it through the same `voice_af` chain only if it sounds brighter than the room recording, and crossfade 10–20 ms inside the cut.
 - **SG MOTION:** voiceover for designed pieces when the client asks for his voice.
