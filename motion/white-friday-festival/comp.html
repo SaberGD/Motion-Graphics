@@ -1,0 +1,282 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Saber Group White Friday Festival: SG MOTION announcement (1080x1920, 25fps).
+     Text = the client's script only. Timing = VO word times (analysis/vo_words.json) + music beats (analysis/beats.json).
+     Story: it opens dark ("Black Friday?"), then flips to white on the music build (6.853 s): WHITE Friday. -->
+<style>
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo}
+.layer{position:absolute;inset:0;overflow:hidden}
+#dark{background:#0A0A0A}
+#light{background:#F6F3F2}
+.grid{position:absolute;inset:0;background-size:72px 72px}
+#dark .grid{background-image:linear-gradient(rgba(246,243,242,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(246,243,242,.025) 1px,transparent 1px)}
+#light .grid{background-image:linear-gradient(rgba(21,21,21,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(21,21,21,.045) 1px,transparent 1px)}
+.wash{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 50%,transparent 60%,rgba(122,27,18,.22) 100%)}
+.line{position:absolute;left:86px;right:86px;display:flex;flex-direction:row;direction:rtl;gap:0 .26em;font-weight:700;line-height:1.22;white-space:nowrap}
+.line.c{justify-content:center}
+.wm{display:inline-block;clip-path:inset(-.22em -.8em -.30em -.8em)}   /* vertical mask only: Arabic tails (ع م ي) overhang sideways */   /* wide mask: Arabic tails (ع ق ي) overhang the advance width */
+.wi{display:inline-block;will-change:transform}
+.red{color:#C4321F}
+.dim{color:#5C5F66}
+.lat{font-family:Bebas;font-weight:400;letter-spacing:0}
+.abs{position:absolute}
+.card{position:absolute;background:#fff;border-radius:7px;clip-path:polygon(17px 0,100% 0,100% calc(100% - 17px),calc(100% - 17px) 100%,0 100%,0 17px)}
+.sh{position:absolute;filter:drop-shadow(0 16px 26px rgba(21,21,21,.10)) drop-shadow(0 2px 4px rgba(21,21,21,.06))}
+.chip{display:inline-flex;align-items:center;gap:14px;direction:rtl;padding:16px 30px 18px;font-weight:700;font-size:46px;color:#151515;background:#fff;border-radius:7px;
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px)}
+.ic{display:grid;place-items:center;border-radius:7px}
+.strike{position:absolute;height:6px;background:#C4321F;border-radius:3px;transform-origin:100% 50%}
+.plate{position:absolute;background:#151515;display:grid;place-items:center;border-radius:7px}
+.plate img{display:block}
+.corner{position:absolute;width:46px;height:46px;border-color:#C4321F;border-style:solid}
+.lbl{position:absolute;font-size:26px;font-weight:500}
+.bar{position:absolute;height:18px;border-radius:9px;background:rgba(21,21,21,.08);overflow:hidden}
+.bar i{position:absolute;inset:0;background:linear-gradient(270deg,#C4321F,#E85C3B);transform-origin:100% 50%}
+.dot{position:absolute;width:22px;height:22px;border-radius:50%;background:#C4321F}
+.skel{position:absolute;height:20px;border-radius:10px;background:rgba(21,21,21,.09)}
+</style></head>
+<body><div id="stage">
+  <div id="dark" class="layer"><div class="grid"></div><div class="wash"></div></div>
+  <div id="light" class="layer"><div class="grid"></div></div>
+  <div id="chrome" class="layer"></div>
+</div>
+<script src="../engine/kit.js"></script>
+<script>
+const { K, ease, easeIn, inOut, clamp, lin, lerp, IN, OUT, pose, apply, $, line, lineUpdate, icon, settle } = SG;
+const DARKL = document.getElementById('dark'), LIGHTL = document.getElementById('light'), CHROME = document.getElementById('chrome');
+// content sits in an inner layer, lowered so each scene is balanced around the frame's optical centre
+const DARK = $('div', 'layer', DARKL, 'transform:translateY(70px);overflow:visible'), LIGHT = $('div', 'layer', LIGHTL, 'transform:translateY(110px);overflow:visible');
+const FLIP = 6.853, TITLE = 13.114, END = 67.903, DUR = 71.04;   // music: build bar, downbeat, downbeat after the lift
+const LOGO = '../../brand-kit/assets/logos/saber-group-wordmark.png';   // locked asset: placed, never redrawn
+const U = [];                       // per-frame updaters
+const W = (t, at, c) => ({ t, at, c });
+// a text line: words [[text, at, cls]], right-aligned unless center
+function T(parent, y, size, words, out, o = {}) {
+  const L = line(parent, words.map(w => W(w[0], w[1], (w[2] || '') + (/^[A-Z ]+$/.test(w[0]) ? ' lat' : ''))), `top:${y}px;font-size:${size}px;color:${o.color || (parent === DARK ? K.text : K.ink)};${o.css || ''}`, o.center ? 'c' : '');
+  U.push(t => lineUpdate(L, t, out)); return L;
+}
+// a generic element animated by pose()
+function P(el, o, extra) { U.push(t => apply(el, pose(t, o), typeof extra === 'function' ? extra(t) : '')); return el; }
+function chip(parent, html, x, y, o, css = '') {
+  const w = $('div', 'sh', parent, `right:${x}px;top:${y}px;transform-origin:100% 50%`); const c = $('div', 'chip', w, css, html);
+  P(w, Object.assign({ dy: 22, s0: .94, squash: .025, follow: .012 }, o)); return { w, c };
+}
+function strike(chipObj, at, parent) {   // red line drawn across a chip on the beat
+  const s = $('div', 'strike', chipObj.w, 'left:18px;right:18px;top:50%;margin-top:-3px');
+  U.push(t => { const k = ease(lin(t, at, at + .34)); s.style.transform = `scaleX(${k})`; chipObj.c.style.opacity = lerp(1, .42, ease(lin(t, at + .1, at + .5))); });
+}
+function card(parent, x, y, w, h, o) { const sh = $('div', 'sh', parent, `left:${x}px;top:${y}px;width:${w}px;height:${h}px`); const c = $('div', 'card', sh, 'inset:0'); P(sh, Object.assign({ dy: 30, s0: .96, arc: 0, squash: .02, follow: .01 }, o)); return { sh, c }; }
+function iconBox(parent, name, size, at, css, color = '#C4321F', bg = 'rgba(196,50,31,.09)') {
+  const b = $('div', 'ic abs', parent, `width:${size}px;height:${size}px;background:${bg};${css}`, icon(name, size * .56, color, 2));
+  P(b, { at, dy: 10, s0: .7, follow: .03, dur: .4 }); return b;   // overlapping action: lands after its card
+}
+
+// ================= S1 · dark hook: "تفتكروا البلاك فرايدي …؟" =================
+T(DARK, 470, 46, [['تفتكروا', .02]], 2.5, { color: K.text2 });
+T(DARK, 540, 104, [['البلاك', .36], ['فرايدي', .58]], 2.5);
+T(DARK, 690, 50, [['لازم', .90], ['يكون', 1.32], ['في', 1.54]], 2.5, { color: K.text2 });
+T(DARK, 760, 66, [['آخر', 1.66], ['شهر', 1.84], ['نوفمبر؟', 2.08, 'red']], 2.5);
+// calendar card (November 2026: the 1st is a Sunday, Fridays 6/13/20/27; Black Friday = the 27th)
+(() => {
+  const sh = $('div', 'sh', DARK, 'left:86px;top:930px;width:430px;height:400px;filter:none');
+  const c = $('div', 'card', sh, 'inset:0;background:#151515;border:1px solid rgba(246,243,242,.08)');
+  $('div', 'abs', c, 'top:26px;right:30px;font-size:30px;font-weight:700;color:#F6F3F2', 'نوفمبر');
+  $('div', 'abs lat', c, 'top:28px;left:30px;font-size:32px;color:#C7C9CD', '2026');
+  const days = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; let cells = [];
+  days.forEach((d, i) => $('div', 'abs', c, `top:92px;right:${30 + i * 54}px;width:44px;text-align:center;font-size:22px;color:#5C5F66;font-weight:500`, d));
+  for (let n = 1; n <= 30; n++) { const i = n - 1, col = i % 7, row = Math.floor(i / 7);
+    cells.push($('div', 'abs lat', c, `top:${130 + row * 50}px;right:${30 + col * 54}px;width:44px;height:44px;line-height:46px;text-align:center;font-size:30px;color:${col === 5 ? '#F6F3F2' : '#7d8087'};border-radius:50%`, n)); }
+  const ring = $('div', 'abs', c, `top:${130 + 3 * 50 - 4}px;right:${30 + 5 * 54 - 4}px;width:52px;height:52px;border:3px solid #C4321F;border-radius:50%`);
+  P(sh, { at: 1.70, dy: 40, dx: -30, arc: 18, s0: .96, out: 4.95, follow: .01 });
+  U.push(t => { const k = ease(lin(t, 2.08, 2.5)); ring.style.opacity = k * (1 - ease(lin(t, 4.28, 4.6))); ring.style.transform = `scale(${lerp(1.6, 1, k) * (1 + settle(lin(t, 2.3, 2.9), .05))})`; cells[26].style.color = k > .5 && t < 4.4 ? '#C4321F' : '#F6F3F2'; });
+  // "بدري": an arrow sweeps back along the month (no date implied)
+  const arr = $('div', 'abs', c, 'top:340px;right:40px;color:#C4321F', icon('arrow', 44, '#C4321F', 2.4));
+  U.push(t => { const k = inOut(lin(t, 4.28, 4.9)); arr.style.opacity = clamp((t - 4.28) / .1) * (1 - easeIn(lin(t, 4.95, 5.2))); arr.style.transform = `translateX(${-k * 300}px)`; });
+})();
+T(DARK, 470, 50, [['إحنا', 2.56], ['في', 3.02]], 4.95, { color: K.text2 });
+(() => { const box = $('div', 'abs', DARK, 'right:86px;top:560px;width:560px;height:81px;overflow:hidden');
+  const im = $('img', '', box, 'position:absolute;right:0;top:0;width:560px'); im.src = LOGO;
+  U.push(t => { const k = ease(lin(t, 3.14, 3.14 + .8)); box.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; box.style.opacity = (t >= 3.14) * (1 - easeIn(lin(t, 4.95, 5.27))); box.style.transform = `translateY(${-12 * easeIn(lin(t, 4.95, 5.27))}px)`; }); })();
+T(DARK, 690, 62, [['قررنا', 3.56], ['نبدأ', 3.98], ['بدري', 4.28, 'red'], ['السنة', 4.56], ['دي', 4.76]], 4.95);
+T(DARK, 800, 56, [['بس', 5.00], ['المرة', 5.42], ['دي', 5.68]], 99, { color: K.text2 });
+T(DARK, 880, 100, [['الموضوع', 5.94], ['مختلف', 6.32, 'red'], ['تمامًا', 6.78]], 99);
+// anticipation of the flip: the dark scene leans back a touch, then the white world rises over it
+U.push(t => { const a = easeIn(lin(t, FLIP - .2, FLIP)); DARKL.style.transform = `scale(${1 - .02 * a})`;
+  const k = ease(lin(t, FLIP, FLIP + .5)); LIGHTL.style.clipPath = `inset(${(1 - k) * 100}% 0 0 0)`; LIGHTL.style.visibility = t >= FLIP ? 'visible' : 'hidden';
+  DARKL.style.visibility = t < FLIP + .5 ? 'visible' : 'hidden'; });
+// light frame chrome (kit portrait frame): corners, charcoal logo plate, url + academy label
+(() => {
+  const cs = [$('div', 'corner', CHROME, 'left:86px;top:192px;border-width:4px 0 0 4px'), $('div', 'corner', CHROME, 'right:86px;top:1528px;border-width:0 4px 4px 0')];
+  const plate = $('div', 'plate', CHROME, 'right:86px;top:200px;width:300px;height:76px'); const im = $('img', '', plate, 'width:256px'); im.src = LOGO;
+  const url = $('div', 'lbl', CHROME, 'left:86px;top:1512px;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
+  const ac = $('div', 'lbl lat', CHROME, 'right:150px;top:1506px;font-size:32px;color:#C4321F', 'SABER GROUP ACADEMY');
+  U.push(t => { const on = t > FLIP + .35 && t < END - .2;
+    [plate, url, ac, ...cs].forEach((e, i) => { const p = pose(t, { at: FLIP + .35 + i * .08, dy: 10, out: END - .25 }); apply(e, p); }); });
+})();
+
+// ================= S2 · not one contest, not just offers =================
+T(LIGHT, 520, 48, [['السنة', 7.44], ['دي', 7.92]], 10.6, { color: K.ink2 });
+T(LIGHT, 590, 76, [['مش', 8.08], ['عاملين', 8.20]], 10.6);
+const c1 = chip(LIGHT, 'مسابقة واحدة', 86, 760, { at: 8.40, out: 10.6 }); strike(c1, 8.809, LIGHT);
+T(LIGHT, 930, 58, [['ولا', 9.02], ['مجرد', 9.30]], 10.6, { color: K.ink2 });
+const c2 = chip(LIGHT, 'عروض', 86, 1060, { at: 9.78, out: 10.6 }); const c3 = chip(LIGHT, 'وخصومات', 330, 1060, { at: 10.00, out: 10.6 });
+strike(c2, 10.374, LIGHT); strike(c3, 10.42, LIGHT);
+
+// ================= S3 · a whole festival → the title on the downbeat =================
+T(LIGHT, 600, 58, [['السنة', 10.68], ['دي', 11.18], ['عاملين', 11.44]], 12.95, { color: K.ink2 });
+T(LIGHT, 680, 112, [['مهرجان', 11.92], ['كامل', 12.50, 'red']], 12.95);
+(() => { // secondary action: three short rays behind the word
+  for (let i = 0; i < 3; i++) { const r = $('div', 'abs', LIGHT, `left:${250 - i * 40}px;top:${700 - i * 26}px;width:6px;height:${44 - i * 6}px;background:#C4321F;border-radius:3px;transform-origin:50% 100%;transform:rotate(${-28 + i * 28}deg)`);
+    U.push(t => { const k = ease(lin(t, 12.50 + i * .05, 12.86 + i * .05)); r.style.opacity = k * (1 - easeIn(lin(t, 12.95, 13.2))); r.style.transform = `rotate(${-28 + i * 28}deg) scaleY(${k})`; }); }
+})();
+(() => { // TITLE lockup (centered): charcoal plate + wordmark, WHITE FRIDAY / FESTIVAL
+  const plate = $('div', 'plate', LIGHT, 'left:220px;top:640px;width:640px;height:150px'); const im = $('img', '', plate, 'width:560px'); im.src = LOGO;
+  U.push(t => { const k = ease(lin(t, TITLE, TITLE + .8)); const p = pose(t, { at: TITLE, dy: 0, s0: .9, antic: true, follow: .012, out: 15.25, dur: .8 });
+    apply(plate, p); plate.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; });
+  T(LIGHT, 830, 150, [['WHITE', 14.00], ['FRIDAY', 14.36]], 15.25, { center: true, css: 'direction:ltr' });
+  const fest = T(LIGHT, 990, 150, [['FESTIVAL', 14.78, 'red']], 15.25, { center: true, css: 'direction:ltr' });
+  const heart = $('div', 'abs', LIGHT, 'left:500px;top:1190px', '<svg width="80" height="72" viewBox="0 0 24 22"><path d="M12 21s-9-5.6-9-12.2A5 5 0 0 1 12 6a5 5 0 0 1 9 2.8C21 15.4 12 21 12 21z" fill="#C4321F"/></svg>');
+  P(heart, { at: 14.95, dy: 16, s0: .4, squash: .04, follow: .04, out: 15.25 });
+})();
+
+// ================= S4 · days full of surprises + what you can win =================
+T(LIGHT, 400, 44, [['خلال', 15.34], ['الفترة', 15.96], ['الجاية', 16.26]], 20.7, { color: K.ink2 });
+T(LIGHT, 462, 66, [['مستنيينكم', 16.56], ['معانا', 17.14]], 20.7);
+T(LIGHT, 560, 66, [['في', 17.42], ['أيام', 17.56], ['مليانة', 17.90], ['مفاجآت', 18.34, 'red']], 20.7);
+(() => { const a = card(LIGHT, 574, 720, 420, 300, { at: 18.84, arc: 24, out: 20.7 }); iconBox(a.c, 'trophy', 96, 19.0, 'top:44px;right:40px');
+  $('div', 'abs', a.c, 'top:170px;right:40px;font-size:52px;font-weight:700;color:#151515', 'مسابقات');
+  const b = card(LIGHT, 86, 720, 420, 300, { at: 19.68, arc: -24, out: 20.7 }); iconBox(b.c, 'target', 96, 19.84, 'top:44px;right:40px');
+  $('div', 'abs', b.c, 'top:170px;right:40px;font-size:52px;font-weight:700;color:#151515', 'وتحديات');
+  T(LIGHT, 1060, 50, [['مختلفة', 20.22, 'red']], 20.7, { center: true }); })();
+T(LIGHT, 400, 66, [['وكمان', 20.78], ['فرص', 21.22, 'red'], ['كتير', 21.48]], 25.62);
+T(LIGHT, 492, 46, [['تكسبوا', 21.84], ['من', 22.24], ['خلالها', 22.30]], 25.62, { color: K.ink2 });
+[['book', 'كورسات مجانية', 22.64], ['pen', 'ورش تدريبية', 23.54], ['gift', 'هدايا مميزة', 24.54]].forEach(([ic, tx, at], i) => {
+  const c = card(LIGHT, 86, 640 + i * 190, 908, 160, { at, dx: 40, arc: 0, dy: 16, out: 25.62 + i * .04 });
+  iconBox(c.c, ic, 104, at + .1, 'top:28px;right:32px');
+  $('div', 'abs', c.c, 'top:42px;right:170px;font-size:54px;font-weight:700;color:#151515', tx);
+  const tick = $('div', 'abs', c.c, 'top:52px;left:40px', icon('check', 56, '#C4321F', 2.6)); P(tick, { at: at + .26, dy: 0, s0: .5, follow: .04, dur: .36 });
+});
+
+// ================= S5 · beginners and experienced =================
+T(LIGHT, 400, 46, [['يعني', 25.72], ['سواء', 26.12]], 32.28, { color: K.ink2 });
+function level(parent, x, y, w, fill, at) { const b = $('div', 'bar', parent, `left:${x}px;top:${y}px;width:${w}px`); const i = $('i', '', b); U.push(t => { i.style.transform = `scaleX(${fill * ease(lin(t, at, at + .7))})`; }); }
+(() => { const a = card(LIGHT, 554, 520, 440, 460, { at: 26.34, arc: 20, out: 32.28 });
+  iconBox(a.c, 'user', 92, 26.5, 'top:40px;right:40px');
+  $('div', 'abs', a.c, 'top:156px;right:40px;font-size:48px;font-weight:700;color:#151515', 'لسه بتبدأ');
+  $('div', 'abs', a.c, 'top:226px;right:40px;font-size:34px;font-weight:500;color:#5C5F66', 'في الجرافيك ديزاين');
+  level(a.c, 40, 320, 360, .22, 26.74);
+  const b = card(LIGHT, 86, 520, 440, 460, { at: 28.16, arc: -20, out: 32.28 });
+  iconBox(b.c, 'star', 92, 28.3, 'top:40px;right:40px');
+  $('div', 'abs', b.c, 'top:156px;right:40px;font-size:48px;font-weight:700;color:#151515', 'عندك خبرة');
+  $('div', 'abs', b.c, 'top:226px;right:40px;font-size:34px;font-weight:500;color:#5C5F66', 'وعايز تطور من نفسك');
+  level(b.c, 40, 320, 360, .78, 29.0);
+  [a, b].forEach((c, i) => { const k = $('div', 'abs', c.c, 'bottom:36px;right:40px;display:flex;gap:10px;align-items:center;font-size:32px;font-weight:700;color:#C4321F', icon('check', 40, '#C4321F', 2.6) + '<span>تقدر تشارك</span>');
+    P(k, { at: 31.74 + i * .08, dy: 12, s0: .8, follow: .02 }); }); })();
+T(LIGHT, 1060, 60, [['هيكون', 29.86], ['فيه', 30.24], ['فرص', 30.42, 'red'], ['وحاجات', 30.72], ['كتير', 31.04]], 32.28);
+T(LIGHT, 1150, 60, [['تقدر', 31.44], ['تشارك', 31.74], ['فيها', 32.08]], 32.28, { color: K.ink2 });
+
+// ================= S6 · more participation, better odds =================
+T(LIGHT, 400, 54, [['والأحلى', 32.36, 'red']], 38.9);
+T(LIGHT, 480, 64, [['إن', 32.98], ['مشاركتك', 33.30], ['مش', 33.88], ['مرتبطة', 34.00]], 38.9);
+T(LIGHT, 570, 64, [['بمسابقة', 34.44], ['واحدة', 34.78], ['بس!', 35.10]], 38.9);
+(() => { const c = card(LIGHT, 86, 730, 908, 470, { at: 35.32, out: 38.9 });
+  $('div', 'abs', c.c, 'top:36px;right:44px;font-size:40px;font-weight:700;color:#151515', 'كل ما تشارك');
+  const toks = [['فعاليات', 36.30], ['مسابقات', 36.70], ['أكتر', 37.18]];
+  toks.forEach(([tx, at], i) => { const k = $('div', 'abs', c.c, `top:110px;right:${44 + i * 250}px;padding:10px 26px 12px;border-radius:7px;background:rgba(196,50,31,.09);color:#C4321F;font-size:38px;font-weight:700;display:flex;gap:8px;align-items:center`, icon('plus', 30, '#C4321F', 2.6) + `<span>${tx}</span>`);
+    P(k, { at, dy: 18, s0: .8, squash: .03, follow: .02, dur: .4 }); });
+  $('div', 'abs', c.c, 'top:250px;right:44px;font-size:40px;font-weight:700;color:#151515', 'فرصتك في الفوز');
+  const b = $('div', 'bar', c.c, 'left:44px;right:44px;top:330px;height:34px;border-radius:17px'); const i = $('i', '', b);
+  const steps = [[35.86, .18], [36.30, .36], [36.70, .55], [37.18, .70], [38.547, .94]];
+  U.push(t => { let f = 0; steps.forEach(([at, v], j) => { const prev = j ? steps[j - 1][1] : 0; if (t >= at) f = lerp(prev, v, ease(lin(t, at, at + .45))) * (1 + settle(lin(t, at + .3, at + .9), .015)); }); i.style.transform = `scaleX(${f})`; });
+  const up = $('div', 'abs', c.c, 'top:250px;left:44px;font-size:40px;font-weight:700;color:#C4321F', 'بتزيد');
+  P(up, { at: 38.54, dy: 14, s0: .9, follow: .02, dur: .36 }); })();
+T(LIGHT, 1270, 46, [['كل', 35.32], ['ما', 35.68], ['تشارك', 35.86], ['أكتر،', 37.18], ['فرصتك', 37.52], ['بتزيد', 38.54, 'red']], 38.9, { color: K.ink2 });
+
+// ================= S7 · points system → the grand prize =================
+T(LIGHT, 400, 46, [['وفيه', 39.00], ['كمان', 39.48]], 44.7, { color: K.ink2 });
+T(LIGHT, 462, 104, [['نظام', 39.70], ['نقاط', 39.96, 'red']], 44.7);
+T(LIGHT, 610, 46, [['خلال', 40.22], ['المهرجان', 40.48]], 44.7, { color: K.ink2 });
+T(LIGHT, 720, 50, [['حتى', 41.44], ['لو', 41.72], ['شاركت', 41.82], ['في', 42.14], ['مسابقة', 42.22], ['ومكسبتش', 42.58, 'red']], 44.7);
+(() => { const c = card(LIGHT, 450, 840, 544, 210, { at: 42.10, out: 44.7, arc: 16 });
+  iconBox(c.c, 'trophy', 90, 42.22, 'top:60px;right:36px', '#5C5F66', 'rgba(21,21,21,.06)');
+  $('div', 'abs', c.c, 'top:76px;right:150px;font-size:44px;font-weight:700;color:#151515', 'مسابقة');
+  const x = $('div', 'abs ic', c.c, 'top:64px;left:40px;width:80px;height:80px;background:rgba(21,21,21,.06)', icon('x', 46, '#5C5F66', 2.6)); P(x, { at: 42.58, dy: 0, s0: .5, follow: .04, dur: .36 });
+  // the points still fly to the bank along an arc (principle 7)
+  const bank = card(LIGHT, 86, 840, 320, 210, { at: 43.0, out: 44.7, arc: -16 });
+  $('div', 'abs', bank.c, 'top:30px;right:36px;font-size:36px;font-weight:700;color:#151515', 'نقاطك');
+  for (let j = 0; j < 6; j++) { const d = $('div', 'dot', bank.c, `top:${110 + Math.floor(j / 3) * 40}px;right:${40 + (j % 3) * 40}px`); P(d, { at: 43.58 + j * .1, dy: 0, s0: .2, follow: .05, dur: .3 }); }
+  const fly = $('div', 'abs', LIGHT, 'left:600px;top:880px;padding:8px 20px 10px;border-radius:7px;background:#C4321F;color:#fff;font-size:34px;font-weight:700;display:flex;gap:6px;align-items:center', icon('plus', 26, '#fff', 3) + '<span>نقاط</span>');
+  U.push(t => { const k = inOut(lin(t, 43.16, 44.1)); fly.style.opacity = clamp((t - 43.16) / .1) * (1 - lin(t, 44.05, 44.2)); fly.style.transform = `translate(${-k * 400}px,${-Math.sin(k * Math.PI) * 150}px) scale(${1 - .15 * k})`; }); })();
+T(LIGHT, 1110, 50, [['لسه', 43.16], ['عندك', 43.58], ['فرصة', 43.86], ['تجمع', 44.16], ['نقاط', 44.48, 'red']], 44.7, { color: K.ink2 });
+T(LIGHT, 470, 54, [['وتنافس', 44.82], ['على', 45.38]], 47.02, { color: K.ink2, center: true });
+(() => { const g = $('div', 'abs', LIGHT, 'left:390px;top:580px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(196,50,31,.16),transparent 66%)');
+  P(g, { at: 45.52, dy: 0, s0: .6, out: 47.02, dur: .8 });
+  const tr = $('div', 'abs', LIGHT, 'left:420px;top:610px', icon('trophy', 240, '#C4321F', 1.6)); P(tr, { at: 45.52, dy: 30, s0: .8, antic: true, squash: .035, follow: .02, out: 47.02 }); })();
+T(LIGHT, 900, 92, [['الجائزة', 45.52], ['الكبرى', 45.88, 'red']], 47.02, { center: true });
+T(LIGHT, 1040, 46, [['في', 46.28], ['نهاية', 46.36], ['المهرجان', 46.60]], 47.02, { center: true, color: K.ink2 });
+
+// ================= S8 · how to join → today's post =================
+T(LIGHT, 700, 50, [['طيب…', 47.10]], 49.0, { color: K.ink2, center: true });
+T(LIGHT, 770, 104, [['إزاي', 47.76], ['تقدر', 48.24], ['تشارك؟', 48.58, 'red']], 49.0, { center: true });
+T(LIGHT, 400, 66, [['استنوا', 49.10], ['البوست', 49.64, 'red']], 56.3);
+T(LIGHT, 490, 44, [['اللي', 49.92], ['هينزل', 50.12], ['النهاردة', 50.40], ['على', 50.76], ['الصفحة', 50.86]], 56.3, { color: K.ink2 });
+(() => { const c = card(LIGHT, 140, 600, 800, 640, { at: 49.64, dy: 50, s0: .94, antic: true, out: 56.3 });
+  const pl = $('div', 'plate', c.c, 'top:30px;right:30px;width:84px;height:84px;border-radius:50%;overflow:hidden'); const im = $('img', '', pl, 'width:74px'); im.src = LOGO;
+  $('div', 'abs lat', c.c, 'top:38px;right:134px;font-size:38px;color:#151515;direction:ltr', 'SABER GROUP ACADEMY');
+  const badge = $('div', 'abs', c.c, 'top:44px;left:30px;padding:4px 18px 8px;border-radius:7px;background:#C4321F;color:#fff;font-size:30px;font-weight:700', 'النهاردة');
+  P(badge, { at: 50.40, dy: 0, s0: .5, squash: .04, follow: .03, dur: .36 });
+  const hero = $('div', 'abs', c.c, 'top:140px;left:30px;right:30px;height:220px;border-radius:7px;background:#151515;display:grid;place-items:center');
+  $('div', 'lat', hero, 'font-size:76px;color:#F6F3F2;line-height:1;direction:ltr', 'WHITE FRIDAY <span style="color:#C4321F">FESTIVAL</span>');
+  [52.02, 52.34, 52.78].forEach((at, j) => { const r = $('div', 'abs', c.c, `top:${400 + j * 66}px;right:30px;display:flex;align-items:center;gap:16px`, icon('check', 40, '#C4321F', 2.6));
+    const sk = $('div', 'skel', r, `position:relative;width:${[520, 430, 480][j]}px`); P(r, { at, dx: 24, dy: 0, dur: .4 }); }); })();
+T(LIGHT, 1300, 44, [['هنوضح', 51.28], ['فيه', 51.90], ['طريقة', 52.02], ['الانضمام', 52.34], ['للمهرجان', 52.78]], 53.3, { color: K.ink2 });
+T(LIGHT, 1300, 44, [['وكل', 53.36], ['اللي', 53.76], ['محتاج', 53.96], ['تعمله', 54.24]], 56.3, { color: K.ink2 });
+T(LIGHT, 1370, 50, [['عشان', 54.56], ['تكون', 54.82], ['واحد', 55.02], ['من', 55.34], ['المشاركين', 55.48, 'red'], ['معانا', 55.96]], 56.3);
+(() => { const b = chip(LIGHT, icon('user', 40, '#fff', 2.4) + '<span>واحد من المشاركين</span>' + icon('check', 40, '#fff', 2.8), 250, 1190, { at: 55.48, out: 56.3, dy: 30 }, 'background:#C4321F;color:#fff;font-size:40px'); })();
+
+// ================= S9 · follow along until the end =================
+T(LIGHT, 440, 62, [['ومن', 56.38], ['هنا', 56.72], ['لحد', 56.92], ['نهاية', 57.26], ['المهرجان', 57.60, 'red']], 61.3);
+(() => { const tr = $('div', 'abs', LIGHT, 'left:140px;right:140px;top:640px;height:6px;border-radius:3px;background:rgba(21,21,21,.1)');
+  const pr = $('div', 'abs', LIGHT, 'left:140px;right:140px;top:640px;height:6px;border-radius:3px;background:#C4321F;transform-origin:100% 50%');
+  const a = $('div', 'dot', LIGHT, 'right:128px;top:632px'); const b = $('div', 'dot', LIGHT, 'left:128px;top:632px;background:#151515');
+  P(tr, { at: 56.6, dy: 0, out: 61.3 }); P(a, { at: 56.72, dy: 0, s0: .3, follow: .05, out: 61.3, dur: .36 }); P(b, { at: 57.40, dy: 0, s0: .3, follow: .05, out: 61.3, dur: .36 });
+  U.push(t => { pr.style.transform = `scaleX(${inOut(lin(t, 56.72, 57.62))})`; pr.style.opacity = 1 - easeIn(lin(t, 61.3, 61.6)); }); })();
+T(LIGHT, 800, 76, [['تابعونا', 58.16], ['باستمرار', 58.66, 'red']], 61.3);
+(() => { const w = $('div', 'sh', LIGHT, 'right:86px;top:960px'); const btn = $('div', 'chip', w, 'background:#C4321F;color:#fff;font-size:44px;padding:20px 40px 22px', '<span class="bell">' + icon('bell', 46, '#fff', 2.4) + '</span><span>تابعونا</span>');
+  U.push(t => { const p = pose(t, { at: 58.16, dy: 22, s0: .94, squash: .02, out: 61.3 });
+    const press = t > 58.62 && t < 58.9 ? 1 - .05 * Math.sin(Math.PI * lin(t, 58.62, 58.9)) : 1;   // anticipation → press → release
+    p.s *= press; apply(w, p); const bell = btn.querySelector('.bell'); const r = lin(t, 59.40, 60.3); bell.style.display = 'inline-block'; bell.style.transform = `rotate(${Math.sin(r * Math.PI * 6) * 16 * (1 - r)}deg)`; bell.style.transformOrigin = '50% 10%'; }); })();
+T(LIGHT, 1130, 46, [['عشان', 59.12], ['متفوتوكوش', 59.46], ['أي', 60.08], ['فرصة', 60.32], ['أو', 60.74], ['مفاجأة', 60.88, 'red']], 61.3, { color: K.ink2 });
+
+// ================= S10 · tell me in the comments =================
+T(LIGHT, 430, 52, [['وعايز', 61.38], ['أعرف', 61.74], ['منكم', 62.00]], 67.7, { color: K.ink2 });
+T(LIGHT, 500, 76, [['في', 62.20], ['الكومنتات', 62.32, 'red']], 67.7);
+(() => { const c = card(LIGHT, 86, 650, 908, 200, { at: 62.32, out: 67.7 });
+  iconBox(c.c, 'chat', 104, 62.5, 'top:48px;right:36px');
+  const f = $('div', 'abs', c.c, 'top:66px;right:170px;left:40px;height:72px;border-radius:36px;background:rgba(21,21,21,.05)');
+  const cur = $('div', 'abs', f, 'top:18px;right:30px;width:4px;height:36px;background:#C4321F;border-radius:2px');
+  U.push(t => { cur.style.opacity = Math.floor(t * 2.4) % 2 ? .2 : 1; }); })();
+T(LIGHT, 920, 66, [['مين', 62.82], ['متحمس', 63.34, 'red'], ['يدخل', 63.86], ['معانا', 64.14]], 67.7);
+T(LIGHT, 1010, 66, [['المهرجان', 64.42], ['السنة', 64.78], ['دي؟', 65.06]], 67.7);
+T(LIGHT, 1180, 84, [['مستني', 65.38], ['أشوف', 66.10], ['مشاركتكم!', 66.34, 'red']], 67.7);
+(() => { const u = $('div', 'abs', LIGHT, 'right:86px;top:1300px;width:420px;height:6px;border-radius:3px;background:#C4321F;transform-origin:100% 50%');
+  U.push(t => { u.style.transform = `scaleX(${ease(lin(t, 66.40, 66.9))})`; u.style.opacity = 1 - easeIn(lin(t, 67.7, 68.0)); }); })();
+
+// ================= S11 · end card on the downbeat after the lift (hold >= 3 s) =================
+(() => { const plate = $('div', 'plate', LIGHT, 'left:200px;top:640px;width:680px;height:160px'); const im = $('img', '', plate, 'width:600px'); im.src = LOGO;
+  U.push(t => { const k = ease(lin(t, END, END + .8)); apply(plate, pose(t, { at: END, dy: 0, s0: .92, antic: true, follow: .01, dur: .8 })); plate.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; });
+  T(LIGHT, 860, 96, [['WHITE', END + .35], ['FRIDAY', END + .43], ['FESTIVAL', END + .51, 'red']], 99, { center: true, css: 'direction:ltr' });
+  const rule = $('div', 'abs', LIGHT, 'left:480px;top:1010px;width:120px;height:5px;background:#C4321F;border-radius:3px'); U.push(t => { rule.style.transform = `scaleX(${ease(lin(t, END + .6, END + 1.1))})`; });
+  T(LIGHT, 1060, 50, [['استنوا', END + .7], ['البوست', END + .78], ['النهاردة', END + .86]], 99, { center: true });
+  const url = $('div', 'abs', LIGHT, 'left:0;right:0;top:1160px;text-align:center;font-size:36px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
+  P(url, { at: END + 1.0, dy: 10 }); })();
+
+window.render = t => { U.forEach(f => f(t)); };
+window.ready = Promise.all([document.fonts.load('700 60px Cairo'), document.fonts.load('500 40px Cairo'), document.fonts.load('60px Bebas'),
+  ...[...document.images].map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))]).then(() => document.fonts.ready);
+</script></body></html>

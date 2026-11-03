@@ -30,4 +30,10 @@ reels/new_reel.sh <name> raw/<name>/<video>.mp4 raw/<name>/<music>.wav     # ana
 reels/preview.sh reels/<name> 1.0,5.0,12.0                                  # screenshots for the client
 reels/render.sh reels/<name>                                                 # both looks → reels/<name>/out/
 ```
+## Start an SG MOTION piece
+Copy `motion/white-friday-festival/` (the reference piece). Then:
+- Write `comp.html` scenes against the VO word times and `reels/tools/beats.py` output.
+- Run `motion/render.sh motion/<piece>`.
+- Read `motion/README.md` first (kit rules + the 12 principles in code).
+
 Raw footage and music live in `raw/` (git-ignored) and are downloaded from Google Drive. Use the Drive connector to read metadata; plain `curl` on `drive.usercontent.google.com/download?id=…&confirm=t` works for files shared by link.
