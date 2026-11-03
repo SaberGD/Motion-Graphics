@@ -50,7 +50,9 @@ CUTS = [o(e) for s, e in KEEP[:-1]]               # cut points on the output tim
 # ---- graphics (catalogue + examples: reels/SYSTEM.md §5 and reels/saber7/build_spec.py)
 ELS = [
     # dict(type='chips', t0=o(3.86), t1=o(5.10), y=262, x=70, items=[dict(text='مشكلة كبيرة', icon='x', cls='bad')], at=[o(3.96)]),
-    dict(type='outro', t0=SPEECH, logos=[[BR + 'saber_red.png', 300], [BR + 'mushroom.png', 380]],
+    # end card: Saber Group alone by default. Add the Mushroom partner logo ONLY when the client says the video is with Mushroom:
+    #   logos=[[BR + 'saber_red.png', 300], [BR + 'mushroom.png', 380]]
+    dict(type='outro', t0=SPEECH, logos=[[BR + 'saber_red.png', 360]],
          cta="__CTA__"),
 ]
 # soft light leaks only on real transitions (cuts, motion-scene entry, end card); keep them light (amt .3)

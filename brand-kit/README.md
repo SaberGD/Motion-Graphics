@@ -1,4 +1,8 @@
-# Saber Group Claude Motion Kit (v1, 2026-11-03)
+# SG MOTION: Saber Group Claude Motion Kit (v1, 2026-11-03)
+
+**SG MOTION** is the designed-motion style (no footage: Academy / MARO ads, promos, end cards). This kit is its rulebook.
+The montage style for talking-head reels is **SG EDIT** (`reels/SYSTEM.md`).
+
 
 This is the client's brand and motion reference kit, kept here **unchanged** as a reference for all Saber Group motion work.
 Every asset still matches the SHA-256 in `ASSET-MANIFEST.json`, checked on import. Start with `00-START-HERE.ar.md`, then `01-MASTER-INSTRUCTIONS.txt`.
@@ -10,8 +14,8 @@ this repo, where it would conflict with the repo's own rules: it says 25fps, tha
 
 | Kind of video | Follow |
 |---|---|
-| **Talking-head reels** (Saber Group × Mushroom series, Saber on camera) | `reels/SYSTEM.md`. Its client-feedback rules win where they differ from the kit (§9 there lists the differences) |
-| **Designed motion pieces** (Academy ads, MARO AI films, end cards, landscape/square promos, anything without footage) | this kit: `01-MASTER-INSTRUCTIONS.txt`, `brand-tokens.json`, `06-PRE-FLIGHT-CHECKLIST.md` |
+| **SG EDIT**: talking-head reels (Saber on camera) | `reels/SYSTEM.md`. Its client-feedback rules win where they differ from the kit (§9 there lists the differences) |
+| **SG MOTION**: designed motion pieces (Academy ads, MARO AI films, end cards, landscape/square promos, anything without footage) | this kit: `01-MASTER-INSTRUCTIONS.txt`, `brand-tokens.json`, `06-PRE-FLIGHT-CHECKLIST.md` |
 | **Both** | the kit's locked-asset rules (never redraw/recolor/mirror logos or Maro), approved facts only (no invented prices/offers/claims), licensed audio only, ≥2 s readable end card |
 
 ## Contents
