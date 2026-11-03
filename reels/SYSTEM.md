@@ -153,3 +153,21 @@ The client's **Saber Group Claude Motion Kit v1** (2026-11-03) sits unchanged in
 | MARO | flat PNGs, ≤6 px idle drift, never mirrored | (v6 used a robot cutaway): for AI topics use the real MARO PNGs from the kit, same rules | — |
 
 When starting any piece, **say which style it is** (SG EDIT or SG MOTION) and which identity it carries: Saber Group agency, Academy or MARO, and with or without Mushroom. If the brief doesn't settle it, ask.
+
+## 10. Saber's cloned voice (ElevenLabs)
+
+| Item | Value |
+|---|---|
+| Voice | **Mohamed Saber**, `voice_id h1dykroatZMMS5JzRfwx`. A professional voice clone, verified for Egyptian Arabic on the `eleven_v4` models |
+| Account | the client's own ElevenLabs account (Creator tier). The key is **never** stored in the repo: it comes from the env var `ELEVENLABS_API_KEY` (an environment secret) |
+| Tool | `python3 reels/tools/tts.py "<approved text>" out.wav [--model eleven_v4]` → 48 kHz mono WAV |
+
+**When to use it:**
+- **SG EDIT:** patch a word that was flubbed, clipped or missing (a "pickup") instead of reshooting. Match the timing to the original word, run it through the same `voice_af` chain, and crossfade 10–20 ms inside the cut.
+- **SG MOTION:** voiceover for designed pieces when the client asks for his voice.
+
+**Rules:**
+- Only the client's own voice, and only for text he approved word by word. Never put claims, prices or offers in his mouth that the brief did not approve.
+- Show the exact text before generating. List every synthetic line in the delivery notes / `SCRIPT.md`.
+- Check every generated line with Whisper and by ear: Egyptian words and English terms can be misread. Rewrite the spelling (e.g. spaced or Latin terms) and regenerate if needed.
+- Never clone or synthesise anyone else's voice.

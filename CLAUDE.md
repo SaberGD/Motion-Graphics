@@ -22,6 +22,7 @@ Saber Group video work comes in **two named styles**. Every request names one, o
 - SFX: recorded UI sounds from `reels/library/sfx_map.json`, one per on-screen motion, kept low.
 - Branding (SG EDIT): the white **SABER GROUP Marketing Agency** mark in the corner, and the red agency logo **alone** in the outro. **Mushroom is a temporary partner**: add its logo next to Saber's only when the client says that video is with Mushroom (they will say so beforehand). **Never `alternate-saber-logo-academy.svg`**: it is a redrawn fake ("أكاديمية تدريب") that the client rejected. The real Academy / wordmark logos live in `brand-kit/assets/logos/` and are placed as-is: never redrawn, recoloured or mirrored.
 - Captions are corrected by hand, in meaningful chunks, with one orange keyword per chunk. When the video mentions a real file, show the real one.
+- Saber's cloned voice (ElevenLabs "Mohamed Saber", `h1dykroatZMMS5JzRfwx`): only for text he approved, via `reels/tools/tts.py` with the key from the `ELEVENLABS_API_KEY` env var. Never put the key in the repo. See `reels/SYSTEM.md` §10.
 
 ## Start a new SG EDIT reel
 ```bash
