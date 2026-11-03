@@ -49,7 +49,35 @@ Other takes, not used:
 - `energetic` (stability .42, style .20): 94.5%. «مسابقة» came out «مسادقة» twice and «البوست» as «الكوست».
 - `pickup` .50: 96%, but «مستنيينكم» came out «مستمينكم».
 
-## The video (SG MOTION · Saber Group Academy · 1080×1920 · 25 fps · 71.0 s)
+## The video (SG MOTION · Saber Group Academy · 1080×1920 · 25 fps · 71.0 s): two variants
+
+| File | Variant |
+|---|---|
+| `out/white_friday_festival_9x16_text.mp4` | **text**: kinetic typography with light UI cards, all centred inside the safe box |
+| `out/white_friday_festival_9x16_mix.mp4` | **mix**: the same text + illustrative motion graphics that move with the words (below) |
+
+Both are rendered from one `comp.html` (`?v=text` / `?v=mix`) with the same timing and mix.
+v1 feedback: text was right-aligned, so everything is now centred; v1 felt like "text only", hence the mix variant.
+
+**Illustrations in the mix variant** (the 12 principles in brackets):
+
+| Moment | Illustration |
+|---|---|
+| «بدري» | a clock pops on the calendar and its hands rewind (anticipation, arcs) |
+| «مسابقة واحدة» | one trophy, crossed out on the drop |
+| «عروض وخصومات» | two price tags swing on a rail (follow-through), get struck and drop (gravity) |
+| «مهرجان كامل» | bunting drops in and swings, a confetti burst on «كامل», a starburst behind the title |
+| «مفاجآت» | gift boxes squash, then the lids lift and stay open (anticipation, squash) |
+| «مسابقات / تحديات» | a trophy with a shine sweep; an arrow draws back, flies on an arc, hits and quivers |
+| «لسه بتبدأ / عندك خبرة» | a staircase; the marker drops on step 1, then hops to steps 3 and 4 (arcs, squash on landing) |
+| «كل ما تشارك … بتزيد» | tokens drop into a jar, the level rises, and it glows on «بتزيد» |
+| «تجمع نقاط» | five coins arc from the contest card into the bank, spinning |
+| «الجائزة الكبرى» | the trophy drops onto a podium; a shine and two sparkles |
+| «استنوا البوست النهارده» | a phone; the post lands inside it and a notification slides down |
+| «من هنا لحد نهاية المهرجان» | milestone flags pop as a runner dot moves along the line |
+| «تابعونا» | the bell rings with sound waves |
+| «في الكومنتات» | three comment bubbles with typing dots (no invented comments); a heart pops on «مشاركتكم» |
+
 
 **Concept:** it opens **dark** on «البلاك فرايدي؟». On «الموضوع مختلف تمامًا» the frame flips to **white** with a masked reveal on the music's build bar (6.853 s): **White** Friday. The rest stays on the kit's light frame, with the logo on a charcoal plate.
 

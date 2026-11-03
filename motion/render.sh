@@ -7,7 +7,12 @@ FPS=$(python3 -c "import json;print(json.load(open('$P/piece.json'))['fps'])"); 
 B=${BUILD_ROOT:-/tmp/motion_build}/$NAME; mkdir -p "$B" "$P/out"
 [ -f "$P/build_mix.py" ] && python3 "$P/build_mix.py"
 python3 "$E/mix.py" "$P/mix.json" "$B/mix.wav"
-rm -rf "${B:?}/frames"; node "$E/render.js" "$P/comp.html" "$B/frames" "$FPS" "$DUR" ${WORKERS:-4} | grep -E "ERR" || true
-ffmpeg -v error -y -framerate "$FPS" -i "$B/frames/f_%05d.jpg" -i "$B/mix.wav" -c:v libx264 -preset slow -crf 16 -tune animation -profile:v high \
-  -pix_fmt yuv420p -r "$FPS" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -c:a aac -b:a 320k -ar 48000 -shortest -movflags +faststart "$P/out/$NAME.mp4"
-echo "built $P/out/$NAME.mp4"
+# variants: piece.json "variants": ["text", "mix"] -> <name>_<v>.mp4 (comp.html reads ?v=<variant>); args override
+VARS=${2:-$(python3 -c "import json;print(' '.join(json.load(open('$P/piece.json')).get('variants',[''])))")}
+for V in ${VARS:-""}; do
+  OUTN=$NAME${V:+_$V}; rm -rf "${B:?}/frames_$V"
+  QUERY=${V:+v=$V} node "$E/render.js" "$P/comp.html" "$B/frames_$V" "$FPS" "$DUR" ${WORKERS:-4} | grep -E "ERR" || true
+  ffmpeg -v error -y -framerate "$FPS" -i "$B/frames_$V/f_%05d.jpg" -i "$B/mix.wav" -c:v libx264 -preset slow -crf 16 -tune animation -profile:v high \
+    -pix_fmt yuv420p -r "$FPS" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -c:a aac -b:a 320k -ar 48000 -shortest -movflags +faststart "$P/out/$OUTN.mp4"
+  echo "built $P/out/$OUTN.mp4"
+done

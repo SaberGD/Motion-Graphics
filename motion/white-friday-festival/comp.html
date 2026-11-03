@@ -1,6 +1,8 @@
 <!doctype html>
 <html><head><meta charset="utf-8">
-<!-- Saber Group White Friday Festival: SG MOTION announcement (1080x1920, 25fps).
+<!-- Saber Group White Friday Festival: SG MOTION announcement (1080x1920, 25fps). Two variants:
+     ?v=text  kinetic typography only, centred inside the safe box
+     ?v=mix   the same text + illustrative motion graphics that move with the words (12 principles)
      Text = the client's script only. Timing = VO word times (analysis/vo_words.json) + music beats (analysis/beats.json).
      Story: it opens dark ("Black Friday?"), then flips to white on the music build (6.853 s): WHITE Friday. -->
 <style>
@@ -19,7 +21,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
 .wash{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 50%,transparent 60%,rgba(122,27,18,.22) 100%)}
 .line{position:absolute;left:86px;right:86px;display:flex;flex-direction:row;direction:rtl;gap:0 .26em;font-weight:700;line-height:1.22;white-space:nowrap}
 .line.c{justify-content:center}
-.wm{display:inline-block;clip-path:inset(-.22em -.8em -.30em -.8em)}   /* vertical mask only: Arabic tails (ع م ي) overhang sideways */   /* wide mask: Arabic tails (ع ق ي) overhang the advance width */
+.wm{display:inline-block;clip-path:inset(-.22em -.8em -.30em -.8em)}   /* vertical mask only: Arabic tails (ع م ي) overhang sideways */
 .wi{display:inline-block;will-change:transform}
 .red{color:#C4321F}
 .dim{color:#5C5F66}
@@ -39,6 +41,9 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
 .bar i{position:absolute;inset:0;background:linear-gradient(270deg,#C4321F,#E85C3B);transform-origin:100% 50%}
 .dot{position:absolute;width:22px;height:22px;border-radius:50%;background:#C4321F}
 .skel{position:absolute;height:20px;border-radius:10px;background:rgba(21,21,21,.09)}
+.row{position:absolute;left:86px;right:86px;display:flex;justify-content:center;gap:28px;direction:rtl}
+.row > .sh{position:relative}
+svg.ill{position:absolute;overflow:visible}
 </style></head>
 <body><div id="stage">
   <div id="dark" class="layer"><div class="grid"></div><div class="wash"></div></div>
@@ -48,98 +53,143 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
 <script src="../engine/kit.js"></script>
 <script>
 const { K, ease, easeIn, inOut, clamp, lin, lerp, IN, OUT, pose, apply, $, line, lineUpdate, icon, settle } = SG;
+const MIX = new URLSearchParams(location.search).get('v') === 'mix';
 const DARKL = document.getElementById('dark'), LIGHTL = document.getElementById('light'), CHROME = document.getElementById('chrome');
 // content sits in an inner layer, lowered so each scene is balanced around the frame's optical centre
 const DARK = $('div', 'layer', DARKL, 'transform:translateY(70px);overflow:visible'), LIGHT = $('div', 'layer', LIGHTL, 'transform:translateY(110px);overflow:visible');
 const FLIP = 6.853, TITLE = 13.114, END = 67.903, DUR = 71.04;   // music: build bar, downbeat, downbeat after the lift
 const LOGO = '../../brand-kit/assets/logos/saber-group-wordmark.png';   // locked asset: placed, never redrawn
-const U = [];                       // per-frame updaters
+const U = [];
 const W = (t, at, c) => ({ t, at, c });
-// a text line: words [[text, at, cls]], right-aligned unless center
+// centred text line (inside the safe box): words [[text, at, cls]]
 function T(parent, y, size, words, out, o = {}) {
-  const L = line(parent, words.map(w => W(w[0], w[1], (w[2] || '') + (/^[A-Z ]+$/.test(w[0]) ? ' lat' : ''))), `top:${y}px;font-size:${size}px;color:${o.color || (parent === DARK ? K.text : K.ink)};${o.css || ''}`, o.center ? 'c' : '');
+  const L = line(parent, words.map(w => W(w[0], w[1], (w[2] || '') + (/^[A-Z ]+$/.test(w[0]) ? ' lat' : ''))), `top:${y}px;font-size:${size}px;color:${o.color || (parent === DARK ? K.text : K.ink)};${o.css || ''}`, 'c');
   U.push(t => lineUpdate(L, t, out)); return L;
 }
-// a generic element animated by pose()
 function P(el, o, extra) { U.push(t => apply(el, pose(t, o), typeof extra === 'function' ? extra(t) : '')); return el; }
-function chip(parent, html, x, y, o, css = '') {
-  const w = $('div', 'sh', parent, `right:${x}px;top:${y}px;transform-origin:100% 50%`); const c = $('div', 'chip', w, css, html);
-  P(w, Object.assign({ dy: 22, s0: .94, squash: .025, follow: .012 }, o)); return { w, c };
-}
-function strike(chipObj, at, parent) {   // red line drawn across a chip on the beat
+const row = (parent, y, gap = 28) => $('div', 'row', parent, `top:${y}px;gap:${gap}px`);
+function chip(rowEl, html, o, css = '') { const w = $('div', 'sh', rowEl, 'transform-origin:50% 50%'); const c = $('div', 'chip', w, css, html); P(w, Object.assign({ dy: 22, s0: .94, squash: .025, follow: .012 }, o)); return { w, c }; }
+function strike(chipObj, at) {
   const s = $('div', 'strike', chipObj.w, 'left:18px;right:18px;top:50%;margin-top:-3px');
   U.push(t => { const k = ease(lin(t, at, at + .34)); s.style.transform = `scaleX(${k})`; chipObj.c.style.opacity = lerp(1, .42, ease(lin(t, at + .1, at + .5))); });
 }
 function card(parent, x, y, w, h, o) { const sh = $('div', 'sh', parent, `left:${x}px;top:${y}px;width:${w}px;height:${h}px`); const c = $('div', 'card', sh, 'inset:0'); P(sh, Object.assign({ dy: 30, s0: .96, arc: 0, squash: .02, follow: .01 }, o)); return { sh, c }; }
 function iconBox(parent, name, size, at, css, color = '#C4321F', bg = 'rgba(196,50,31,.09)') {
   const b = $('div', 'ic abs', parent, `width:${size}px;height:${size}px;background:${bg};${css}`, icon(name, size * .56, color, 2));
-  P(b, { at, dy: 10, s0: .7, follow: .03, dur: .4 }); return b;   // overlapping action: lands after its card
+  P(b, { at, dy: 10, s0: .7, follow: .03, dur: .4 }); return b;
+}
+const svg = (parent, x, y, w, h, inner, css = '') => $('div', 'abs', parent, `left:${x}px;top:${y}px;width:${w}px;height:${h}px;${css}`, `<svg class="ill" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${inner}</svg>`);
+const vis = (t, a, b) => (t >= a && t <= b);
+// gravity drop with squash on landing (principles 1 + 6): returns {y, sx, sy, o}
+function drop(t, at, h, land = .42) {
+  const q = lin(t, at, at + land), y = -h * (1 - q * q);                  // accelerating fall
+  const k = lin(t, at + land, at + land + .26), sq = Math.sin(Math.PI * k) * .12 * (1 - k * .3);
+  return { y: t < at ? -h : y, sx: 1 + sq, sy: 1 - sq, o: t < at ? 0 : clamp((t - at) / .08) };
 }
 
-// ================= S1 · dark hook: "تفتكروا البلاك فرايدي …؟" =================
+// ================= S1 · dark hook =================
 T(DARK, 470, 46, [['تفتكروا', .02]], 2.5, { color: K.text2 });
 T(DARK, 540, 104, [['البلاك', .36], ['فرايدي', .58]], 2.5);
 T(DARK, 690, 50, [['لازم', .90], ['يكون', 1.32], ['في', 1.54]], 2.5, { color: K.text2 });
 T(DARK, 760, 66, [['آخر', 1.66], ['شهر', 1.84], ['نوفمبر؟', 2.08, 'red']], 2.5);
-// calendar card (November 2026: the 1st is a Sunday, Fridays 6/13/20/27; Black Friday = the 27th)
-(() => {
-  const sh = $('div', 'sh', DARK, 'left:86px;top:930px;width:430px;height:400px;filter:none');
+(() => { // November 2026 calendar (the 1st is a Sunday; Fridays 6/13/20/27 → Black Friday = 27th)
+  const CW = MIX ? 500 : 430, CH = MIX ? 460 : 400, sc = CW / 430;
+  const sh = $('div', 'sh', DARK, `left:${(1080 - CW) / 2}px;top:930px;width:${CW}px;height:${CH}px;filter:none`);
   const c = $('div', 'card', sh, 'inset:0;background:#151515;border:1px solid rgba(246,243,242,.08)');
-  $('div', 'abs', c, 'top:26px;right:30px;font-size:30px;font-weight:700;color:#F6F3F2', 'نوفمبر');
-  $('div', 'abs lat', c, 'top:28px;left:30px;font-size:32px;color:#C7C9CD', '2026');
-  const days = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; let cells = [];
-  days.forEach((d, i) => $('div', 'abs', c, `top:92px;right:${30 + i * 54}px;width:44px;text-align:center;font-size:22px;color:#5C5F66;font-weight:500`, d));
-  for (let n = 1; n <= 30; n++) { const i = n - 1, col = i % 7, row = Math.floor(i / 7);
-    cells.push($('div', 'abs lat', c, `top:${130 + row * 50}px;right:${30 + col * 54}px;width:44px;height:44px;line-height:46px;text-align:center;font-size:30px;color:${col === 5 ? '#F6F3F2' : '#7d8087'};border-radius:50%`, n)); }
-  const ring = $('div', 'abs', c, `top:${130 + 3 * 50 - 4}px;right:${30 + 5 * 54 - 4}px;width:52px;height:52px;border:3px solid #C4321F;border-radius:50%`);
-  P(sh, { at: 1.70, dy: 40, dx: -30, arc: 18, s0: .96, out: 4.95, follow: .01 });
+  const inner = $('div', 'abs', c, `left:0;top:0;width:430px;height:400px;transform:scale(${sc});transform-origin:0 0`);
+  $('div', 'abs', inner, 'top:26px;right:30px;font-size:30px;font-weight:700;color:#F6F3F2', 'نوفمبر');
+  $('div', 'abs lat', inner, 'top:28px;left:30px;font-size:32px;color:#C7C9CD', '2026');
+  ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'].forEach((d, i) => $('div', 'abs', inner, `top:92px;right:${30 + i * 54}px;width:44px;text-align:center;font-size:22px;color:#5C5F66;font-weight:500`, d));
+  const cells = [];
+  for (let n = 1; n <= 30; n++) { const i = n - 1, col = i % 7, r = Math.floor(i / 7);
+    cells.push($('div', 'abs lat', inner, `top:${130 + r * 50}px;right:${30 + col * 54}px;width:44px;height:44px;line-height:46px;text-align:center;font-size:30px;color:${col === 5 ? '#F6F3F2' : '#7d8087'};border-radius:50%`, n)); }
+  const ring = $('div', 'abs', inner, `top:${130 + 3 * 50 - 4}px;right:${30 + 5 * 54 - 4}px;width:52px;height:52px;border:3px solid #C4321F;border-radius:50%`);
+  P(sh, { at: 1.70, dy: 40, arc: 18, s0: .96, out: 4.95, follow: .01 });
   U.push(t => { const k = ease(lin(t, 2.08, 2.5)); ring.style.opacity = k * (1 - ease(lin(t, 4.28, 4.6))); ring.style.transform = `scale(${lerp(1.6, 1, k) * (1 + settle(lin(t, 2.3, 2.9), .05))})`; cells[26].style.color = k > .5 && t < 4.4 ? '#C4321F' : '#F6F3F2'; });
-  // "بدري": an arrow sweeps back along the month (no date implied)
-  const arr = $('div', 'abs', c, 'top:340px;right:40px;color:#C4321F', icon('arrow', 44, '#C4321F', 2.4));
-  U.push(t => { const k = inOut(lin(t, 4.28, 4.9)); arr.style.opacity = clamp((t - 4.28) / .1) * (1 - easeIn(lin(t, 4.95, 5.2))); arr.style.transform = `translateX(${-k * 300}px)`; });
+  if (!MIX) { // "بدري": an arrow sweeps back along the month (no date implied)
+    const arr = $('div', 'abs', inner, 'top:340px;right:40px;color:#C4321F', icon('arrow', 44, '#C4321F', 2.4));
+    U.push(t => { const k = inOut(lin(t, 4.28, 4.9)); arr.style.opacity = clamp((t - 4.28) / .1) * (1 - easeIn(lin(t, 4.95, 5.2))); arr.style.transform = `translateX(${-k * 300}px)`; });
+  } else { // "بدري": a clock pops on the card's corner and its hands rewind (arcs + anticipation)
+    const ck = svg(DARK, (1080 - CW) / 2 - 70, 870, 170, 170, `<circle cx="85" cy="85" r="74" fill="#0A0A0A" stroke="#C4321F" stroke-width="6"/>${[...Array(12)].map((_, i) => `<line x1="85" y1="20" x2="85" y2="${i % 3 ? 28 : 34}" stroke="#F6F3F2" stroke-width="${i % 3 ? 2 : 4}" transform="rotate(${i * 30} 85 85)"/>`).join('')}<g class="hh"><line x1="85" y1="85" x2="85" y2="48" stroke="#F6F3F2" stroke-width="7" stroke-linecap="round"/></g><g class="mh"><line x1="85" y1="85" x2="85" y2="30" stroke="#C4321F" stroke-width="5" stroke-linecap="round"/></g><circle cx="85" cy="85" r="7" fill="#F6F3F2"/>`);
+    P(ck, { at: 4.10, dy: 0, s0: .3, squash: .05, follow: .04, out: 4.95, dur: .4 });
+    const hh = ck.querySelector('.hh'), mh = ck.querySelector('.mh');
+    U.push(t => { const a = easeIn(lin(t, 4.20, 4.30)) * 12, k = ease(lin(t, 4.30, 4.95)); // wind forward a hair, then spin back
+      mh.setAttribute('transform', `rotate(${a - k * 540} 85 85)`); hh.setAttribute('transform', `rotate(${120 + a / 12 - k * 45} 85 85)`); });
+  }
 })();
 T(DARK, 470, 50, [['إحنا', 2.56], ['في', 3.02]], 4.95, { color: K.text2 });
-(() => { const box = $('div', 'abs', DARK, 'right:86px;top:560px;width:560px;height:81px;overflow:hidden');
+(() => { const box = $('div', 'abs', DARK, 'left:260px;top:560px;width:560px;height:81px;overflow:hidden');
   const im = $('img', '', box, 'position:absolute;right:0;top:0;width:560px'); im.src = LOGO;
   U.push(t => { const k = ease(lin(t, 3.14, 3.14 + .8)); box.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; box.style.opacity = (t >= 3.14) * (1 - easeIn(lin(t, 4.95, 5.27))); box.style.transform = `translateY(${-12 * easeIn(lin(t, 4.95, 5.27))}px)`; }); })();
 T(DARK, 690, 62, [['قررنا', 3.56], ['نبدأ', 3.98], ['بدري', 4.28, 'red'], ['السنة', 4.56], ['دي', 4.76]], 4.95);
 T(DARK, 800, 56, [['بس', 5.00], ['المرة', 5.42], ['دي', 5.68]], 99, { color: K.text2 });
 T(DARK, 880, 100, [['الموضوع', 5.94], ['مختلف', 6.32, 'red'], ['تمامًا', 6.78]], 99);
-// anticipation of the flip: the dark scene leans back a touch, then the white world rises over it
 U.push(t => { const a = easeIn(lin(t, FLIP - .2, FLIP)); DARKL.style.transform = `scale(${1 - .02 * a})`;
   const k = ease(lin(t, FLIP, FLIP + .5)); LIGHTL.style.clipPath = `inset(${(1 - k) * 100}% 0 0 0)`; LIGHTL.style.visibility = t >= FLIP ? 'visible' : 'hidden';
   DARKL.style.visibility = t < FLIP + .5 ? 'visible' : 'hidden'; });
-// light frame chrome (kit portrait frame): corners, charcoal logo plate, url + academy label
-(() => {
+(() => { // light frame chrome (kit portrait frame)
   const cs = [$('div', 'corner', CHROME, 'left:86px;top:192px;border-width:4px 0 0 4px'), $('div', 'corner', CHROME, 'right:86px;top:1528px;border-width:0 4px 4px 0')];
-  const plate = $('div', 'plate', CHROME, 'right:86px;top:200px;width:300px;height:76px'); const im = $('img', '', plate, 'width:256px'); im.src = LOGO;
+  const plate = $('div', 'plate', CHROME, 'left:390px;top:200px;width:300px;height:76px'); const im = $('img', '', plate, 'width:256px'); im.src = LOGO;
   const url = $('div', 'lbl', CHROME, 'left:86px;top:1512px;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
   const ac = $('div', 'lbl lat', CHROME, 'right:150px;top:1506px;font-size:32px;color:#C4321F', 'SABER GROUP ACADEMY');
-  U.push(t => { const on = t > FLIP + .35 && t < END - .2;
-    [plate, url, ac, ...cs].forEach((e, i) => { const p = pose(t, { at: FLIP + .35 + i * .08, dy: 10, out: END - .25 }); apply(e, p); }); });
+  U.push(t => { [plate, url, ac, ...cs].forEach((e, i) => apply(e, pose(t, { at: FLIP + .35 + i * .08, dy: 10, out: END - .25 }))); });
 })();
 
 // ================= S2 · not one contest, not just offers =================
 T(LIGHT, 520, 48, [['السنة', 7.44], ['دي', 7.92]], 10.6, { color: K.ink2 });
 T(LIGHT, 590, 76, [['مش', 8.08], ['عاملين', 8.20]], 10.6);
-const c1 = chip(LIGHT, 'مسابقة واحدة', 86, 760, { at: 8.40, out: 10.6 }); strike(c1, 8.809, LIGHT);
-T(LIGHT, 930, 58, [['ولا', 9.02], ['مجرد', 9.30]], 10.6, { color: K.ink2 });
-const c2 = chip(LIGHT, 'عروض', 86, 1060, { at: 9.78, out: 10.6 }); const c3 = chip(LIGHT, 'وخصومات', 330, 1060, { at: 10.00, out: 10.6 });
-strike(c2, 10.374, LIGHT); strike(c3, 10.42, LIGHT);
+if (!MIX) {
+  const r1 = row(LIGHT, 760); const c1 = chip(r1, 'مسابقة واحدة', { at: 8.40, out: 10.6 }); strike(c1, 8.809);
+  T(LIGHT, 930, 58, [['ولا', 9.02], ['مجرد', 9.30]], 10.6, { color: K.ink2 });
+  const r2 = row(LIGHT, 1060); const c2 = chip(r2, 'عروض', { at: 9.78, out: 10.6 }); const c3 = chip(r2, 'وخصومات', { at: 10.00, out: 10.6 }); strike(c2, 10.374); strike(c3, 10.42);
+} else {
+  // one trophy, crossed out on the drop
+  const tr = $('div', 'abs', LIGHT, 'left:420px;top:700px', icon('trophy', 240, '#151515', 1.6));
+  P(tr, { at: 8.40, dy: 30, s0: .8, squash: .035, follow: .02, out: 10.6 });
+  $('div', 'abs', LIGHT, 'left:0;right:0;top:930px;text-align:center;font-size:42px;font-weight:700;color:#151515', '<span class="one">مسابقة واحدة</span>');
+  const one = LIGHT.querySelector('.one'); U.push(t => { one.style.opacity = clamp((t - 8.5) / .2) * (1 - easeIn(lin(t, 10.6, 10.9))) * lerp(1, .45, ease(lin(t, 8.9, 9.3))); });
+  const X = svg(LIGHT, 400, 690, 280, 280, '<path class="x1" d="M30 30 L250 250" stroke="#C4321F" stroke-width="14" stroke-linecap="round" fill="none" pathLength="1" stroke-dasharray="1" /><path class="x2" d="M250 30 L30 250" stroke="#C4321F" stroke-width="14" stroke-linecap="round" fill="none" pathLength="1" stroke-dasharray="1"/>');
+  U.push(t => { X.querySelector('.x1').style.strokeDashoffset = 1 - ease(lin(t, 8.809, 9.1)); X.querySelector('.x2').style.strokeDashoffset = 1 - ease(lin(t, 9.0, 9.3)); X.style.opacity = 1 - easeIn(lin(t, 10.6, 10.9)); tr.style.filter = `grayscale(1) opacity(${lerp(1, .35, ease(lin(t, 8.9, 9.3)))})`; });
+  T(LIGHT, 1045, 52, [['ولا', 9.02], ['مجرد', 9.30]], 10.6, { color: K.ink2 });
+  // two price tags hanging from a rail, swinging (follow-through), then struck and dropped
+  const rail = $('div', 'abs', LIGHT, 'left:240px;right:240px;top:1130px;height:6px;border-radius:3px;background:#151515'); P(rail, { at: 9.6, dy: 0, out: 10.6 });
+  [['عروض', 9.78, 380], ['خصومات', 10.00, 600]].forEach(([tx, at, x], i) => {
+    const tg = svg(LIGHT, x, 1130, 220, 230, `<line x1="110" y1="0" x2="110" y2="56" stroke="#151515" stroke-width="3"/><path d="M60 56 H160 L190 96 V212 H30 V96 Z" fill="#fff" stroke="#151515" stroke-width="3" stroke-linejoin="round"/><circle cx="110" cy="84" r="9" fill="none" stroke="#151515" stroke-width="3"/><text x="110" y="170" text-anchor="middle" font-family="Cairo" font-weight="700" font-size="40" fill="#151515">${tx}</text><text x="110" y="126" text-anchor="middle" font-family="Bebas" font-size="34" fill="#C4321F">%</text><path class="st" d="M40 150 H180" stroke="#C4321F" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1"/>`, 'transform-origin:110px 0');
+    U.push(t => { const ap = clamp((t - at) / .1); const s = t - at, sw = s > 0 ? 18 * Math.exp(-s * 2.6) * Math.sin(s * 9 + i) : 0;   // damped pendulum
+      const fall = easeIn(lin(t, 10.55 + i * .05, 10.95 + i * .05));
+      tg.style.opacity = ap * (1 - fall); tg.style.transform = `translateY(${fall * 300}px) rotate(${sw + fall * (i ? 20 : -20)}deg) scaleY(${lerp(.6, 1, ease(lin(t, at, at + .3)))})`;
+      tg.querySelector('.st').style.strokeDashoffset = 1 - ease(lin(t, 10.374 + i * .05, 10.6 + i * .05)); });
+  });
+}
 
-// ================= S3 · a whole festival → the title on the downbeat =================
+// ================= S3 · a whole festival → title on the downbeat =================
 T(LIGHT, 600, 58, [['السنة', 10.68], ['دي', 11.18], ['عاملين', 11.44]], 12.95, { color: K.ink2 });
 T(LIGHT, 680, 112, [['مهرجان', 11.92], ['كامل', 12.50, 'red']], 12.95);
-(() => { // secondary action: three short rays behind the word
-  for (let i = 0; i < 3; i++) { const r = $('div', 'abs', LIGHT, `left:${250 - i * 40}px;top:${700 - i * 26}px;width:6px;height:${44 - i * 6}px;background:#C4321F;border-radius:3px;transform-origin:50% 100%;transform:rotate(${-28 + i * 28}deg)`);
+if (!MIX) {
+  for (let i = 0; i < 3; i++) { const r = $('div', 'abs', LIGHT, `left:${190 - i * 40}px;top:${660 - i * 26}px;width:6px;height:${44 - i * 6}px;background:#C4321F;border-radius:3px;transform-origin:50% 100%`);
     U.push(t => { const k = ease(lin(t, 12.50 + i * .05, 12.86 + i * .05)); r.style.opacity = k * (1 - easeIn(lin(t, 12.95, 13.2))); r.style.transform = `rotate(${-28 + i * 28}deg) scaleY(${k})`; }); }
-})();
-(() => { // TITLE lockup (centered): charcoal plate + wordmark, WHITE FRIDAY / FESTIVAL
+} else {
+  // festival bunting drops in from the top and swings (follow-through), stays under the title
+  const N = 9, path = 'M20 20 Q 520 150 1020 20';
+  const flags = [...Array(N)].map((_, i) => { const u = (i + .5) / N, x = 20 + 1000 * u, y = 20 + 2 * 130 * u * (1 - u); return `<g class="fl" data-i="${i}" transform="translate(${x} ${y})"><path d="M-34 0 L34 0 L0 70 Z" fill="${['#C4321F', '#151515', '#E85C3B'][i % 3]}"/></g>`; }).join('');
+  const b = svg(LIGHT, 20, 300, 1040, 240, `<path d="${path}" stroke="#151515" stroke-width="3" fill="none"/>${flags}`);
+  U.push(t => { const d = drop(t, 11.80, 340, .5); const fade = easeIn(lin(t, 15.2, 15.5));
+    b.style.opacity = d.o * (1 - fade); b.style.transform = `translateY(${d.y - fade * 60}px)`;
+    b.querySelectorAll('.fl').forEach(g => { const i = +g.dataset.i, s = t - 12.3, a = s > 0 ? 10 * Math.exp(-s * 1.4) * Math.sin(s * 6 + i * .7) : 0; const tr = g.getAttribute('transform').replace(/ rotate\(.*\)/, ''); g.setAttribute('transform', `${tr} rotate(${a + 3 * Math.sin(t * 2 + i)})`); }); });
+  // confetti burst on «كامل»: parabolic arcs with spin, gone in under a second
+  const cf = svg(LIGHT, 0, 0, 1080, 1400, [...Array(18)].map((_, i) => `<rect class="cf" data-i="${i}" x="-7" y="-14" width="14" height="28" rx="3" fill="${['#C4321F', '#FF8A1F', '#151515'][i % 3]}"/>`).join(''));
+  U.push(t => { const s = t - 12.50; cf.style.opacity = s > 0 && s < 1.1 ? 1 - lin(s, .7, 1.1) : 0; if (!(s > 0 && s < 1.1)) return;
+    cf.querySelectorAll('.cf').forEach(r => { const i = +r.dataset.i, ang = (-150 + i * 17) * Math.PI / 180, v = 700 + (i % 4) * 120;
+      const x = 340 + Math.cos(ang) * v * s, y = 760 + Math.sin(ang) * v * s + 900 * s * s; r.setAttribute('transform', `translate(${x} ${y}) rotate(${i * 40 + s * 520})`); }); });
+  // starburst behind the title lockup
+  const sb = svg(LIGHT, 140, 380, 800, 800, [...Array(16)].map((_, i) => `<path d="M400 400 L${400 + 390 * Math.cos(i * Math.PI / 8 - .06)} ${400 + 390 * Math.sin(i * Math.PI / 8 - .06)} L${400 + 390 * Math.cos(i * Math.PI / 8 + .06)} ${400 + 390 * Math.sin(i * Math.PI / 8 + .06)} Z" fill="#C4321F" opacity=".07"/>`).join(''));
+  U.push(t => { const k = ease(lin(t, TITLE, TITLE + .8)); sb.style.opacity = k * (1 - easeIn(lin(t, 15.2, 15.5))); sb.style.transform = `rotate(${(t - TITLE) * 8}deg) scale(${lerp(.6, 1, k)})`; });
+}
+(() => { // TITLE lockup (centred)
   const plate = $('div', 'plate', LIGHT, 'left:220px;top:640px;width:640px;height:150px'); const im = $('img', '', plate, 'width:560px'); im.src = LOGO;
-  U.push(t => { const k = ease(lin(t, TITLE, TITLE + .8)); const p = pose(t, { at: TITLE, dy: 0, s0: .9, antic: true, follow: .012, out: 15.25, dur: .8 });
-    apply(plate, p); plate.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; });
-  T(LIGHT, 830, 150, [['WHITE', 14.00], ['FRIDAY', 14.36]], 15.25, { center: true, css: 'direction:ltr' });
-  const fest = T(LIGHT, 990, 150, [['FESTIVAL', 14.78, 'red']], 15.25, { center: true, css: 'direction:ltr' });
+  U.push(t => { const k = ease(lin(t, TITLE, TITLE + .8)); apply(plate, pose(t, { at: TITLE, dy: 0, s0: .9, antic: true, follow: .012, out: 15.25, dur: .8 })); plate.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; });
+  T(LIGHT, 830, 150, [['WHITE', 14.00], ['FRIDAY', 14.36]], 15.25, { css: 'direction:ltr' });
+  T(LIGHT, 990, 150, [['FESTIVAL', 14.78, 'red']], 15.25, { css: 'direction:ltr' });
   const heart = $('div', 'abs', LIGHT, 'left:500px;top:1190px', '<svg width="80" height="72" viewBox="0 0 24 22"><path d="M12 21s-9-5.6-9-12.2A5 5 0 0 1 12 6a5 5 0 0 1 9 2.8C21 15.4 12 21 12 21z" fill="#C4321F"/></svg>');
   P(heart, { at: 14.95, dy: 16, s0: .4, squash: .04, follow: .04, out: 15.25 });
 })();
@@ -148,24 +198,65 @@ T(LIGHT, 680, 112, [['مهرجان', 11.92], ['كامل', 12.50, 'red']], 12.95)
 T(LIGHT, 400, 44, [['خلال', 15.34], ['الفترة', 15.96], ['الجاية', 16.26]], 20.7, { color: K.ink2 });
 T(LIGHT, 462, 66, [['مستنيينكم', 16.56], ['معانا', 17.14]], 20.7);
 T(LIGHT, 560, 66, [['في', 17.42], ['أيام', 17.56], ['مليانة', 17.90], ['مفاجآت', 18.34, 'red']], 20.7);
-(() => { const a = card(LIGHT, 574, 720, 420, 300, { at: 18.84, arc: 24, out: 20.7 }); iconBox(a.c, 'trophy', 96, 19.0, 'top:44px;right:40px');
+if (!MIX) {
+  const a = card(LIGHT, 574, 720, 420, 300, { at: 18.84, arc: 24, out: 20.7 }); iconBox(a.c, 'trophy', 96, 19.0, 'top:44px;right:40px');
   $('div', 'abs', a.c, 'top:170px;right:40px;font-size:52px;font-weight:700;color:#151515', 'مسابقات');
   const b = card(LIGHT, 86, 720, 420, 300, { at: 19.68, arc: -24, out: 20.7 }); iconBox(b.c, 'target', 96, 19.84, 'top:44px;right:40px');
   $('div', 'abs', b.c, 'top:170px;right:40px;font-size:52px;font-weight:700;color:#151515', 'وتحديات');
-  T(LIGHT, 1060, 50, [['مختلفة', 20.22, 'red']], 20.7, { center: true }); })();
+  T(LIGHT, 1060, 50, [['مختلفة', 20.22, 'red']], 20.7);
+} else {
+  // left: target; an arrow draws back (anticipation), flies on an arc, hits and quivers (follow-through)
+  const tg = svg(LIGHT, 120, 690, 330, 330, `<circle cx="165" cy="165" r="150" fill="#fff" stroke="#151515" stroke-width="4"/><circle cx="165" cy="165" r="104" fill="none" stroke="#C4321F" stroke-width="18"/><circle cx="165" cy="165" r="56" fill="none" stroke="#151515" stroke-width="4"/><circle cx="165" cy="165" r="22" fill="#C4321F"/>`);
+  P(tg, { at: 19.40, dy: 24, s0: .85, squash: .02, follow: .015, out: 20.7 });
+  const ar = svg(LIGHT, 0, 0, 1080, 1400, `<g class="ar"><line x1="0" y1="0" x2="-150" y2="0" stroke="#151515" stroke-width="8" stroke-linecap="round"/><path d="M8 0 L-22 -16 L-22 16 Z" fill="#151515"/><path d="M-150 0 L-178 -18 M-150 0 L-178 18 M-130 0 L-158 -18 M-130 0 L-158 18" stroke="#C4321F" stroke-width="6" stroke-linecap="round"/></g>`);
+  U.push(t => { const g = ar.querySelector('.ar'); const back = easeIn(lin(t, 19.50, 19.68)) * (1 - lin(t, 19.68, 19.70)), f = lin(t, 19.68, 19.92), hit = t >= 19.92;
+    const x0 = 1000, y0 = 760, x1 = 300, y1 = 855; let x = lerp(x0, x1, f) + back * 40, y = lerp(y0, y1, f) - Math.sin(Math.PI * f) * 120; let ang = 180 + (f < 1 ? -Math.cos(Math.PI * f) * 18 : 0);
+    if (hit) { const s = t - 19.92; ang = 180 + 6 * Math.exp(-s * 5) * Math.sin(s * 40); x = x1; y = y1; }
+    ar.style.opacity = clamp((t - 19.45) / .1) * (1 - easeIn(lin(t, 20.7, 21.0))); g.setAttribute('transform', `translate(${x} ${y}) rotate(${ang})`); });
+  $('div', 'abs', LIGHT, 'left:120px;width:330px;top:1040px;text-align:center;font-size:46px;font-weight:700;color:#151515', '<span class="lb2">وتحديات</span>');
+  // right: trophy with a shine sweep
+  const tw = $('div', 'abs', LIGHT, 'left:640px;top:700px;width:300px;height:300px;overflow:hidden', icon('trophy', 300, '#C4321F', 1.5));
+  P(tw, { at: 18.84, dy: 40, s0: .8, antic: true, squash: .03, follow: .02, out: 20.7 });
+  const sh = $('div', 'abs', tw, 'top:-20%;left:-60%;width:40%;height:140%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);transform:rotate(18deg)');
+  U.push(t => { sh.style.left = `${lerp(-60, 130, inOut(lin(t, 19.2, 19.8)))}%`; });
+  $('div', 'abs', LIGHT, 'left:640px;width:300px;top:1040px;text-align:center;font-size:46px;font-weight:700;color:#151515', '<span class="lb1">مسابقات</span>');
+  const l1 = LIGHT.querySelector('.lb1'), l2 = LIGHT.querySelector('.lb2');
+  U.push(t => { l1.style.opacity = clamp((t - 18.95) / .2) * (1 - lin(t, 20.7, 20.9)); l2.style.opacity = clamp((t - 19.75) / .2) * (1 - lin(t, 20.7, 20.9)); });
+  // gifts along the bottom: lids pop open on «مفاجآت» (squash & stretch)
+  [0, 1, 2].forEach(i => { const at = 18.34 + i * .14, x = 290 + i * 180, col = i === 1 ? '#151515' : '#C4321F';
+    const g = svg(LIGHT, x, 1140, 160, 190, `<g class="bx"><rect x="18" y="86" width="124" height="96" rx="10" fill="${col}"/><rect x="74" y="86" width="12" height="96" fill="#F6F3F2" opacity=".9"/></g><g class="lid"><rect x="8" y="62" width="144" height="30" rx="8" fill="${col}"/><rect x="74" y="62" width="12" height="30" fill="#F6F3F2" opacity=".9"/><path d="M80 62 C 62 34, 40 44, 60 60 Z M80 62 C 98 34, 120 44, 100 60 Z" fill="none" stroke="${col}" stroke-width="7" stroke-linejoin="round"/></g><g class="sp" opacity="0"><path d="M80 20 V2 M50 30 L40 16 M110 30 L120 16" stroke="#FF8A1F" stroke-width="6" stroke-linecap="round"/></g>`);
+    P(g, { at: at - .35, dy: 20, s0: .85, out: 20.7 });
+    U.push(t => { const bx = g.querySelector('.bx'), lid = g.querySelector('.lid'), sp = g.querySelector('.sp');
+      const pre = easeIn(lin(t, at - .12, at)) * (1 - lin(t, at, at + .06));                // anticipation: the box squashes
+      const up = ease(lin(t, at, at + .4)), wob = settle(lin(t, at + .3, at + 1.1), .5);   // lid lifts, settles open
+      bx.setAttribute('transform', `translate(0 ${8 * pre}) scale(1 ${1 - .08 * pre})`);
+      lid.setAttribute('transform', `translate(0 ${-34 * up}) rotate(${-10 * up + 6 * wob} 8 92)`);
+      sp.setAttribute('opacity', Math.sin(Math.PI * lin(t, at + .1, at + .6))); }); });
+  T(LIGHT, 1340, 44, [['مختلفة', 20.22, 'red']], 20.7);
+}
 T(LIGHT, 400, 66, [['وكمان', 20.78], ['فرص', 21.22, 'red'], ['كتير', 21.48]], 25.62);
 T(LIGHT, 492, 46, [['تكسبوا', 21.84], ['من', 22.24], ['خلالها', 22.30]], 25.62, { color: K.ink2 });
 [['book', 'كورسات مجانية', 22.64], ['pen', 'ورش تدريبية', 23.54], ['gift', 'هدايا مميزة', 24.54]].forEach(([ic, tx, at], i) => {
-  const c = card(LIGHT, 86, 640 + i * 190, 908, 160, { at, dx: 40, arc: 0, dy: 16, out: 25.62 + i * .04 });
-  iconBox(c.c, ic, 104, at + .1, 'top:28px;right:32px');
+  const c = card(LIGHT, 86, 640 + i * 190, 908, 160, { at, dx: 40, dy: 16, out: 25.62 + i * .04 });
+  const ib = iconBox(c.c, ic, 104, at + .1, 'top:28px;right:32px');
   $('div', 'abs', c.c, 'top:42px;right:170px;font-size:54px;font-weight:700;color:#151515', tx);
   const tick = $('div', 'abs', c.c, 'top:52px;left:40px', icon('check', 56, '#C4321F', 2.6)); P(tick, { at: at + .26, dy: 0, s0: .5, follow: .04, dur: .36 });
+  if (MIX) { // secondary action on each icon: the book flaps, the pen draws, the gift hops
+    const sv = ib.querySelector('svg');
+    if (ic === 'pen') { const sq = svg(c.c, 560, 40, 180, 80, '<path d="M10 60 C 40 10, 60 70, 90 30 S 140 50, 170 20" stroke="#C4321F" stroke-width="6" fill="none" stroke-linecap="round" pathLength="1" stroke-dasharray="1"/>');
+      U.push(t => { sq.querySelector('path').style.strokeDashoffset = 1 - inOut(lin(t, at + .3, at + 1.1)); }); }
+    U.push(t => { const s = t - at - .3; if (s < 0) return;
+      if (ic === 'book') sv.style.transform = `perspective(200px) rotateY(${Math.sin(s * 7) * 22 * Math.exp(-s * 1.5)}deg)`;
+      if (ic === 'gift') sv.style.transform = `translateY(${-Math.abs(Math.sin(s * 6)) * 10 * Math.exp(-s * 1.2)}px)`;
+      if (ic === 'pen') sv.style.transform = `rotate(${Math.sin(s * 9) * 10 * Math.exp(-s * 2)}deg)`; });
+  }
 });
 
 // ================= S5 · beginners and experienced =================
 T(LIGHT, 400, 46, [['يعني', 25.72], ['سواء', 26.12]], 32.28, { color: K.ink2 });
 function level(parent, x, y, w, fill, at) { const b = $('div', 'bar', parent, `left:${x}px;top:${y}px;width:${w}px`); const i = $('i', '', b); U.push(t => { i.style.transform = `scaleX(${fill * ease(lin(t, at, at + .7))})`; }); }
-(() => { const a = card(LIGHT, 554, 520, 440, 460, { at: 26.34, arc: 20, out: 32.28 });
+if (!MIX) {
+  const a = card(LIGHT, 554, 520, 440, 460, { at: 26.34, arc: 20, out: 32.28 });
   iconBox(a.c, 'user', 92, 26.5, 'top:40px;right:40px');
   $('div', 'abs', a.c, 'top:156px;right:40px;font-size:48px;font-weight:700;color:#151515', 'لسه بتبدأ');
   $('div', 'abs', a.c, 'top:226px;right:40px;font-size:34px;font-weight:500;color:#5C5F66', 'في الجرافيك ديزاين');
@@ -176,26 +267,60 @@ function level(parent, x, y, w, fill, at) { const b = $('div', 'bar', parent, `l
   $('div', 'abs', b.c, 'top:226px;right:40px;font-size:34px;font-weight:500;color:#5C5F66', 'وعايز تطور من نفسك');
   level(b.c, 40, 320, 360, .78, 29.0);
   [a, b].forEach((c, i) => { const k = $('div', 'abs', c.c, 'bottom:36px;right:40px;display:flex;gap:10px;align-items:center;font-size:32px;font-weight:700;color:#C4321F', icon('check', 40, '#C4321F', 2.6) + '<span>تقدر تشارك</span>');
-    P(k, { at: 31.74 + i * .08, dy: 12, s0: .8, follow: .02 }); }); })();
-T(LIGHT, 1060, 60, [['هيكون', 29.86], ['فيه', 30.24], ['فرص', 30.42, 'red'], ['وحاجات', 30.72], ['كتير', 31.04]], 32.28);
-T(LIGHT, 1150, 60, [['تقدر', 31.44], ['تشارك', 31.74], ['فيها', 32.08]], 32.28, { color: K.ink2 });
+    P(k, { at: 31.74 + i * .08, dy: 12, s0: .8, follow: .02 }); });
+} else {
+  // a staircase (RTL: low on the right) and a marker that hops up the steps: arcs, anticipation, squash on landing
+  const steps = [90, 170, 250, 330], SW = 200, GAP = 16, X0 = 994, BASE = 1000;
+  const stx = i => X0 - (i + 1) * SW - i * GAP;
+  steps.forEach((h, i) => { const s = $('div', 'card', LIGHT, `left:${stx(i)}px;top:${BASE - h}px;width:${SW}px;height:${h}px;background:${i === 3 ? '#151515' : '#fff'};box-shadow:none;border:2px solid rgba(21,21,21,.1)`);
+    P(s, { at: 26.20 + i * .08, dy: 30, s0: 1, out: 32.28 }); s.style.transformOrigin = '50% 100%';
+    const ck = $('div', 'abs', s, `top:14px;left:${SW / 2 - 22}px`, icon('check', 44, i === 3 ? '#F6F3F2' : '#C4321F', 2.8)); P(ck, { at: 31.74 + i * .06, dy: 0, s0: .5, follow: .04, dur: .36 }); });
+  const mk = $('div', 'abs', LIGHT, 'left:0;top:0;width:96px;height:96px;border-radius:50%;background:#C4321F;display:grid;place-items:center;transform-origin:50% 100%', icon('user', 56, '#fff', 2.2));
+  const spot = i => [stx(i) + SW / 2 - 48, BASE - steps[i] - 96];
+  const hops = [[26.34, -1, 0], [28.16, 0, 2], [29.00, 2, 3]];
+  U.push(t => { let [x, y] = spot(0); let sx = 1, sy = 1, op = clamp((t - 26.34) / .1) * (1 - easeIn(lin(t, 32.28, 32.6)));
+    hops.forEach(([at, a, b]) => { if (t < at - .12) return; const [bx, by] = spot(b);
+      if (a < 0) { const d = drop(t, at, 300, .38); x = bx; y = by + d.y; sx = d.sx; sy = d.sy; return; }
+      const [ax, ay] = spot(a); const pre = easeIn(lin(t, at - .12, at)) * (1 - lin(t, at, at + .02)); const f = inOut(lin(t, at, at + .42));
+      x = lerp(ax, bx, f); y = lerp(ay, by, f) - Math.sin(Math.PI * f) * 170; sx = 1 + .12 * pre; sy = 1 - .14 * pre;
+      const k = lin(t, at + .42, at + .66), sq = Math.sin(Math.PI * k) * .12; if (k > 0) { sx = 1 + sq; sy = 1 - sq; } if (f >= 1) { x = bx; y = by; } });
+    mk.style.opacity = op; mk.style.transform = `translate(${x}px,${y}px) scale(${sx},${sy})`; });
+  $('div', 'abs', LIGHT, `left:${stx(0) - 40}px;width:${SW + 80}px;top:1020px;text-align:center`, '<div class="lv1" style="font-size:40px;font-weight:700;color:#151515">لسه بتبدأ</div><div class="lv1b" style="font-size:30px;font-weight:500;color:#5C5F66">في الجرافيك ديزاين</div>');
+  $('div', 'abs', LIGHT, `left:${stx(3) - 40}px;width:${2 * SW + GAP + 80}px;top:1020px;text-align:center`, '<div class="lv2" style="font-size:40px;font-weight:700;color:#151515">عندك خبرة</div><div class="lv2b" style="font-size:30px;font-weight:500;color:#5C5F66">وعايز تطور من نفسك</div>');
+  [['.lv1', 26.34], ['.lv1b', 27.08], ['.lv2', 28.16], ['.lv2b', 28.76]].forEach(([q, at]) => { const e = LIGHT.querySelector(q); P(e, { at, dy: 12, out: 32.28 }); });
+}
+T(LIGHT, MIX ? 1150 : 1060, 60, [['هيكون', 29.86], ['فيه', 30.24], ['فرص', 30.42, 'red'], ['وحاجات', 30.72], ['كتير', 31.04]], 32.28);
+T(LIGHT, MIX ? 1240 : 1150, 60, [['تقدر', 31.44], ['تشارك', 31.74], ['فيها', 32.08]], 32.28, { color: K.ink2 });
 
 // ================= S6 · more participation, better odds =================
 T(LIGHT, 400, 54, [['والأحلى', 32.36, 'red']], 38.9);
 T(LIGHT, 480, 64, [['إن', 32.98], ['مشاركتك', 33.30], ['مش', 33.88], ['مرتبطة', 34.00]], 38.9);
 T(LIGHT, 570, 64, [['بمسابقة', 34.44], ['واحدة', 34.78], ['بس!', 35.10]], 38.9);
-(() => { const c = card(LIGHT, 86, 730, 908, 470, { at: 35.32, out: 38.9 });
-  $('div', 'abs', c.c, 'top:36px;right:44px;font-size:40px;font-weight:700;color:#151515', 'كل ما تشارك');
-  const toks = [['فعاليات', 36.30], ['مسابقات', 36.70], ['أكتر', 37.18]];
-  toks.forEach(([tx, at], i) => { const k = $('div', 'abs', c.c, `top:110px;right:${44 + i * 250}px;padding:10px 26px 12px;border-radius:7px;background:rgba(196,50,31,.09);color:#C4321F;font-size:38px;font-weight:700;display:flex;gap:8px;align-items:center`, icon('plus', 30, '#C4321F', 2.6) + `<span>${tx}</span>`);
-    P(k, { at, dy: 18, s0: .8, squash: .03, follow: .02, dur: .4 }); });
-  $('div', 'abs', c.c, 'top:250px;right:44px;font-size:40px;font-weight:700;color:#151515', 'فرصتك في الفوز');
+const steps6 = [[35.86, .18], [36.30, .36], [36.70, .55], [37.18, .70], [38.547, .94]];
+const fill6 = t => { let f = 0; steps6.forEach(([at, v], j) => { const prev = j ? steps6[j - 1][1] : 0; if (t >= at) f = lerp(prev, v, ease(lin(t, at, at + .45))) * (1 + settle(lin(t, at + .3, at + .9), .015)); }); return f; };
+if (!MIX) {
+  const c = card(LIGHT, 86, 730, 908, 470, { at: 35.32, out: 38.9 });
+  $('div', 'abs', c.c, 'top:36px;left:0;right:0;text-align:center;font-size:40px;font-weight:700;color:#151515', 'كل ما تشارك');
+  const r = $('div', 'row', c.c, 'top:110px;left:0;right:0;gap:20px');
+  [['فعاليات', 36.30], ['مسابقات', 36.70], ['أكتر', 37.18]].forEach(([tx, at]) => { const k = $('div', '', r, 'padding:10px 26px 12px;border-radius:7px;background:rgba(196,50,31,.09);color:#C4321F;font-size:38px;font-weight:700;display:flex;gap:8px;align-items:center', icon('plus', 30, '#C4321F', 2.6) + `<span>${tx}</span>`); P(k, { at, dy: 18, s0: .8, squash: .03, follow: .02, dur: .4 }); });
+  $('div', 'abs', c.c, 'top:250px;left:0;right:0;text-align:center;font-size:40px;font-weight:700;color:#151515', 'فرصتك في الفوز');
   const b = $('div', 'bar', c.c, 'left:44px;right:44px;top:330px;height:34px;border-radius:17px'); const i = $('i', '', b);
-  const steps = [[35.86, .18], [36.30, .36], [36.70, .55], [37.18, .70], [38.547, .94]];
-  U.push(t => { let f = 0; steps.forEach(([at, v], j) => { const prev = j ? steps[j - 1][1] : 0; if (t >= at) f = lerp(prev, v, ease(lin(t, at, at + .45))) * (1 + settle(lin(t, at + .3, at + .9), .015)); }); i.style.transform = `scaleX(${f})`; });
-  const up = $('div', 'abs', c.c, 'top:250px;left:44px;font-size:40px;font-weight:700;color:#C4321F', 'بتزيد');
-  P(up, { at: 38.54, dy: 14, s0: .9, follow: .02, dur: .36 }); })();
-T(LIGHT, 1270, 46, [['كل', 35.32], ['ما', 35.68], ['تشارك', 35.86], ['أكتر،', 37.18], ['فرصتك', 37.52], ['بتزيد', 38.54, 'red']], 38.9, { color: K.ink2 });
+  U.push(t => { i.style.transform = `scaleX(${fill6(t)})`; });
+  const up = $('div', 'abs', c.c, 'top:390px;left:0;right:0;text-align:center;font-size:40px;font-weight:700;color:#C4321F', 'بتزيد'); P(up, { at: 38.54, dy: 14, s0: .9, follow: .02, dur: .36 });
+} else {
+  // a jar: each participation drops a token in (gravity + squash), the level rises, it glows on «بتزيد»
+  const J = svg(LIGHT, 370, 690, 340, 440, `<defs><clipPath id="jc"><path d="M50 60 H290 V400 Q290 430 260 430 H80 Q50 430 50 400 Z"/></clipPath></defs><rect class="lvl" x="50" y="430" width="240" height="0" fill="#C4321F" opacity=".18" clip-path="url(#jc)"/><g class="tok" clip-path="url(#jc)"></g><path d="M50 60 H290 V400 Q290 430 260 430 H80 Q50 430 50 400 Z" fill="none" stroke="#151515" stroke-width="5"/><rect x="34" y="34" width="272" height="34" rx="8" fill="#151515"/>`);
+  P(J, { at: 35.32, dy: 30, s0: .92, squash: .02, out: 38.9 });
+  const tok = J.querySelector('.tok'), lvl = J.querySelector('.lvl');
+  const T6 = [[35.86, 110], [36.30, 220], [36.70, 150], [37.18, 200], [37.40, 120]];
+  const tks = T6.map(([at, x], i) => { const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.innerHTML = `<circle r="30" fill="${i % 2 ? '#151515' : '#C4321F'}"/><path d="M-12 0 H12 M0 -12 V12" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`; tok.appendChild(g); return { g, at, x, rest: 398 - i * 44 }; });
+  U.push(t => { tks.forEach(k => { const d = drop(t, k.at, 360, .36); k.g.setAttribute('transform', `translate(${k.x} ${k.rest + d.y}) scale(${d.sx} ${d.sy})`); k.g.style.opacity = d.o; });
+    const f = fill6(t); lvl.setAttribute('y', 430 - 370 * f); lvl.setAttribute('height', 370 * f); lvl.setAttribute('opacity', .18 + .25 * ease(lin(t, 38.547, 38.9)));
+    J.style.filter = t > 38.547 ? `drop-shadow(0 0 ${30 * ease(lin(t, 38.547, 38.9))}px rgba(196,50,31,.35))` : ''; });
+  [['فعاليات', 36.30, 760], ['مسابقات', 36.70, 860], ['أكتر', 37.18, 960]].forEach(([tx, at, y], i) => { const k = $('div', 'abs', LIGHT, `${i % 2 ? 'left:86px' : 'right:86px'};top:${y}px;padding:10px 24px 12px;border-radius:7px;background:rgba(196,50,31,.09);color:#C4321F;font-size:36px;font-weight:700;display:flex;gap:8px;align-items:center`, icon('plus', 28, '#C4321F', 2.6) + `<span>${tx}</span>`); P(k, { at, dx: i % 2 ? -30 : 30, dy: 0, s0: .85, follow: .02, dur: .4, out: 38.9 }); });
+  const up = $('div', 'abs', LIGHT, 'left:720px;top:700px', icon('arrow', 90, '#C4321F', 2.6)); P(up, { at: 38.54, dy: 20, s0: .6, follow: .04, out: 38.9 }, () => 'rotate(90deg)');
+}
+T(LIGHT, MIX ? 1180 : 1270, 46, [['كل', 35.32], ['ما', 35.68], ['تشارك', 35.86], ['أكتر،', 37.18], ['فرصتك', 37.52], ['بتزيد', 38.54, 'red']], 38.9, { color: K.ink2 });
 
 // ================= S7 · points system → the grand prize =================
 T(LIGHT, 400, 46, [['وفيه', 39.00], ['كمان', 39.48]], 44.7, { color: K.ink2 });
@@ -206,38 +331,63 @@ T(LIGHT, 720, 50, [['حتى', 41.44], ['لو', 41.72], ['شاركت', 41.82], ['
   iconBox(c.c, 'trophy', 90, 42.22, 'top:60px;right:36px', '#5C5F66', 'rgba(21,21,21,.06)');
   $('div', 'abs', c.c, 'top:76px;right:150px;font-size:44px;font-weight:700;color:#151515', 'مسابقة');
   const x = $('div', 'abs ic', c.c, 'top:64px;left:40px;width:80px;height:80px;background:rgba(21,21,21,.06)', icon('x', 46, '#5C5F66', 2.6)); P(x, { at: 42.58, dy: 0, s0: .5, follow: .04, dur: .36 });
-  // the points still fly to the bank along an arc (principle 7)
   const bank = card(LIGHT, 86, 840, 320, 210, { at: 43.0, out: 44.7, arc: -16 });
-  $('div', 'abs', bank.c, 'top:30px;right:36px;font-size:36px;font-weight:700;color:#151515', 'نقاطك');
-  for (let j = 0; j < 6; j++) { const d = $('div', 'dot', bank.c, `top:${110 + Math.floor(j / 3) * 40}px;right:${40 + (j % 3) * 40}px`); P(d, { at: 43.58 + j * .1, dy: 0, s0: .2, follow: .05, dur: .3 }); }
-  const fly = $('div', 'abs', LIGHT, 'left:600px;top:880px;padding:8px 20px 10px;border-radius:7px;background:#C4321F;color:#fff;font-size:34px;font-weight:700;display:flex;gap:6px;align-items:center', icon('plus', 26, '#fff', 3) + '<span>نقاط</span>');
-  U.push(t => { const k = inOut(lin(t, 43.16, 44.1)); fly.style.opacity = clamp((t - 43.16) / .1) * (1 - lin(t, 44.05, 44.2)); fly.style.transform = `translate(${-k * 400}px,${-Math.sin(k * Math.PI) * 150}px) scale(${1 - .15 * k})`; }); })();
+  $('div', 'abs', bank.c, 'top:30px;left:0;right:0;text-align:center;font-size:36px;font-weight:700;color:#151515', 'نقاطك');
+  for (let j = 0; j < 6; j++) { const d = $('div', 'dot', bank.c, `top:${110 + Math.floor(j / 3) * 40}px;left:${112 + (j % 3) * 40}px`); P(d, { at: 43.58 + j * .1, dy: 0, s0: .2, follow: .05, dur: .3 }); }
+  if (!MIX) {
+    const fly = $('div', 'abs', LIGHT, 'left:600px;top:880px;padding:8px 20px 10px;border-radius:7px;background:#C4321F;color:#fff;font-size:34px;font-weight:700;display:flex;gap:6px;align-items:center', icon('plus', 26, '#fff', 3) + '<span>نقاط</span>');
+    U.push(t => { const k = inOut(lin(t, 43.16, 44.1)); fly.style.opacity = clamp((t - 43.16) / .1) * (1 - lin(t, 44.05, 44.2)); fly.style.transform = `translate(${-k * 400}px,${-Math.sin(k * Math.PI) * 40}px) scale(${1 - .15 * k})`; });
+  } else { // five coins arc from the card into the bank, spinning (scaleX flip)
+    const coins = [...Array(5)].map((_, j) => $('div', 'abs', LIGHT, 'left:0;top:0;width:64px;height:64px;border-radius:50%;background:#FF8A1F;border:5px solid #C4321F;display:grid;place-items:center', icon('plus', 30, '#fff', 3.4)));
+    U.push(t => coins.forEach((cn, j) => { const at = 43.16 + j * .18, k = inOut(lin(t, at, at + .7)); const x = lerp(700, 210, k), y = lerp(900, 960, k) - Math.sin(Math.PI * k) * 220;
+      cn.style.opacity = t >= at && k < 1 ? 1 : 0; cn.style.transform = `translate(${x}px,${y}px) scaleX(${Math.cos((t - at) * 14)})`; }));
+  }
+})();
 T(LIGHT, 1110, 50, [['لسه', 43.16], ['عندك', 43.58], ['فرصة', 43.86], ['تجمع', 44.16], ['نقاط', 44.48, 'red']], 44.7, { color: K.ink2 });
-T(LIGHT, 470, 54, [['وتنافس', 44.82], ['على', 45.38]], 47.02, { color: K.ink2, center: true });
+T(LIGHT, 470, 54, [['وتنافس', 44.82], ['على', 45.38]], 47.02, { color: K.ink2 });
 (() => { const g = $('div', 'abs', LIGHT, 'left:390px;top:580px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(196,50,31,.16),transparent 66%)');
   P(g, { at: 45.52, dy: 0, s0: .6, out: 47.02, dur: .8 });
-  const tr = $('div', 'abs', LIGHT, 'left:420px;top:610px', icon('trophy', 240, '#C4321F', 1.6)); P(tr, { at: 45.52, dy: 30, s0: .8, antic: true, squash: .035, follow: .02, out: 47.02 }); })();
-T(LIGHT, 900, 92, [['الجائزة', 45.52], ['الكبرى', 45.88, 'red']], 47.02, { center: true });
-T(LIGHT, 1040, 46, [['في', 46.28], ['نهاية', 46.36], ['المهرجان', 46.60]], 47.02, { center: true, color: K.ink2 });
+  const tr = $('div', 'abs', LIGHT, 'left:420px;top:610px;overflow:hidden;width:240px;height:240px', icon('trophy', 240, '#C4321F', 1.6));
+  if (!MIX) P(tr, { at: 45.52, dy: 30, s0: .8, antic: true, squash: .035, follow: .02, out: 47.02 });
+  else { // the trophy drops onto a podium (squash), a shine sweeps it, two sparkles twinkle
+    const pod = $('div', 'abs', LIGHT, 'left:300px;top:850px;width:480px;height:40px;background:#151515;border-radius:7px'); P(pod, { at: 45.30, dy: 20, out: 47.02 });
+    U.push(t => { const d = drop(t, 45.40, 260, .34); const out = easeIn(lin(t, 47.02, 47.34)); tr.style.opacity = d.o * (1 - out); tr.style.transformOrigin = '50% 100%'; tr.style.transform = `translateY(${d.y}px) scale(${d.sx},${d.sy})`; });
+    const shn = $('div', 'abs', tr, 'top:-20%;left:-60%;width:36%;height:140%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);transform:rotate(18deg)');
+    U.push(t => { shn.style.left = `${lerp(-60, 130, inOut(lin(t, 46.0, 46.6)))}%`; });
+    [[360, 600, 46.1], [700, 680, 46.4]].forEach(([x, y, at]) => { const s = $('div', 'abs', LIGHT, `left:${x}px;top:${y}px`, icon('star', 54, '#FF8A1F', 2.4)); U.push(t => { const k = lin(t, at, at + .8); s.style.opacity = Math.sin(Math.PI * k); s.style.transform = `scale(${.5 + .7 * Math.sin(Math.PI * k)}) rotate(${k * 90}deg)`; }); });
+  } })();
+T(LIGHT, 900, 92, [['الجائزة', 45.52], ['الكبرى', 45.88, 'red']], 47.02);
+T(LIGHT, 1040, 46, [['في', 46.28], ['نهاية', 46.36], ['المهرجان', 46.60]], 47.02, { color: K.ink2 });
 
 // ================= S8 · how to join → today's post =================
-T(LIGHT, 700, 50, [['طيب…', 47.10]], 49.0, { color: K.ink2, center: true });
-T(LIGHT, 770, 104, [['إزاي', 47.76], ['تقدر', 48.24], ['تشارك؟', 48.58, 'red']], 49.0, { center: true });
+T(LIGHT, 700, 50, [['طيب…', 47.10]], 49.0, { color: K.ink2 });
+T(LIGHT, 770, 104, [['إزاي', 47.76], ['تقدر', 48.24], ['تشارك؟', 48.58, 'red']], 49.0);
 T(LIGHT, 400, 66, [['استنوا', 49.10], ['البوست', 49.64, 'red']], 56.3);
 T(LIGHT, 490, 44, [['اللي', 49.92], ['هينزل', 50.12], ['النهاردة', 50.40], ['على', 50.76], ['الصفحة', 50.86]], 56.3, { color: K.ink2 });
-(() => { const c = card(LIGHT, 140, 600, 800, 640, { at: 49.64, dy: 50, s0: .94, antic: true, out: 56.3 });
-  const pl = $('div', 'plate', c.c, 'top:30px;right:30px;width:84px;height:84px;border-radius:50%;overflow:hidden'); const im = $('img', '', pl, 'width:74px'); im.src = LOGO;
-  $('div', 'abs lat', c.c, 'top:38px;right:134px;font-size:38px;color:#151515;direction:ltr', 'SABER GROUP ACADEMY');
-  const badge = $('div', 'abs', c.c, 'top:44px;left:30px;padding:4px 18px 8px;border-radius:7px;background:#C4321F;color:#fff;font-size:30px;font-weight:700', 'النهاردة');
-  P(badge, { at: 50.40, dy: 0, s0: .5, squash: .04, follow: .03, dur: .36 });
-  const hero = $('div', 'abs', c.c, 'top:140px;left:30px;right:30px;height:220px;border-radius:7px;background:#151515;display:grid;place-items:center');
+function post(parent, x, y, w, sc, at) { // social post mock-up (skeleton content only)
+  const c = card(parent, x, y, w, 640 * sc, { at, dy: 50, s0: .94, antic: true, out: 56.3 }); const box = $('div', 'abs', c.c, `left:0;top:0;width:800px;height:640px;transform:scale(${sc});transform-origin:0 0`);
+  const pl = $('div', 'plate', box, 'top:30px;right:30px;width:84px;height:84px;border-radius:50%;overflow:hidden'); const im = $('img', '', pl, 'width:74px'); im.src = LOGO;
+  $('div', 'abs lat', box, 'top:38px;right:134px;font-size:38px;color:#151515;direction:ltr', 'SABER GROUP ACADEMY');
+  const badge = $('div', 'abs', box, 'top:44px;left:30px;padding:4px 18px 8px;border-radius:7px;background:#C4321F;color:#fff;font-size:30px;font-weight:700', 'النهاردة'); P(badge, { at: 50.40, dy: 0, s0: .5, squash: .04, follow: .03, dur: .36 });
+  const hero = $('div', 'abs', box, 'top:140px;left:30px;right:30px;height:220px;border-radius:7px;background:#151515;display:grid;place-items:center');
   $('div', 'lat', hero, 'font-size:76px;color:#F6F3F2;line-height:1;direction:ltr', 'WHITE FRIDAY <span style="color:#C4321F">FESTIVAL</span>');
-  [52.02, 52.34, 52.78].forEach((at, j) => { const r = $('div', 'abs', c.c, `top:${400 + j * 66}px;right:30px;display:flex;align-items:center;gap:16px`, icon('check', 40, '#C4321F', 2.6));
-    const sk = $('div', 'skel', r, `position:relative;width:${[520, 430, 480][j]}px`); P(r, { at, dx: 24, dy: 0, dur: .4 }); }); })();
-T(LIGHT, 1300, 44, [['هنوضح', 51.28], ['فيه', 51.90], ['طريقة', 52.02], ['الانضمام', 52.34], ['للمهرجان', 52.78]], 53.3, { color: K.ink2 });
-T(LIGHT, 1300, 44, [['وكل', 53.36], ['اللي', 53.76], ['محتاج', 53.96], ['تعمله', 54.24]], 56.3, { color: K.ink2 });
-T(LIGHT, 1370, 50, [['عشان', 54.56], ['تكون', 54.82], ['واحد', 55.02], ['من', 55.34], ['المشاركين', 55.48, 'red'], ['معانا', 55.96]], 56.3);
-(() => { const b = chip(LIGHT, icon('user', 40, '#fff', 2.4) + '<span>واحد من المشاركين</span>' + icon('check', 40, '#fff', 2.8), 250, 1190, { at: 55.48, out: 56.3, dy: 30 }, 'background:#C4321F;color:#fff;font-size:40px'); })();
+  [52.02, 52.34, 52.78].forEach((a, j) => { const r = $('div', 'abs', box, `top:${400 + j * 66}px;right:30px;display:flex;align-items:center;gap:16px`, icon('check', 40, '#C4321F', 2.6)); $('div', 'skel', r, `position:relative;width:${[520, 430, 480][j]}px`); P(r, { at: a, dx: 24, dy: 0, dur: .4 }); });
+  return c;
+}
+if (!MIX) post(LIGHT, 140, 600, 800, 1, 49.64);
+else { // a phone: the post lands inside it, a notification slides down on «النهاردة»
+  const ph = $('div', 'abs', LIGHT, 'left:300px;top:590px;width:480px;height:700px;border-radius:56px;background:#151515;box-shadow:0 30px 60px rgba(21,21,21,.18)');
+  P(ph, { at: 49.30, dy: 60, s0: .94, antic: true, squash: .015, follow: .01, out: 56.3 });
+  const scr = $('div', 'abs', ph, 'left:16px;right:16px;top:16px;bottom:16px;border-radius:42px;background:#F6F3F2;overflow:hidden');
+  $('div', 'abs', scr, 'top:14px;left:50%;margin-left:-60px;width:120px;height:30px;border-radius:15px;background:#151515');
+  post(scr, 18, 150, 412, 412 / 800, 49.64);
+  const nt = $('div', 'abs', scr, 'top:60px;left:14px;right:14px;height:74px;border-radius:18px;background:#fff;box-shadow:0 8px 20px rgba(21,21,21,.12);display:flex;align-items:center;gap:12px;padding:0 16px;direction:rtl', `<span style="width:44px;height:44px;border-radius:12px;background:#C4321F;display:grid;place-items:center">${icon('bell', 28, '#fff', 2.4)}</span><span class="skel" style="position:relative;width:200px"></span>`);
+  U.push(t => { const k = ease(lin(t, 50.30, 50.78)), out = easeIn(lin(t, 52.0, 52.4)); nt.style.transform = `translateY(${(1 - k) * -140 - out * 140}px)`; nt.style.opacity = k * (1 - out); });
+}
+T(LIGHT, MIX ? 1320 : 1300, 44, [['هنوضح', 51.28], ['فيه', 51.90], ['طريقة', 52.02], ['الانضمام', 52.34], ['للمهرجان', 52.78]], 53.3, { color: K.ink2 });
+T(LIGHT, MIX ? 1320 : 1300, 44, [['وكل', 53.36], ['اللي', 53.76], ['محتاج', 53.96], ['تعمله', 54.24]], 56.3, { color: K.ink2 });
+T(LIGHT, MIX ? 1390 : 1370, 50, [['عشان', 54.56], ['تكون', 54.82], ['واحد', 55.02], ['من', 55.34], ['المشاركين', 55.48, 'red'], ['معانا', 55.96]], 56.3);
+(() => { const r = row(LIGHT, MIX ? 1180 : 1190); chip(r, icon('user', 40, '#fff', 2.4) + '<span>واحد من المشاركين</span>' + icon('check', 40, '#fff', 2.8), { at: 55.48, out: 56.3, dy: 30 }, 'background:#C4321F;color:#fff;font-size:40px'); })();
 
 // ================= S9 · follow along until the end =================
 T(LIGHT, 440, 62, [['ومن', 56.38], ['هنا', 56.72], ['لحد', 56.92], ['نهاية', 57.26], ['المهرجان', 57.60, 'red']], 61.3);
@@ -245,36 +395,56 @@ T(LIGHT, 440, 62, [['ومن', 56.38], ['هنا', 56.72], ['لحد', 56.92], ['ن
   const pr = $('div', 'abs', LIGHT, 'left:140px;right:140px;top:640px;height:6px;border-radius:3px;background:#C4321F;transform-origin:100% 50%');
   const a = $('div', 'dot', LIGHT, 'right:128px;top:632px'); const b = $('div', 'dot', LIGHT, 'left:128px;top:632px;background:#151515');
   P(tr, { at: 56.6, dy: 0, out: 61.3 }); P(a, { at: 56.72, dy: 0, s0: .3, follow: .05, out: 61.3, dur: .36 }); P(b, { at: 57.40, dy: 0, s0: .3, follow: .05, out: 61.3, dur: .36 });
-  U.push(t => { pr.style.transform = `scaleX(${inOut(lin(t, 56.72, 57.62))})`; pr.style.opacity = 1 - easeIn(lin(t, 61.3, 61.6)); }); })();
+  U.push(t => { pr.style.transform = `scaleX(${inOut(lin(t, 56.72, 57.62))})`; pr.style.opacity = 1 - easeIn(lin(t, 61.3, 61.6)); });
+  if (MIX) { // milestone flags pop as the progress passes them; a runner dot rides the line
+    [.25, .5, .75].forEach((u, i) => { const f = $('div', 'abs', LIGHT, `right:${140 + 800 * u - 18}px;top:560px`, `<svg width="40" height="74" viewBox="0 0 40 74"><line x1="6" y1="4" x2="6" y2="74" stroke="#151515" stroke-width="4"/><path d="M8 6 L38 16 L8 28 Z" fill="${i === 1 ? '#151515' : '#C4321F'}"/></svg>`);
+      P(f, { at: 56.72 + .9 * u, dy: 16, s0: .4, squash: .05, follow: .04, out: 61.3, dur: .36 }); });
+    const rn = $('div', 'abs', LIGHT, 'right:0;top:618px;width:50px;height:50px;border-radius:50%;background:#fff;border:6px solid #C4321F');
+    U.push(t => { const k = inOut(lin(t, 56.72, 57.62)); rn.style.opacity = clamp((t - 56.72) / .1) * (1 - easeIn(lin(t, 61.3, 61.6))); rn.style.transform = `translateX(${-(140 + 800 * k - 25)}px)`; });
+  } })();
 T(LIGHT, 800, 76, [['تابعونا', 58.16], ['باستمرار', 58.66, 'red']], 61.3);
-(() => { const w = $('div', 'sh', LIGHT, 'right:86px;top:960px'); const btn = $('div', 'chip', w, 'background:#C4321F;color:#fff;font-size:44px;padding:20px 40px 22px', '<span class="bell">' + icon('bell', 46, '#fff', 2.4) + '</span><span>تابعونا</span>');
+(() => { const r = row(LIGHT, 960); const w = $('div', 'sh', r, ''); const btn = $('div', 'chip', w, 'background:#C4321F;color:#fff;font-size:44px;padding:20px 40px 22px', '<span class="bell" style="display:inline-block;transform-origin:50% 10%">' + icon('bell', 46, '#fff', 2.4) + '</span><span>تابعونا</span>');
   U.push(t => { const p = pose(t, { at: 58.16, dy: 22, s0: .94, squash: .02, out: 61.3 });
-    const press = t > 58.62 && t < 58.9 ? 1 - .05 * Math.sin(Math.PI * lin(t, 58.62, 58.9)) : 1;   // anticipation → press → release
-    p.s *= press; apply(w, p); const bell = btn.querySelector('.bell'); const r = lin(t, 59.40, 60.3); bell.style.display = 'inline-block'; bell.style.transform = `rotate(${Math.sin(r * Math.PI * 6) * 16 * (1 - r)}deg)`; bell.style.transformOrigin = '50% 10%'; }); })();
+    const press = t > 58.62 && t < 58.9 ? 1 - .05 * Math.sin(Math.PI * lin(t, 58.62, 58.9)) : 1; p.s *= press; apply(w, p);
+    const bell = btn.querySelector('.bell'); const r2 = lin(t, 59.40, 60.3); bell.style.transform = `rotate(${Math.sin(r2 * Math.PI * 6) * 16 * (1 - r2)}deg)`; });
+  if (MIX) { const wv = svg(LIGHT, 300, 940, 480, 160, [0, 1, 2].map(i => `<path class="wv" data-i="${i}" d="M${60 - i * 22} ${80 - 30 - i * 14} Q ${40 - i * 26} 80 ${60 - i * 22} ${80 + 30 + i * 14}" stroke="#C4321F" stroke-width="5" fill="none" stroke-linecap="round"/><path class="wv" data-i="${i}" d="M${420 + i * 22} ${80 - 30 - i * 14} Q ${440 + i * 26} 80 ${420 + i * 22} ${80 + 30 + i * 14}" stroke="#C4321F" stroke-width="5" fill="none" stroke-linecap="round"/>`).join(''));
+    U.push(t => wv.querySelectorAll('.wv').forEach(p => { const i = +p.dataset.i, k = lin(t, 59.40 + i * .12, 60.0 + i * .12); p.style.opacity = Math.sin(Math.PI * k); })); }
+})();
 T(LIGHT, 1130, 46, [['عشان', 59.12], ['متفوتوكوش', 59.46], ['أي', 60.08], ['فرصة', 60.32], ['أو', 60.74], ['مفاجأة', 60.88, 'red']], 61.3, { color: K.ink2 });
 
 // ================= S10 · tell me in the comments =================
 T(LIGHT, 430, 52, [['وعايز', 61.38], ['أعرف', 61.74], ['منكم', 62.00]], 67.7, { color: K.ink2 });
 T(LIGHT, 500, 76, [['في', 62.20], ['الكومنتات', 62.32, 'red']], 67.7);
-(() => { const c = card(LIGHT, 86, 650, 908, 200, { at: 62.32, out: 67.7 });
+if (!MIX) {
+  const c = card(LIGHT, 86, 650, 908, 200, { at: 62.32, out: 67.7 });
   iconBox(c.c, 'chat', 104, 62.5, 'top:48px;right:36px');
   const f = $('div', 'abs', c.c, 'top:66px;right:170px;left:40px;height:72px;border-radius:36px;background:rgba(21,21,21,.05)');
-  const cur = $('div', 'abs', f, 'top:18px;right:30px;width:4px;height:36px;background:#C4321F;border-radius:2px');
-  U.push(t => { cur.style.opacity = Math.floor(t * 2.4) % 2 ? .2 : 1; }); })();
+  const cur = $('div', 'abs', f, 'top:18px;right:30px;width:4px;height:36px;background:#C4321F;border-radius:2px'); U.push(t => { cur.style.opacity = Math.floor(t * 2.4) % 2 ? .2 : 1; });
+} else { // three comment bubbles rise with "typing" dots (no invented comments); a heart pops on «مشاركتكم»
+  [[62.45, 'right:86px', 640], [62.85, 'left:86px', 730], [63.25, 'right:200px', 820]].forEach(([at, side, y], i) => {
+    const b = $('div', 'abs', LIGHT, `${side};top:${y}px;display:flex;align-items:center;gap:14px;direction:rtl`, `<span style="width:64px;height:64px;border-radius:50%;background:${['#C4321F', '#151515', '#E85C3B'][i]};display:grid;place-items:center">${icon('user', 36, '#fff', 2.2)}</span><span class="bb" style="display:flex;gap:10px;padding:20px 26px;border-radius:24px;background:#fff;box-shadow:0 10px 24px rgba(21,21,21,.08)"><i class="d"></i><i class="d"></i><i class="d"></i></span>`);
+    b.querySelectorAll('.d').forEach(d => { d.style.cssText = 'display:block;width:14px;height:14px;border-radius:50%;background:#5C5F66'; });
+    P(b, { at, dy: 30, s0: .8, squash: .03, follow: .02, out: 67.7 });
+    U.push(t => b.querySelectorAll('.d').forEach((d, j) => { const s = t - at - .3 - j * .12; d.style.transform = `translateY(${s > 0 ? -Math.max(0, Math.sin(s * 9)) * 10 : 0}px)`; }));
+  });
+  const ht = $('div', 'abs', LIGHT, 'left:495px;top:1330px', '<svg width="90" height="82" viewBox="0 0 24 22"><path d="M12 21s-9-5.6-9-12.2A5 5 0 0 1 12 6a5 5 0 0 1 9 2.8C21 15.4 12 21 12 21z" fill="#C4321F"/></svg>');
+  U.push(t => { const s = t - 66.34; ht.style.opacity = s > 0 ? clamp(s / .1) * (1 - lin(s, .9, 1.3)) : 0; ht.style.transform = `translateY(${-s * 24}px) scale(${clamp(.4 + s * 3, 0, 1) * (1 + settle(lin(s, .1, .6), .08))})`; });
+}
 T(LIGHT, 920, 66, [['مين', 62.82], ['متحمس', 63.34, 'red'], ['يدخل', 63.86], ['معانا', 64.14]], 67.7);
 T(LIGHT, 1010, 66, [['المهرجان', 64.42], ['السنة', 64.78], ['دي؟', 65.06]], 67.7);
 T(LIGHT, 1180, 84, [['مستني', 65.38], ['أشوف', 66.10], ['مشاركتكم!', 66.34, 'red']], 67.7);
-(() => { const u = $('div', 'abs', LIGHT, 'right:86px;top:1300px;width:420px;height:6px;border-radius:3px;background:#C4321F;transform-origin:100% 50%');
+(() => { const u = $('div', 'abs', LIGHT, 'left:330px;top:1300px;width:420px;height:6px;border-radius:3px;background:#C4321F;transform-origin:50% 50%');
   U.push(t => { u.style.transform = `scaleX(${ease(lin(t, 66.40, 66.9))})`; u.style.opacity = 1 - easeIn(lin(t, 67.7, 68.0)); }); })();
 
 // ================= S11 · end card on the downbeat after the lift (hold >= 3 s) =================
-(() => { const plate = $('div', 'plate', LIGHT, 'left:200px;top:640px;width:680px;height:160px'); const im = $('img', '', plate, 'width:600px'); im.src = LOGO;
+(() => { if (MIX) { const sb = svg(LIGHT, 140, 330, 800, 800, [...Array(16)].map((_, i) => `<path d="M400 400 L${400 + 390 * Math.cos(i * Math.PI / 8 - .06)} ${400 + 390 * Math.sin(i * Math.PI / 8 - .06)} L${400 + 390 * Math.cos(i * Math.PI / 8 + .06)} ${400 + 390 * Math.sin(i * Math.PI / 8 + .06)} Z" fill="#C4321F" opacity=".06"/>`).join(''));
+    U.push(t => { const k = ease(lin(t, END, END + .8)); sb.style.opacity = k; sb.style.transform = `rotate(${(t - END) * 6}deg) scale(${lerp(.6, 1, k)})`; }); }
+  const plate = $('div', 'plate', LIGHT, 'left:200px;top:640px;width:680px;height:160px'); const im = $('img', '', plate, 'width:600px'); im.src = LOGO;
   U.push(t => { const k = ease(lin(t, END, END + .8)); apply(plate, pose(t, { at: END, dy: 0, s0: .92, antic: true, follow: .01, dur: .8 })); plate.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; });
-  T(LIGHT, 860, 96, [['WHITE', END + .35], ['FRIDAY', END + .43], ['FESTIVAL', END + .51, 'red']], 99, { center: true, css: 'direction:ltr' });
+  T(LIGHT, 860, 96, [['WHITE', END + .35], ['FRIDAY', END + .43], ['FESTIVAL', END + .51, 'red']], 99, { css: 'direction:ltr' });
   const rule = $('div', 'abs', LIGHT, 'left:480px;top:1010px;width:120px;height:5px;background:#C4321F;border-radius:3px'); U.push(t => { rule.style.transform = `scaleX(${ease(lin(t, END + .6, END + 1.1))})`; });
-  T(LIGHT, 1060, 50, [['استنوا', END + .7], ['البوست', END + .78], ['النهاردة', END + .86]], 99, { center: true });
-  const url = $('div', 'abs', LIGHT, 'left:0;right:0;top:1160px;text-align:center;font-size:36px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
-  P(url, { at: END + 1.0, dy: 10 }); })();
+  T(LIGHT, 1060, 50, [['استنوا', END + .7], ['البوست', END + .78], ['النهاردة', END + .86]], 99);
+  const url = $('div', 'abs', LIGHT, 'left:0;right:0;top:1160px;text-align:center;font-size:36px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com'); P(url, { at: END + 1.0, dy: 10 }); })();
 
 window.render = t => { U.forEach(f => f(t)); };
 window.ready = Promise.all([document.fonts.load('700 60px Cairo'), document.fonts.load('500 40px Cairo'), document.fonts.load('60px Bebas'),

@@ -41,6 +41,13 @@ motion/
 | 11 Solid drawing | one light direction: every card uses the same soft drop shadow |
 | 12 Appeal | clean Arabic type, a calm grid, one red accent |
 
+## Variants
+`piece.json` `"variants": ["text", "mix"]` renders `<name>_text.mp4` and `<name>_mix.mp4` from one `comp.html`, which reads `?v=`.
+- **text:** kinetic typography with light UI cards.
+- **mix:** the same text plus illustrative motion graphics that act out each line.
+
+The client wants text **centred** inside the safe box, not right-aligned.
+
 ## Lessons
 - **Mask Arabic words vertically only.** Use `clip-path: inset(-.22em -.8em -.3em -.8em)` and rise them from 160 %. With `overflow:hidden`, the final ع / م tails are clipped and «الموضوع» reads «الموضو».
 - Never place two text blocks or cards in the same area across overlapping time windows. Check style frames at every scene change.

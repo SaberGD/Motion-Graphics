@@ -13,7 +13,7 @@ const frames = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.ro
   await Promise.all(Array.from({ length: W }, async (_, wi) => {
     const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
     page.on('pageerror', e => console.log(`[w${wi}] ERR`, e.message));
-    await page.goto('file://' + comp);
+    await page.goto('file://' + comp + (process.env.QUERY ? '?' + process.env.QUERY : ''));   // e.g. QUERY=v=mix
     await page.evaluate(() => window.ready);
     for (let k = wi; k < frames.length; k += W) {
       const f = frames[k];
