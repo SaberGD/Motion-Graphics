@@ -1,0 +1,188 @@
+{
+  "reviewedAt": "2026-11-03",
+  "sources": [
+    {
+      "id": "maro",
+      "repository": "https://github.com/sabergroupgm-ship-it/saber-group-ai-assistant",
+      "commit": "c8482c3ea5f371746700f98538cf42d5a321697b",
+      "commitDate": "2026-11-03T20:02:29+02:00",
+      "files": [
+        {
+          "path": "src/App.tsx",
+          "sha256": "5debd3a2c61e223d7cea7b27d92ceee88087979396660469d20221c4a708d629",
+          "bytes": 99341
+        },
+        {
+          "path": "src/index.css",
+          "sha256": "fd1d12f123f155ad5b13859198bb06f15d79812dc268fa2c51656b6f1c6b045b",
+          "bytes": 89880
+        },
+        {
+          "path": "src/components/LoginPage.tsx",
+          "sha256": "4505f429da4c828b4f0250e2fdd2c451d255b444babde12bc1eb6ebb939d07ce",
+          "bytes": 12826
+        },
+        {
+          "path": "src/components/BrandedLoader.tsx",
+          "sha256": "ce7a44b91ec5e79d0530fd873a67616fefd7d05349b120c0b5b8a5dc8cd4adc9",
+          "bytes": 1094
+        },
+        {
+          "path": "public/maro/RIVE-RIG-SPEC.md",
+          "sha256": "262d5e0e431d54259dc306c03106ceacafcbb3857d72c03d0c33f15b3d9b18b8",
+          "bytes": 785
+        },
+        {
+          "path": "index.html",
+          "sha256": "e1eb976c01c864f7d4fd3c1a3fca88ec774c69571ba89f9de7027100b31b6ed6",
+          "bytes": 13053
+        },
+        {
+          "path": "public/sabergroup-ai-logo.webp",
+          "sha256": "73e0797bee4ef24de6aa27bed2fbff36459e035b886f8f9524bd4a5d5553e45e",
+          "bytes": 25264
+        },
+        {
+          "path": "public/logo.webp",
+          "sha256": "0c67ebebb47679beb32ed69b73af9c4318d01419c97922292e6df9d6b3b857c2",
+          "bytes": 26000
+        },
+        {
+          "path": "public/maro/maro-fullbody-neutral.png",
+          "sha256": "c3761903231bbf787d92c805b57ebdc60f8599482f792d67177e81aef7efa8ba",
+          "bytes": 1854795
+        },
+        {
+          "path": "public/maro/maro-fullbody-wave.png",
+          "sha256": "de16600cb2e164984ce3813d3f7d609cb706bd98781afa2d86fac689d65194e0",
+          "bytes": 1239498
+        },
+        {
+          "path": "public/maro/maro-fullbody-pointing.png",
+          "sha256": "db4f4040a95fd83dc8c721f9f79fbec068c3567b9b02817ba4ec83f547714b83",
+          "bytes": 1066101
+        },
+        {
+          "path": "public/maro/maro-visor-expressions.png",
+          "sha256": "d4d04c26d21a3af8edb8a46c9fb6a18ced981ab17f06968892edd305806edd13",
+          "bytes": 857553
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "repository": "https://github.com/SaberGD/training-sys-updated-august-2026",
+      "commit": "f5ec9299699cb8717b87ea9f514527fdc6b6f7bb",
+      "commitDate": "2026-11-02T16:48:38+02:00",
+      "files": [
+        {
+          "path": "index.css",
+          "sha256": "59b3273bb2712e6a83b962551ab3a4ab2d891625ab7cd6c869d29c6930023fdc",
+          "bytes": 54845
+        },
+        {
+          "path": "index.html",
+          "sha256": "2ff154d310161712421a334674df534d03b419ad0ed10c35615ea05766180b3e",
+          "bytes": 7890
+        },
+        {
+          "path": "styles/ui-refresh.css",
+          "sha256": "b1ac7ce97962c87cdb6774c05ae0ea50931e0c20a92fc58636c04fb174ab5a1d",
+          "bytes": 29617
+        },
+        {
+          "path": "styles/training-layout.css",
+          "sha256": "2ef4c324183aa459020b3ab8dde8020bed591938ba98734928ed6a524dedae62",
+          "bytes": 22983
+        },
+        {
+          "path": "components/BrandedLoader.tsx",
+          "sha256": "379d01e4b37e80771ec6a4c33fb66564c8120e73003872f04584c9145691ebe8",
+          "bytes": 1090
+        },
+        {
+          "path": "public/saber-group-logo.png",
+          "sha256": "b807f4147ee79c942ef5f11a04113013294a12de4dd6e3335ce8352302278d81",
+          "bytes": 31440
+        }
+      ]
+    },
+    {
+      "id": "accounting",
+      "repository": "https://github.com/SaberGD/new-accounting-sys",
+      "commit": "04cbffe9cdd38eff78cd512973b7501fbe47af52",
+      "commitDate": "2026-11-03T17:16:42Z",
+      "files": [
+        {
+          "path": "index.css",
+          "sha256": "8ee1bb0070093e7fc010a1efba782e90a41b29d3022df9cc5433a1f915af6a6f",
+          "bytes": 12212
+        },
+        {
+          "path": "index.html",
+          "sha256": "5bd59edf7859175c6992cbb8c5203c2c0c2e226b24501cc4b355a08705cdc288",
+          "bytes": 17201
+        },
+        {
+          "path": "styles/ui-refinement.css",
+          "sha256": "f8ab6e890b3050b1a016a18304bb1eaa1d89ae92724ab528dd9e719558568e45",
+          "bytes": 18812
+        },
+        {
+          "path": "docs/ui-refresh-2026-10-29.ar.md",
+          "sha256": "4f7d2d560fdc952441b01728ca2e28e957263453348204b7a62e75120db84d10",
+          "bytes": 11166
+        },
+        {
+          "path": "components/BrandedLoader.tsx",
+          "sha256": "aed56c2c0fae0ab891cf334838cf38f05a5d7069b0922adc8538c1fcb6c37f3e",
+          "bytes": 792
+        },
+        {
+          "path": "public/saber-group-logo.png",
+          "sha256": "b807f4147ee79c942ef5f11a04113013294a12de4dd6e3335ce8352302278d81",
+          "bytes": 31440
+        }
+      ]
+    },
+    {
+      "id": "academy",
+      "repository": "https://github.com/SaberGD/saber-group-academy-landingpage",
+      "commit": "f9c81575bf061f9f18813a85540f19eaffe24579",
+      "commitDate": "2026-10-10T20:58:18+03:00",
+      "files": [
+        {
+          "path": "src/App.css",
+          "sha256": "fa111481aa75b7c69c0eee5fa1d53a13fae5ab6fdf8d2f5f38c10c00551518fb",
+          "bytes": 11833
+        },
+        {
+          "path": "src/App.jsx",
+          "sha256": "03ac1e8265334cd9d5e20fc4e10b8605fb89071fdf262fd6625620d981fe77cd",
+          "bytes": 13511
+        },
+        {
+          "path": "dist/assets/saber-group-wordmark.webp",
+          "sha256": "73e0797bee4ef24de6aa27bed2fbff36459e035b886f8f9524bd4a5d5553e45e",
+          "bytes": 25264
+        },
+        {
+          "path": "public/assets/saber-group-logo-cropped.webp",
+          "sha256": "0c67ebebb47679beb32ed69b73af9c4318d01419c97922292e6df9d6b3b857c2",
+          "bytes": 26000
+        },
+        {
+          "path": "dist/assets/maro-wave.png",
+          "sha256": "de16600cb2e164984ce3813d3f7d609cb706bd98781afa2d86fac689d65194e0",
+          "bytes": 1239498
+        },
+        {
+          "path": "dist/assets/maro-pointing.png",
+          "sha256": "db4f4040a95fd83dc8c721f9f79fbec068c3567b9b02817ba4ec83f547714b83",
+          "bytes": 1066101
+        }
+      ]
+    }
+  ],
+  "excluded": "No backend, environment files, credentials, user data, recordings or repository history included in the deliverable."
+}

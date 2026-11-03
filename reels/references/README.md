@@ -10,6 +10,11 @@
 | Music bed used on saber7: *This Funk Groove* (liosound), main mix, ~153 BPM | Drive (zip): https://drive.google.com/file/d/18MfwoLD2QVfvqrbyqcY7qFqmX_aBGCDZ/view → `raw/s7/music/…` |
 | Asset pack (logos source, light leaks, 3D objects for r3/r4/r5/s2) | Drive: `saber_assets.zip` in the same folder |
 
+## Brand kit
+
+`brand-kit/` holds the client's **Saber Group Claude Motion Kit v1** (2026-11-03): identity rules, the real logos, the MARO mascot poses,
+fonts, grid/corner patterns, style frames (`brand-kit/references/*.png`) and a silent 25fps motion reference (`motion-reference-8s.mp4`).
+
 ## Sheets in this folder
 
 | File | Shows |
@@ -21,7 +26,7 @@
 
 ## Client feedback history (what changed and why)
 
-1. v1 draft. The academy logo was rejected ("مش بتاعنا"), so only the **Marketing Agency** mark is used.
+1. v1 draft. A redrawn fake "academy" logo (`alternate-saber-logo-academy.svg`) was rejected ("مش بتاعنا"), so the reels use the **Marketing Agency** mark. The real Academy logos are in `brand-kit/`.
 2. v2:
    * light leaks were too strong, so they are now lighter
    * music had to come from the track's start and stay low, not edited from the middle

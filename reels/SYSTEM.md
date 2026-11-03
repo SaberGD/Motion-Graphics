@@ -20,7 +20,8 @@ what the client asked for after seeing the drafts.
 7. **المؤثرات الصوتية**: صوت مُعبّر لكل حركة موجودة فعلاً على الشاشة (مكتبة UI حقيقية، §4)، بمستوى واطي. مش synth.
 8. **الكابشنز**: جُمل مفهومة (chunks يدوي)، كلمة واحدة برتقاني في كل جملة، وتتصحح يدوي (Whisper بيغلط في العامية).
 9. **اللوجو**: لوجو **SABER GROUP Marketing Agency** الأبيض في الركن، والمربع الأحمر + Mushroom في الـ outro.
-   **ممنوع لوجو "أكاديمية تدريب" البديل** (`alternate-saber-logo-academy.svg`) — العميل رفضه.
+   **ممنوع لوجو "أكاديمية تدريب" المزيف** (`alternate-saber-logo-academy.svg`، معاد رسمه بخط عادي) — العميل رفضه.
+   اللوجوهات الحقيقية (SABERGROUPEG +AI العريض، ومربع COURSES ACADEMY +AI) في `brand-kit/assets/logos/` وتتحط زي ما هي من غير إعادة رسم أو تلوين أو قلب.
 10. **الـ light leaks خفيفة** (amt .3) وعلى الترانزيشنز الحقيقية بس.
 11. **مشاهد الموشن full-screen** تفضل لحد ما المتكلم يرجع يتكلم، والسكتة اللي تحتها تتقص، وبعدين تختفي بـ fade + blur (مش دايرة بتقص الكلام).
 12. **ابعت screenshots قبل الريندر** النهائي عشان العميل يعلّق، وبعدين اريندر **نسختين**: ألوان أصلية + متعدلة.
@@ -121,3 +122,31 @@ pose (the hook) and a question variant. Render them with `node reels/<name>/thum
 ## 8. References
 
 See `reels/references/README.md` for the reference videos (Drive links), the music, and sheets showing each element.
+
+## 9. Brand kit (`brand-kit/`) and how it relates to reels
+
+The client's **Saber Group Claude Motion Kit v1** (2026-11-03) sits unchanged in `brand-kit/`. Read `brand-kit/README.md` first, then `01-MASTER-INSTRUCTIONS.txt`.
+
+**Which rules apply:**
+- **Talking-head reels** follow this file. Its rules come from client feedback on real drafts, so they win where the two differ.
+- **Designed motion pieces** follow the kit: Academy/MARO ads, promos, end cards, landscape/square, anything without footage.
+- **Both** follow the kit's hard gates:
+  - logos and MARO are locked assets (no redraw, recolour, mirror or deform)
+  - facts come from the brief only (no invented prices, offers, dates, phone numbers, claims)
+  - audio is licensed or supplied
+  - Arabic is connected and RTL, with English/URLs isolated LTR
+  - the end card stays readable for at least 2 s
+  - the pre-flight checklist (`brand-kit/06-PRE-FLIGHT-CHECKLIST.md`) is run before delivery
+
+| Topic | Kit (designed pieces) | Reels (this file) | Why reels differ |
+|---|---|---|---|
+| fps | 25 | **source fps (30)** | client: "حافظ على الـ Frame Rate" |
+| Primary logo | SABERGROUPEG +AI wordmark (Academy mode); academy square is extra | Marketing Agency mark (white, corner) + red agency logo & Mushroom outro | Saber × Mushroom series identity. Use the kit's Academy/MARO marks when a reel is *for* the Academy or MARO |
+| Red | `#C4321F` (Maro), deep `#7A1B12`, bg `#0A0A0A` | `#D83B25` / `#070707` (training variant, from v6) | keep one palette per film: never mix the two |
+| Atmosphere | quiet grid, faint burgundy wash; **no** blobs/bokeh/heavy glow | ember light blobs in cutaways, orange glow on chips and keywords | v6 look the client approved. Keep glow restrained, no bokeh |
+| Motion | `cubic-bezier(.16,1,.3,1)`, 480 ms in / 320 ms out, 12–24 px moves, no bounce, camera ≤1.02× | ease-out + light back-ease pops, zoom-blur on cuts, camera ≤1.14× on footage | footage needs reframing and cut-hiding. Still "moderate" per the client |
+| Type | Cairo 700 headlines 56–72 px, ≤2 lines, 3–7 words | captions Cairo 900 76 px, kinetic titles bigger | captions must read on a phone over footage |
+| Safe area (portrait) | x 86–994, y 192–1574 | captions at y≈1190, nothing in the bottom ~310 px or the right button column | both are conservative. Keep faces, logos and CTA inside the kit box too |
+| MARO | flat PNGs, ≤6 px idle drift, never mirrored | (v6 used a robot cutaway): for AI topics use the real MARO PNGs from the kit, same rules | — |
+
+When starting any piece, **say which mode it is** (reel vs designed piece; Saber×Mushroom vs Academy vs MARO). If the brief doesn't settle it, ask.
