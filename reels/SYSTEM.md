@@ -160,14 +160,38 @@ When starting any piece, **say which style it is** (SG EDIT or SG MOTION) and wh
 |---|---|
 | Voice | **Mohamed Saber**, `voice_id h1dykroatZMMS5JzRfwx`. A professional voice clone, verified for Egyptian Arabic on the `eleven_v4` models |
 | Account | the client's own ElevenLabs account (Creator tier). The key is **never** stored in the repo: it comes from the env var `ELEVENLABS_API_KEY` (an environment secret) |
-| Tool | `python3 reels/tools/tts.py "<approved text>" out.wav [--model eleven_v4]` → 48 kHz mono WAV |
+| Tool | `python3 reels/tools/tts.py "<approved text>" out.wav --preset pickup\|vo\|energetic` → 48 kHz mono WAV |
+| Guide | `reels/library/voice/ElevenLabs_Arabic_Voice_Guide.md` (+ `.pdf`, the client's guide) and the `.pls` templates |
+| Lexicon | `reels/library/voice/saber_lexicon.pls`: how Saber says brand and English terms (Designers → ديزاينرز, Perfect → بيرفِكت, Visual Hierarchy → فيچوال هايراركي, ElevenLabs, MARO, AI, PDF …). `tts.py` applies it locally, so nothing is uploaded. Add new terms here |
+
+**Settings** (from the guide, tuned on Saber's voice):
+
+| Preset | stability | similarity | style | speed | Use |
+|---|---|---|---|---|---|
+| `pickup` | .50 | .85 | .10 | 1.10 | SG EDIT word/phrase patches: conversational, close to his on-camera delivery |
+| `vo` | .65 | .85 | .10 | .97 | SG MOTION / explainer voiceover: steadier narration |
+| `energetic` | .42 | .85 | .20 | 1.03 | hooks and promos. Style never goes above .20: higher adds artefacts |
+
+**How to write the text:**
+- Use `eleven_v4`. It supports audio tags `[...]`, inline IPA `"/…/"` and alias/phoneme dictionaries, but **no SSML `<break>`**.
+- Pause with `،`, `—`, `…` or `[pause]`.
+- Write it as Saber says it, in Egyptian Arabic.
+- Add tashkeel only on ambiguous words (e.g. `دَه`).
+- Numbers, dates, currency and URLs are written as words.
+- Glue the article to an Arabic-spelled loanword (`الديزاينرز`, not `الـ ديزاينرز`): `tts.py` does this.
+- Audio tags in English, sparingly: `[thoughtful]`, `[excited]`, `[softly]`, `[slowly]`, `[pause]`.
+
+**Measured on saber7** (hook line, his own approved words):
+- Whisper transcribed the clone's hook word for word.
+- `speed` has little effect on `eleven_v4`: the clone runs ~20% slower than Saber's real 4.9 s. To fit a pickup into the original timing, time-stretch afterwards (`atempo` ≤ 1.15), or cut the pauses.
+- Short Egyptian words such as `دَه` can be misheard by Whisper. Judge those by ear.
 
 **When to use it:**
-- **SG EDIT:** patch a word that was flubbed, clipped or missing (a "pickup") instead of reshooting. Match the timing to the original word, run it through the same `voice_af` chain, and crossfade 10–20 ms inside the cut.
+- **SG EDIT:** patch a word that was flubbed, clipped or missing (a "pickup") instead of reshooting. Match the timing to the original, put it through the same `voice_af` chain only if it sounds brighter than the room recording, and crossfade 10–20 ms inside the cut.
 - **SG MOTION:** voiceover for designed pieces when the client asks for his voice.
 
 **Rules:**
 - Only the client's own voice, and only for text he approved word by word. Never put claims, prices or offers in his mouth that the brief did not approve.
 - Show the exact text before generating. List every synthetic line in the delivery notes / `SCRIPT.md`.
-- Check every generated line with Whisper and by ear: Egyptian words and English terms can be misread. Rewrite the spelling (e.g. spaced or Latin terms) and regenerate if needed.
+- Check every line with Whisper and by ear, then regenerate (a different `--seed`, or a spelling fix) if a word comes out wrong.
 - Never clone or synthesise anyone else's voice.
