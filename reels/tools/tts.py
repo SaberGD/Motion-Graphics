@@ -53,7 +53,7 @@ def apply_lexicon(text):
     for g, rep in sorted(rules, key=lambda r: -len(r[0])):        # longest first (Visual Hierarchy before Hierarchy)
         text = re.sub(rf'(?<![A-Za-z]){re.escape(g)}(?![A-Za-z])', rep, text)
     # 'الـ ديزاينرز' -> 'الديزاينرز': the article is read as its own syllable when it stands apart from an Arabic-spelled word
-    text = re.sub(r'الـ\s+(?=[\u0600-\u06FF])', 'ال', text)
+    text = re.sub(r'الـ\s*(?=[\u0600-\u06FF])', 'ال', text)   # also «الـAI» → «الإيه آي»
     return text
 
 

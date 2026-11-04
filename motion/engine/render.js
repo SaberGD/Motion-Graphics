@@ -11,7 +11,8 @@ const frames = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.ro
 (async () => {
   const browser = await chromium.launch({ args: ['--allow-file-access-from-files'] });
   await Promise.all(Array.from({ length: W }, async (_, wi) => {
-    const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
+    const [VW, VH] = (process.env.VIEWPORT || '1080x1920').split('x').map(Number);   // e.g. VIEWPORT=1920x1080
+    const page = await browser.newPage({ viewport: { width: VW, height: VH } });
     page.on('pageerror', e => console.log(`[w${wi}] ERR`, e.message));
     await page.goto('file://' + comp + (process.env.QUERY ? '?' + process.env.QUERY : ''));   // e.g. QUERY=v=mix
     await page.evaluate(() => window.ready);

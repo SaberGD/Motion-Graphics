@@ -43,6 +43,13 @@ motion/
 
 ## Variants
 `piece.json` `"variants": ["text", "mix"]` renders `<name>_text.mp4` and `<name>_mix.mp4` from one `comp.html`, which reads `?v=`.
+A variant ending in **`-land`** (e.g. `"mix-land"`) renders the same variant at **1920×1080**, with `?land=1` and `VIEWPORT=1920x1080`, to `<name with 9x16→16x9>_<v>.mp4`.
+The kit says to recompose for each ratio and never to crop. So in `comp.html` every element group sits in its own 1080×1920 layer, and each layer gets one transform per ratio:
+- text in the right column (RTL)
+- illustrations in the left column
+- the title and end-card lockups centred
+- the bunting under the logo
+The chrome moves to the landscape safe box (x 115–1805, y 86–994). See `white-friday-festival/comp.html` (`lay()` / `at()`).
 - **text:** kinetic typography with light UI cards.
 - **mix:** the same text plus illustrative motion graphics that act out each line.
 
