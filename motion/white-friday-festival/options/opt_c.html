@@ -1,0 +1,89 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- White Friday · Option C · COLOR BLOCKS: bold, festive, geometric. Every scene has its own colour field
+     (charcoal → off-white → brand red …). Scene changes are a geometric reveal: a clipped square grows and turns from the
+     centre on the beat. Kit shapes (clipped squares, circles, rings, plus marks) float in the margins with secondary
+     motion and pop in with squash. One phrase at a time, centred. -->
+<style>
+@font-face{font-family:Cairo;src:url(../../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo}
+.field{position:absolute;inset:0}
+.grid{position:absolute;inset:0;background-size:72px 72px}
+.pl{position:absolute;left:86px;right:86px;display:flex;justify-content:center;direction:rtl;gap:0 .24em;font-weight:700;line-height:1.2;white-space:nowrap}
+.wm{display:inline-block;position:relative;clip-path:inset(-.22em -.8em -.30em -.8em)}
+.wi{display:inline-block;position:relative}
+.ul{position:absolute;left:0;right:0;bottom:.02em;height:.12em;transform-origin:100% 50%}
+.stl{position:absolute;left:-.05em;right:-.05em;top:54%;height:.09em;transform-origin:100% 50%}
+.abs{position:absolute}.lat{font-family:Bebas;font-weight:400}
+.plate{position:absolute;background:#151515;display:grid;place-items:center;border-radius:7px}
+.sq{clip-path:polygon(17% 0,100% 0,100% 83%,83% 100%,0 100%,0 17%)}
+</style></head>
+<body><div id="stage"></div>
+<script src="../../engine/kit.js"></script><script src="phrases.js"></script><script src="common.js"></script>
+<script>
+const { ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, settle, maskRise } = SG;
+const { PH, SCENES, TIMES } = WF; const { FLIP, TITLE, END, DUR } = TIMES;
+const ST = document.getElementById('stage'), U = [];
+// scene colour fields: dark until the switch, then off-white / red / charcoal (kit palette); text and accents contrast
+const K = '#0A0A0A', R = '#C4321F', L = '#F6F3F2', I = '#151515';
+const PAL = [K, K, K, L, R, L, K, R, L, K, R, L, K, R, L];
+const ink = c => c === L ? I : L, acc = c => c === R ? I : R;
+const fields = SCENES.map((w, s) => { const f = $('div', 'field', ST, `background:${PAL[s]}`); const g = $('div', 'grid', f, `background-image:linear-gradient(${PAL[s] === L ? 'rgba(21,21,21,.05)' : 'rgba(246,243,242,.05)'} 1px,transparent 1px),linear-gradient(90deg,${PAL[s] === L ? 'rgba(21,21,21,.05)' : 'rgba(246,243,242,.05)'} 1px,transparent 1px)`); return f; });
+// geometric reveal: the next field is clipped to a square that grows from the centre while turning 45° → 0° (on the beat)
+U.push(t => { let s = SCENES.findIndex(w => t >= w[0] && t < w[1]); if (s < 0) s = t >= END ? SCENES.length - 1 : 0;
+  fields.forEach((f, i) => { if (i < s - 1 || i > s) { f.style.display = 'none'; return; } f.style.display = '';
+    if (i === s && s > 0) { const at = SCENES[s][0], k = ease(lin(t, at, at + .55)); const r = k * 1500, a = (1 - k) * 45;
+      f.style.clipPath = k >= 1 ? 'none' : `polygon(${[0, 1, 2, 3].map(j => { const th = (a + 45 + j * 90) * Math.PI / 180; return `${540 + r * Math.cos(th)}px ${960 + r * Math.sin(th)}px`; }).join(',')})`; f.style.zIndex = 2; }
+    else { f.style.clipPath = 'none'; f.style.zIndex = 1; } }); });
+// shapes in the margins of each scene: pop in with squash, then drift and turn slowly (secondary action)
+const SHAPES = [[150, 330, 120, 'sq'], [870, 420, 90, 'ring'], [190, 1390, 80, 'dot'], [880, 1330, 130, 'plus'], [540, 1450, 60, 'sq']];
+SCENES.forEach((w, s) => { const bg = PAL[s];
+  SHAPES.forEach(([x0, y, z, kind], j) => { const col = j % 2 ? acc(bg) : ink(bg), x = s % 2 ? 1080 - x0 : x0;
+    const e = $('div', 'abs' + (kind === 'sq' ? ' sq' : ''), fields[s], `left:${x - z / 2}px;top:${y - z / 2}px;width:${z}px;height:${z}px;` + (kind === 'sq' ? `background:${col};opacity:.9` : kind === 'ring' ? `border:${z * .14}px solid ${col};border-radius:50%` : kind === 'dot' ? `background:${col};border-radius:50%` : ''),
+      kind === 'plus' ? `<svg width="${z}" height="${z}" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" stroke="${col}" stroke-width="4.4" stroke-linecap="round"/></svg>` : '');
+    U.push(t => { const at = w[0] + .25 + j * .07, q = t - at; if (t < w[0] - .1 || t > w[1] + .7) return;
+      const pop = clamp(lerp(0, 1, ease(lin(t, at, at + .4))) * (1 + settle(lin(t, at + .25, at + 1), .12)), 0, 1.3);
+      const sq = Math.sin(Math.PI * lin(t, at + .3, at + .55)) * .1;
+      e.style.opacity = clamp(q / .1) * (kind === 'sq' ? .9 : 1);
+      e.style.transform = `translate(${Math.sin(q * .8 + j) * 14}px,${Math.cos(q * .6 + j) * 18}px) rotate(${(kind === 'ring' || kind === 'dot') ? 0 : q * (j % 2 ? 22 : -16)}deg) scale(${pop * (1 + sq)},${pop * (1 - sq)})`; }); }); });
+// phrases: one at a time, centred, colour by field; key words get a thick contrasting underline that draws in
+PH.forEach(p => { if (p.type) return; const bg = PAL[p.s];
+  const Ln = OPT.phraseLine(fields[p.s], p, { y: 920, size: 126, color: ink(bg), wrap: p.w.length > 2, center: true });
+  Ln.ws.forEach(w => { if (w.f === 'k') { w.u = $('span', 'ul', w.m, `background:${acc(bg)}`); w.i.style.color = bg === R ? L : acc(bg); }
+    if (w.f === 's') w.sl = $('span', 'stl', w.m, `background:${acc(bg)}`); });
+  U.push(t => { const v = t >= p.t0 - .05 && t < p.t1 + .2; Ln.row.style.display = v ? 'flex' : 'none'; if (!v) return;
+    Ln.ws.forEach(w => { maskRise(w.i, t, w.at, p.t1 - .16);
+      if (w.u) w.u.style.transform = `scaleX(${ease(lin(t, w.at + .1, w.at + .45)) * (1 - easeIn(lin(t, p.t1 - .16, p.t1)))})`;
+      if (w.sl) { const q = ease(lin(t, p.strike, p.strike + .3)); w.sl.style.transform = `scaleX(${q * (1 - easeIn(lin(t, p.t1 - .16, p.t1)))})`; w.i.style.opacity = lerp(1, .45, q); } }); }); });
+// the logo phrase (dark field: the wordmark goes straight on, no plate)
+(() => { const p = PH.find(q => q.type === 'logo'); const Ln = OPT.phraseLine(fields[p.s], { w: p.lead }, { y: 720, size: 64, color: '#C7C9CD' });
+  const box = $('div', 'abs', fields[p.s], 'left:170px;top:820px;width:740px;height:107px;overflow:hidden'); const im = $('img', '', box, 'position:absolute;right:0;top:0;width:740px'); im.src = OPT.LOGO;
+  U.push(t => { OPT.words(Ln, t, p.t1 - .16); const k = ease(lin(t, p.at, p.at + .8)); box.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; box.style.opacity = (t >= p.at) * (1 - easeIn(lin(t, p.t1 - .16, p.t1 + .1))); }); })();
+// TITLE on the off-white field: charcoal plate + wordmark, WHITE FRIDAY in charcoal, FESTIVAL in red; a red square spins in behind
+(() => { const f = fields[5];
+  const sq = $('div', 'abs sq', f, `left:110px;top:540px;width:860px;height:760px;background:${R}`);
+  const pl = $('div', 'plate', f, 'left:220px;top:600px;width:640px;height:150px'); const im = $('img', '', pl, 'width:560px'); im.src = OPT.LOGO;
+  const w1 = $('div', 'abs lat', f, `left:0;right:0;top:800px;text-align:center;font-size:180px;line-height:1;color:${L};direction:ltr`, 'WHITE FRIDAY');
+  const w2 = $('div', 'abs lat', f, `left:0;right:0;top:1000px;text-align:center;font-size:180px;line-height:1;color:${I};direction:ltr`, 'FESTIVAL');
+  U.push(t => { const k = ease(lin(t, TITLE + .1, TITLE + .7)); sq.style.transform = `rotate(${(1 - k) * -90}deg) scale(${lerp(.2, 1, k) * (1 + settle(lin(t, TITLE + .5, TITLE + 1.3), .015))})`; sq.style.opacity = .95 * clamp((t - TITLE) / .1);
+    pl.style.clipPath = `inset(0 0 0 ${(1 - ease(lin(t, TITLE + .2, TITLE + 1))) * 100}%)`;
+    apply(w1, pose(t, { at: 14.0, dy: 36, s0: 1.1, follow: .015 })); apply(w2, pose(t, { at: 14.78, dy: 36, s0: 1.1, follow: .015 })); }); })();
+// END card on the off-white field: wordmark plate, WHITE FRIDAY FESTIVAL, the script's CTA, the kit URL (hold 3.1 s)
+(() => { const f = fields[14];
+  const pl = $('div', 'plate', f, 'left:200px;top:700px;width:680px;height:160px'); const im = $('img', '', pl, 'width:600px'); im.src = OPT.LOGO;
+  const t1 = $('div', 'abs lat', f, `left:0;right:0;top:900px;text-align:center;font-size:110px;color:${I};direction:ltr`, `WHITE FRIDAY <span style="color:${R}">FESTIVAL</span>`);
+  const Ln = OPT.phraseLine(f, { w: [['استنوا', END + .7], ['البوست', END + .78], ['النهاردة', END + .86, 'k']] }, { y: 1060, size: 60, color: I }); Ln.ws[2].i.style.color = R;
+  const u = $('div', 'abs', f, 'left:0;right:0;top:1170px;text-align:center;font-size:36px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
+  U.push(t => { if (t < END - .1) return; pl.style.clipPath = `inset(0 0 0 ${(1 - ease(lin(t, END + .1, END + .9))) * 100}%)`; apply(t1, pose(t, { at: END + .4, dy: 24 })); OPT.words(Ln, t); apply(u, pose(t, { at: END + 1.0, dy: 12 })); }); })();
+// fixed chrome: url + small wordmark (on a plate only over light fields)
+(() => { const pl = $('div', 'plate', ST, 'left:390px;top:200px;width:300px;height:76px;z-index:5'); const im = $('img', '', pl, 'width:256px'); im.src = OPT.LOGO;
+  const u = $('div', 'abs', ST, 'left:0;right:0;top:1520px;text-align:center;font-size:26px;font-weight:500;direction:ltr;z-index:5', 'sabergroupacademy.com');
+  U.push(t => { let s = SCENES.findIndex(w => t >= w[0] && t < w[1]); if (s < 0) s = 14; const bg = PAL[s]; const on = t > .3 && t < END - .2 && s !== 5 && s !== 1;
+    pl.style.opacity = on ? 1 : 0; pl.style.background = bg === L ? '#151515' : 'transparent'; u.style.opacity = on ? .8 : 0; u.style.color = ink(bg); }); })();
+window.render = t => U.forEach(f => f(t));
+window.ready = OPT.ready();
+</script></body></html>
