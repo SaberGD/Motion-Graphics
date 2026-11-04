@@ -13,6 +13,8 @@
   <lexeme><grapheme>MARO</grapheme><alias>مارو</alias></lexeme>
   <lexeme><grapheme>Saber Group Academy</grapheme><alias>صابر جروب أكاديمي</alias></lexeme>
   <lexeme><grapheme>100X AI</grapheme><alias>وان هاندرد إكس إيه آي</alias></lexeme>
+  <lexeme><grapheme>campaign</grapheme><alias>كامبين</alias></lexeme>
+  <lexeme><grapheme>Campaign</grapheme><alias>كامبين</alias></lexeme>
   <lexeme><grapheme>IKEA</grapheme><alias>إيكيا</alias></lexeme>
   <lexeme><grapheme>Adidas</grapheme><alias>أديداس</alias></lexeme>
   <lexeme><grapheme>Coca-Cola</grapheme><alias>كوكاكولا</alias></lexeme>
