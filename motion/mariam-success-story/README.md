@@ -22,6 +22,5 @@ Every Rasasi design is labelled **«مشروع تدريبي · Rasasi»**, becau
 
 - Render all three with `./render_options.sh [a b c]`.
 - Make style frames with `./frames.sh <a|b|c> 1.5,8.6,…`.
-- Before publishing:
-  - Mariam must approve showing her name, her message and her work.
-  - The voice is a stock library voice, not Mariam's own.
+- Consent: Mariam approved showing her name, her message and her work (client confirmation, 2026-11-04).
+- The voice is a stock library voice, not Mariam's own.
