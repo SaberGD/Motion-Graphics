@@ -20,7 +20,10 @@
 - The QC diffs that remain are Egyptian readings, not errors: «ما عنديش», and «وأمر» for «وقمر» (ق read as a hamza).
 - These are stock library voices, not Mariam's real voice. If the piece presents the quote as hers, label the voice as a performance, or record Mariam herself.
 
-## Chosen take: voice 3 (Fatima – Narrator) on the client's final text
-- `spoken.txt` was updated to the client's final version: only `[excited]` on the CTA, no other tags.
-- Take: seed 33 (best QC of 3 seeds). Pauses shortened to 0.26 s, atempo 1.08 (on v4 the speed setting did not change the length), highpass → comp 2:1 → −16 LUFS.
-- Output: `mariam_vo_fatima_narrator.flac` / `.m4a`, 29.6 s.
+## Chosen take: voice 3 (Fatima – Narrator) on the client's final text (v3)
+- `spoken.txt` is the client's final text, word for word.
+  - It opens on «من معنديش خلفية… لديزاينر بتعمل شغل عالمي», then adds «دي قصة نجاح تستحق مكافأة!» and «متابعة يومية».
+  - The only tag is `[excited]`, on the CTA.
+- Take: seed 21, the best of 5 takes. Pauses shortened to 0.32 s. No atempo, highpass → comp 2:1 → −16 LUFS.
+- Output: `mariam_vo_fatima_narrator.flac` / `.m4a`, 28.8 s.
+- QC diffs: Whisper spellings only (ما عنديش / 3 / لها رسائل).
