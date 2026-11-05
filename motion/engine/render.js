@@ -19,7 +19,8 @@ const frames = process.env.TIMES ? process.env.TIMES.split(',').map(x => Math.ro
     for (let k = wi; k < frames.length; k += W) {
       const f = frames[k];
       await page.evaluate(t => window.render(t), f / FPS);
-      await page.screenshot({ path: path.join(out, `f_${String(f).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 96 });
+      if (process.env.ALPHA) await page.screenshot({ path: path.join(out, `f_${String(f).padStart(5, '0')}.png`), type: 'png', omitBackground: true });   // ALPHA=1: transparent PNG (graphics layer over footage)
+      else await page.screenshot({ path: path.join(out, `f_${String(f).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 96 });
       if (k % 250 < W) console.log('frame', f);
     }
     await page.close();

@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Student reviews mix · graphics layer (transparent, rendered over the cut footage).
+     Chapter cards (kit charcoal + grid + burgundy wash, the question in Cairo, counter in Bebas), a small name chip on every clip
+     (who is talking, top-right), and the Academy end card (the real SABERGROUPEG +AI wordmark). The sources' own captions stay. -->
+<style>
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo;color:#F6F3F2}
+.abs{position:absolute}
+.full{position:absolute;inset:0;background:#0A0A0A;overflow:hidden}
+.grid{position:absolute;inset:0;background-size:72px 72px;background-image:linear-gradient(rgba(246,243,242,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(246,243,242,.035) 1px,transparent 1px)}
+.wash{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 50%,transparent 55%,rgba(122,27,18,.32) 100%)}
+.q{position:absolute;left:86px;right:86px;top:800px;text-align:center;direction:rtl;font-weight:700;font-size:150px;line-height:1.25}
+.q b{color:#FF8A1F;font-weight:700}
+.num{position:absolute;left:0;right:0;top:640px;text-align:center;font-family:Bebas;font-size:130px;color:#C4321F;line-height:1;direction:ltr}
+.bar{position:absolute;left:390px;right:390px;top:1030px;height:6px;background:#FF8A1F;transform-origin:100% 50%}
+.chip{position:absolute;right:60px;top:330px;padding:8px 26px 10px;border-radius:999px;background:rgba(10,10,10,.62);border:2px solid rgba(255,138,31,.85);font-size:34px;font-weight:700;direction:rtl;white-space:nowrap;backdrop-filter:blur(6px)}
+.chip span{color:#FF8A1F;font-weight:500;font-size:28px}
+.corner{position:absolute;width:46px;height:46px;border-color:#C4321F;border-style:solid}
+</style></head>
+<body><div id="stage"></div>
+<script src="../../motion/engine/kit.js"></script><script src="edl.js"></script>
+<script>
+const { ease, easeIn, lin, lerp, clamp, pose, apply, $ } = SG;
+const ST = document.getElementById('stage'), U = [];
+const LOGO = '../../brand-kit/assets/logos/saber-group-wordmark.png';
+const Q = { who: ['<b>البداية</b>'], diff: ['<b>التجربة</b>'], work: ['<b>النتيجة</b>'], tip: ['<b>النصيحة</b>'] };   // one word per chapter: the sources already show their own question titles
+const INFO = { r1: 'خلود خالد <span>· 19 سنة</span>', r2: 'رحمة <span>· 21 سنة</span>', r3: 'دينا <span>· Designer</span>' };
+const ready = Promise.resolve(window.EDL).then(E => {
+  let n = 0;
+  E.tl.forEach(r => {
+    if (r.kind === 'card') {
+      n++; const g = $('div', 'full', ST); $('div', 'grid', g); $('div', 'wash', g);
+      const num = $('div', 'num', g, '', String(n).padStart(2, '0') + ' / 04'); const q = $('div', 'q', g, '', Q[r.ch][0]); const bar = $('div', 'bar', g);
+      U.push(t => { const on = t >= r.t0 && t < r.t1; g.style.display = on ? '' : 'none'; if (!on) return;
+        const k = ease(lin(t, r.t0, r.t0 + .3)); g.style.opacity = clamp((t - r.t0) / .08);
+        q.style.transform = `translateY(${(1 - k) * 26}px) scale(${lerp(1.06, 1, k)})`; q.style.opacity = clamp((t - r.t0) / .14);
+        apply(num, pose(t, { at: r.t0 + .04, dy: 16, dur: .3 })); bar.style.transform = `scaleX(${ease(lin(t, r.t0 + .12, r.t0 + .5))})`; });
+    } else if (r.kind === 'clip') {
+      const c = $('div', 'chip', ST, '', INFO[r.src]);
+      U.push(t => { const on = t >= r.t0 && t < r.t1; c.style.display = on ? '' : 'none'; if (!on) return; apply(c, pose(t, { at: r.t0 + .06, dx: 18, dy: 0, dur: .3 })); });
+    } else if (r.kind === 'outro') {
+      const g = $('div', 'full', ST); $('div', 'grid', g); $('div', 'wash', g);
+      $('div', 'corner', g, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div', 'corner', g, 'right:86px;top:1528px;border-width:0 4px 4px 0');
+      const box = $('div', 'abs', g, 'left:190px;top:820px;width:700px;height:101px;overflow:hidden'); const im = $('img', 'abs', box, 'right:0;top:0;width:700px'); im.src = LOGO;
+      const ln = $('div', 'abs', g, 'left:0;right:0;top:980px;text-align:center;font-size:52px;font-weight:700;direction:rtl', 'قصص نجاح <span style="color:#FF8A1F">حقيقية</span> من طلابنا');
+      const u = $('div', 'abs', g, 'left:0;right:0;top:1080px;text-align:center;font-size:34px;font-weight:500;color:#C7C9CD;direction:ltr', 'sabergroupacademy.com');
+      U.push(t => { const on = t >= r.t0; g.style.display = on ? '' : 'none'; if (!on) return; g.style.opacity = clamp((t - r.t0) / .25);
+        const k = ease(lin(t, r.t0 + .15, r.t0 + .95)); box.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; box.style.transform = `scale(${lerp(.94, 1, k)})`;
+        apply(ln, pose(t, { at: r.t0 + .6, dy: 20 })); apply(u, pose(t, { at: r.t0 + .85, dy: 12 })); });
+    }
+  });
+  return Promise.all([document.fonts.load('700 60px Cairo'), document.fonts.load('500 40px Cairo'), document.fonts.load('60px Bebas'),
+    ...[...document.images].map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))]).then(() => document.fonts.ready);
+});
+window.render = t => U.forEach(f => f(t));
+window.ready = ready;
+</script></body></html>
