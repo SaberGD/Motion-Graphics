@@ -7,7 +7,7 @@
     p1: A + 'poster_discover.jpg', p2: A + 'poster_mood.jpg', p3: A + 'poster_presence.jpg', p4: A + 'poster_citrus.jpg', p5: A + 'poster_ice.jpg',
     fb: A + 'chat_oct_feedback.png', grid: A + 'chat_oct_grid.png',
     lip: A + 'work_lipstick.png', fbY: A + 'fb_yasmin.png', fbF: A + 'fb_followup.png', fbS: A + 'fb_sami.png',
-    post: A + 'fb_post_mastery.png' };   // no photos of the student: the ones supplied turned out not to be her
+    post: A + 'fb_post_mastery.png', mar: A + 'mariam_illustration.jpg' };   // Mariam = an illustration (client-supplied); no photos of the student
   const PH = {}; MS.PH.forEach(p => PH[p.k] = p);
   const FITS = [];
   /** a centred phrase line of whole words; each word masked vertically and rising on its spoken time */

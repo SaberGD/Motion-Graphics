@@ -10,7 +10,7 @@
 - the 3 high-res posters, plus the citrus and ice designs from the album screenshot
 - the three July Photoshop exercises (now only used in B)
 - her lipstick design, the instructors' real feedback (Yasmin Ashour, Sami Mousa) and the follow-up thread
-- no photos of the student (the two supplied turned out not to be Mariam): her initial on the intro, her design on «دي قصة نجاح»
+- Mariam is shown as an illustration supplied by the client (assets/mariam_illustration.jpg, no photos of the student): on the intro and on «دي قصة نجاح»
 - her real first message, 16 July (the other person's reaction avatar is blurred)
 - the October feedback message
 
