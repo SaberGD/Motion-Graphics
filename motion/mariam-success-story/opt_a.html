@@ -66,14 +66,14 @@ const QL = MO.phraseLine(BUB, PH.quote, { y: 215, size: 54, color: K.ink, key: K
 // S2: the real message (screenshot) takes the bubble's place: proof
 const REAL = $('div', 'shot', FEED, 'left:24px;right:24px;top:300px'); img(REAL, IMG.quote, '', '');
 // the journey: more instructors' feedback on her work (real screenshots; the process cards later use different ones)
-const EX = [[A2 + 'fb_yasmin2.png', 830], [IMG.fbS, 1360], [IMG.fb, 1720]].map(([s, y], i) => { const d = $('div', 'shot', FEED, `left:${i % 2 ? 70 : 24}px;right:${i % 2 ? 24 : 70}px;top:${y}px`); img(d, s, '', ''); return d; });
-const P3 = pill(2160, '20 أكتوبر');
-const POSTB = $('div', 'shot', FEED, 'left:220px;width:470px;top:2240px;border-radius:26px'); img(POSTB, IMG.p1, '', '');
+const EX = [[A2 + 'fb_yasmin2.png', 830], [IMG.fbS, 1360]].map(([s, y], i) => { const d = $('div', 'shot', FEED, `left:${i % 2 ? 70 : 24}px;right:${i % 2 ? 24 : 70}px;top:${y}px`); img(d, s, '', ''); return d; });
+const P3 = pill(1730, '20 أكتوبر');
+const POSTB = $('div', 'shot', FEED, 'left:220px;width:470px;top:1810px;border-radius:26px'); img(POSTB, IMG.p1, '', '');
 U.push(t => {
   if (!vis(VIEW, t < 8.4)) return;
-  const sc = inOut(lin(t, 6.30, 8.05)); FEED.style.transform = `translateY(${lerp(150, -2160, sc)}px)`;
+  const sc = inOut(lin(t, 6.30, 8.05)); FEED.style.transform = `translateY(${lerp(150, -1730, sc)}px)`;
   VIEW.style.opacity = 1 - easeIn(lin(t, 8.05, 8.35));
-  apply(P1, pose(t, { at: .0, dy: 10 }), 'translateX(-50%)');
+  apply(P1, pose(t, { at: .0, dy: 10, out: 3.55 }), 'translateX(-50%)');   // the real message carries «July 16» itself: no second date
   apply(BUB, pose(t, { at: .02, dy: 28, s0: .94, squash: .02 })); QL.ws.forEach(w => SG.maskRise(w.i, t, w.at));
   const sw = ease(lin(t, 3.58, 4.0)); BUB.style.opacity = (+BUB.style.opacity) * (1 - sw);
   apply(REAL, pose(t, { at: 3.62, dy: 0, s0: .96, follow: .012 })); REAL.style.transform += ` rotate(${lerp(-2, 0, ease(lin(t, 3.62, 4.2)))}deg)`;
@@ -84,7 +84,6 @@ U.push(t => {
 
 // ---------- S4: «ده شغلها!» the poster opens out of the chat ----------
 const BIG = $('div', 'shot', ST, 'left:156px;top:300px;width:768px;height:960px;border-radius:30px'); img(BIG, IMG.p1, 'width:100%;height:100%;object-fit:cover', '');
-const TAG = $('div', 'chip', ST, 'left:50%;top:1274px', 'مشروع تدريبي · Rasasi');
 // ---------- S5: the campaign album (5 designs), then each one's message is spotlit ----------
 const TILES = [[IMG.p1, 86, 300, 446, 557], [IMG.p2, 548, 300, 446, 557], [IMG.p3, 86, 873, 290, 362], [IMG.p4, 395, 873, 290, 362], [IMG.p5, 704, 873, 290, 362]]
   .map(([s, x, y, w, h], i) => { const d = $('div', 'shot', ST, `left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:22px`); img(d, s, 'width:100%;height:100%;object-fit:cover', '');
@@ -94,7 +93,6 @@ U.push(t => {
   // the big poster: in on «ده», out into the album on «campaign»
   if (vis(BIG, t > 7.8 && t < 9.4)) { const k = ease(lin(t, 7.92, 8.5)), g = inOut(lin(t, 8.78, 9.3));
     BIG.style.opacity = clamp((t - 7.92) / .2) * (1 - g); BIG.style.transform = `scale(${lerp(.62, 1, k) * (1 + settle(lin(t, 8.3, 9.0), .015))}) translateY(${lerp(80, 0, k)}px)`; }
-  const tagOn = env(t, 8.4, 12.9); TAG.style.opacity = tagOn; vis(TAG, tagOn > .01); TAG.style.transform = 'translateX(-50%)';
   const alb = t > 8.6 && t < 13.4; TILES.forEach(T => { if (!vis(T.d, alb)) return;
     const p = pose(t, { at: 8.78 + T.i * .08, dy: 30, s0: .9, follow: .012, out: 12.95, exitDy: -20 });
     const sp = SPOT.findIndex((a, j) => t >= a && t < (SPOT[j + 1] ?? 12.2)); const on = sp === T.i || (sp === 3 && T.i >= 3);
@@ -103,11 +101,11 @@ U.push(t => {
 });
 
 // ---------- S7: تمرين / فيدباك / متابعة يومية: three cards, each lands on its word ----------
-const ROWS = [[13.34, 'pen', IMG.lip], [13.90, 'chat', IMG.fbY], [14.68, 'cal', IMG.fbF]].map(([at, ic, src], i) => {
+const ROWS = [[13.34, 'pen', IMG.lip], [13.90, 'chat', IMG.fbY], [14.68, 'cal', null]].map(([at, ic, src], i) => {
   const c = $('div', 'card', ST, `left:120px;right:120px;top:${330 + i * 320}px;height:280px`);
   const ib = $('div', 'abs', c, 'right:34px;top:84px;width:112px;height:112px;border-radius:28px;background:#C4321F;display:grid;place-items:center', icon(ic, 60, '#fff', 2.2));
   if (src) { const s = $('div', 'shot', c, 'left:30px;top:30px;width:634px;height:220px;border-radius:18px;box-shadow:none;background:#7fb0dc'); img(s, src, 'width:100%;height:100%;object-fit:cover;object-position:50% ' + (i === 0 ? '30%' : '0%'), ''); }
-  else { const g = $('div', 'abs', c, 'left:30px;top:66px;width:600px;height:150px;display:flex;gap:14px;direction:rtl');
+  else { const g = $('div', 'abs', c, 'left:30px;top:66px;width:634px;height:150px;display:flex;gap:14px;direction:rtl');
     c.days = [...Array(7)].map(() => $('div', '', g, 'flex:1;border-radius:16px;background:#EFEBEA;display:grid;place-items:center')); }
   return { c, at, i };
 });
