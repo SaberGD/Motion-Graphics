@@ -42,3 +42,7 @@ Sources: `raw/reviews/r1..3.mp4` (git-ignored), downloaded from the client's Dri
   - A clip never starts or ends with a frame of another shot, or with the next caption already showing: it starts on a source cut, or ends before it, when one is within 0.4 s.
   - In/out land on whole frames, so picture, sound and graphics never drift.
   - Scene detection on the output shows changes only at our own cuts and cards.
+
+**v3 (client feedback)**
+- **No shimmer:** the slow push inside each clip is gone (zoompan's whole-pixel steps made it shake). The framing is static per clip, alternating 1.0 / 1.05, and the change happens only on the cut.
+- **The advice chapter is removed.** The film ends on Kholoud's «بيعلّمك فعلاً إزاي تكون جرافيك ديزاينر شاطر», then the end card. Length: 41.6 s.
