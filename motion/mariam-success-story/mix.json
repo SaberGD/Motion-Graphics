@@ -6,12 +6,9 @@
   "gain": 0
  },
  "music": {
-  "file": "../../raw/wf/liosound_This-Funk-Groove_main.mp3",
+  "file": "../../raw/mariam/Funky_Fusion.mp3",
   "at": 0,
-  "gain": -17,
-  "duck": -4,
-  "duck_smooth": 0.6,
-  "fade": 1.6,
+  "gain": -15.5,
   "af": "equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5"
  },
  "sfx": [

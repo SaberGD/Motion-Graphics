@@ -21,7 +21,7 @@ sfx('reveal', 19.06); sfx('tick', 21.44); sfx('check', 22.64)                   
 sfx('outro', 24.20); sfx('outro_low', 24.18)                                          # end card
 mix = {'dur': DUR,
        'vo': {'file': 'vo/mariam_vo_fatima_narrator.flac', 'at': 0, 'gain': 0},
-       'music': {'file': '../../raw/wf/liosound_This-Funk-Groove_main.mp3', 'at': 0, 'gain': -17, 'duck': -4, 'duck_smooth': .6, 'fade': 1.6,
+       'music': {'file': '../../raw/mariam/Funky_Fusion.mp3', 'at': 0, 'gain': -15.5,   # client's track (Funky Fusion), from its start; ~1.5 dB quieter than the old bed 'duck': -4, 'duck_smooth': .6, 'fade': 1.6,
                  'af': 'equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5'},
        'sfx': SFX}
 json.dump(mix, open(os.path.join(HERE, 'mix.json'), 'w'), indent=1)
