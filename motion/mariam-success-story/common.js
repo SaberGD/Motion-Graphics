@@ -109,7 +109,7 @@
     $('div', 'abs', PI, 'left:150px;right:150px;top:332px;height:6px;background:#FF8A1F');
     $('div', 'abs', PI, 'left:0;right:0;top:366px;text-align:center;font-size:40px;font-weight:700;color:#F6F3F2;direction:rtl', 'مش مجرد كورس… <span style="color:#FF8A1F">دي نقلة</span> في مستواك.');
     // the academy's real poster (assets/fb_post_mastery.png) covers the redrawn panel when the file is there
-    const real = img(PI, IMG.post, 'left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%'); if (real.complete && !real.naturalWidth) real.style.display = 'none'; real.addEventListener('error', () => { real.style.display = 'none'; });
+    const real = img(PI, IMG.post, 'left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%'); if (real.complete && !real.naturalWidth) real.style.display = 'none'; real.addEventListener('error', () => { real.style.display = 'none'; });
     const rx = $('div', 'abs', P, 'right:30px;top:646px;height:40px;display:flex;align-items:center;gap:6px;direction:rtl');
     const R1 = $('div', '', rx, 'width:38px;height:38px;border-radius:50%;background:#C4321F;padding:8px'); R1.innerHTML = HEART('#fff');
     const R2 = $('div', '', rx, 'width:38px;height:38px;border-radius:50%;background:#FF8A1F;display:grid;place-items:center', ic(LIKE, 22, '#fff'));
