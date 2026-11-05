@@ -112,7 +112,7 @@ U.push(t => { if (!vis(SPL, t > 12.0 && t < 16.2)) return;
   CH.forEach(c => apply(c.d, pose(t, { at: c.at, dy: 24, s0: .7, dur: .4, follow: .03, out: 15.66 }))); });
 
 // ---------- S7: «قصة نجاح تستحق مكافأة!» poster + gift on the reward ----------
-const HERO = $('div', 'shot', ST, 'left:250px;top:330px;width:580px;height:725px'); img(HERO, IMG.me, 'object-position:50% 32%', '');
+const HERO = $('div', 'shot', ST, 'left:250px;top:330px;width:580px;height:725px'); img(HERO, IMG.p4, '', '');   // her design (no photo of her)
 const GIFT = $('div', 'abs', ST, 'left:690px;top:950px;width:180px;height:180px;border-radius:50%;background:#C4321F;display:grid;place-items:center;box-shadow:0 0 0 14px rgba(196,50,31,.22)', icon('gift', 96, '#fff', 1.8));
 const RAYS = $('div', 'abs', ST, 'left:140px;top:290px;width:800px;height:800px', `<svg viewBox="0 0 800 800" width="800" height="800">${[...Array(16)].map((_, i) => `<path d="M400 400 L${400 + 400 * Math.cos(i * Math.PI / 8 - .05)} ${400 + 400 * Math.sin(i * Math.PI / 8 - .05)} L${400 + 400 * Math.cos(i * Math.PI / 8 + .05)} ${400 + 400 * Math.sin(i * Math.PI / 8 + .05)} Z" fill="#C4321F" opacity=".22"/>`).join('')}</svg>`);
 U.push(t => { const on = t > 15.7 && t < 18.7; vis(HERO, on); vis(RAYS, on); if (!on) { vis(GIFT, false); return; }

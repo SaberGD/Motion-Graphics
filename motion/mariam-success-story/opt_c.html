@@ -49,7 +49,7 @@ U.push(t => { if (!vis(JUL, t < 8.0)) return;
     m.style.opacity = on ? clamp((t - a) / .12) : 0; m.style.transform = `translateY(${(1 - k) * 60}px)`; }); });
 
 // S1: she introduces herself: her photo, then her words, big and kinetic (white key words on grey)
-const PHO = $('div', 'abs', ST, 'left:330px;top:300px;width:420px;height:420px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 8px #0A0A0A,0 0 0 14px #C4321F'); img(PHO, IMG.meS, 'width:100%;height:100%;object-fit:cover;object-position:50% 40%');
+const PHO = $('div', 'abs', ST, 'left:330px;top:300px;width:420px;height:420px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 8px #0A0A0A,0 0 0 14px #C4321F'); PHO.innerHTML = `<div style="width:100%;height:100%;display:grid;place-items:center;background:#C4321F;color:#fff;font-weight:700;font-size:220px">م</div>`;   // no photo of her: her initial
 const NM = $('div', 'chip', ST, 'left:50%;top:740px;background:#C4321F;font-size:30px;font-weight:700', 'مريم');
 U.push(t => { if (vis(PHO, t < 3.9)) apply(PHO, pose(t, { at: .0, dy: 20, s0: .9, follow: .015, out: 3.36 })); if (vis(NM, t < 3.9)) apply(NM, pose(t, { at: .25, dy: 12, out: 3.36 }), 'translateX(-50%)'); });
 const Q = MO.phraseLine(ST, PH.quote, { y: 1080, size: 104, color: '#9a9ca1', wrap: true, lines: 4, center: true }); Q.ws.forEach(w => { if (w.f === 'k') w.i.style.color = '#F6F3F2'; }); KEYBK(Q);
@@ -59,7 +59,7 @@ const REAL = $('div', 'shot', ST, 'left:110px;width:860px;top:640px;height:483px
 U.push(t => { if (!vis(REAL, t > 3.4 && t < 6.8)) return; apply(REAL, pose(t, { at: 3.74, dy: 60, s0: .9, follow: .015, out: 6.34, exitDy: -60 })); });
 
 // ---------- October: full-colour posters (each over its own blurred light) ----------
-const PST = [IMG.p1, IMG.p2, IMG.p3, IMG.p4, IMG.p5, IMG.me].map(s => { const f = $('div', 'full', ST); img(f, s, '', 'bg'); const g = $('div', 'fg', f); img(g, s, s === IMG.me ? 'object-position:50% 35%' : '', ''); $('div', 'shade', f); return { f, g }; });
+const PST = [IMG.p1, IMG.p2, IMG.p3, IMG.p4, IMG.p5, IMG.p4].map(s => { const f = $('div', 'full', ST); img(f, s, '', 'bg'); const g = $('div', 'fg', f); img(g, s, s === IMG.me ? 'object-position:50% 35%' : '', ''); $('div', 'shade', f); return { f, g }; });
 const TAG = $('div', 'chip', ST, 'left:50%;top:1238px;z-index:5;transform:translateX(-50%)', 'مشروع تدريبي · Rasasi');
 // which poster is on screen when: «ده» hard cut, then a flip-book on the VO words, the reward on p4
 const CUTS = [[7.92, 0], [8.78, 1], [9.54, 2], [10.20, 3], [10.62, 4], [11.06, 0], [11.68, 1], [12.16, -1], [15.88, 5], [18.38, -1]];   // «دي قصة نجاح»: her own photo
