@@ -31,7 +31,10 @@ for r in E['tl']:
         inputs += ['-ss', str(r['i']), '-t', str(d), '-i', os.path.join(RAW, r['src'] + '.mp4')]; kv = k; k += 1
         if use_sep: inputs += ['-ss', str(r['i']), '-t', str(d), '-i', voc[r['src']]]; ka = k; k += 1
         else: ka = kv
-        fv.append(f"[{kv}:v]setpts=PTS-STARTPTS,scale={W}:{H}:flags=lanczos,crop=1080:1920:{x}:{y},setsar=1,fps={FPS},trim=duration={d},format=yuv420p[v{n}]")
+        # a slow push inside each clip (in on one, out on the next: ≤1.05×), never a step inside a shot
+        NF = max(1, round(d * FPS)); z0, z1 = (1.0, 1.05) if (ci - 1) % 2 == 0 else (1.05, 1.0)
+        fv.append(f"[{kv}:v]setpts=PTS-STARTPTS,scale=1080:1920:flags=lanczos,setsar=1,fps={FPS},trim=duration={d},"
+                  f"zoompan=z='{z0}+({z1 - z0:.3f})*on/{NF}':x='iw/2-(iw/zoom/2)':y='ih*0.36-(ih/zoom*0.36)':d=1:s=1080x1920:fps={FPS},format=yuv420p[v{n}]")
         fa.append(f"[{ka}:a]asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo,atrim=duration={d},apad=whole_dur={d},afade=t=in:d=0.015,afade=t=out:st={max(0, d - .03):.3f}:d=0.03[a{n}]")
     else:
         fv.append(f"color=c=0x0A0A0A:s=1080x1920:r={FPS}:d={d},setsar=1,format=yuv420p[v{n}]")
@@ -51,8 +54,8 @@ for r in E['tl']:
     if r['kind'] == 'card': S += [sfx('reveal', r['t0'] + .02), sfx('tick', r['t0'] + .14, -4)]
     if r['kind'] == 'outro': S += [sfx('outro', r['t0'] + .15), sfx('outro_low', r['t0'] + .13)]
 mix = dict(dur=DUR, vo=dict(file=os.path.join(B, 'dialogue_n.wav'), at=0, gain=0),
-           music=dict(file=os.path.join(ROOT, 'raw', 'mariam', 'Funky_Fusion.mp3'), at=0, gain=-22, duck=-4, duck_smooth=.6, fade=1.4,
-                      af='equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5'), sfx=S)
+           sfx=S)   # no music bed (client: «شيل المزيكا اللي ضيفناها»)
+
 json.dump(mix, open(os.path.join(HERE, 'mix.json'), 'w'), indent=1)
 run('python3', os.path.join(ROOT, 'motion', 'engine', 'mix.py'), os.path.join(HERE, 'mix.json'), os.path.join(B, 'mix.wav'))
 

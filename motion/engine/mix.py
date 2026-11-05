@@ -25,7 +25,9 @@ def place(dst, x, at):
 
 
 V = cfg['vo']; vo = np.zeros((N, 2), np.float32); place(vo, load(V['file']) * db(V.get('gain', 0)), V.get('at', 0))
-M = cfg['music']; mus = np.zeros((N, 2), np.float32); place(mus, load(M['file'], af=M.get('af')), M.get('at', 0))
+M = cfg.get('music'); mus = np.zeros((N, 2), np.float32)   # "music" is optional (e.g. a reel the client wants without a bed)
+if M: place(mus, load(M['file'], af=M.get('af')), M.get('at', 0))
+else: M = {'gain': -120}
 # gentle duck that follows the voice
 env = np.abs(vo[:, 0]); w = int(.05 * SR); env = np.convolve(env, np.ones(w) / w, 'same')
 talk = (env > db(-42)).astype(np.float32); k = int(M.get('duck_smooth', .6) * SR); talk = np.convolve(talk, np.ones(k) / k, 'same')
