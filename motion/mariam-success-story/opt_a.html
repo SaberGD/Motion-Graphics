@@ -28,7 +28,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#F6F3F2}
 <script src="../engine/kit.js"></script><script src="story.js"></script><script src="common.js"></script>
 <script>
 const { K, ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, settle, icon } = SG;
-const { IMG, PH, phrase, img, env } = MO; const DUR = MS.DUR, END = 24.12;
+const { IMG, PH, phrase, img, env } = MO; const A2 = 'assets/'; const DUR = MS.DUR, END = 24.12;
 const ST = document.getElementById('stage'), U = [];
 const vis = (el, on) => { el.style.display = on ? '' : 'none'; return on; };
 
@@ -38,14 +38,16 @@ const plate = $('div', 'abs', ST, 'left:400px;top:196px;width:280px;height:70px;
 img(plate, MO.LOGO, 'position:static;width:236px', '');
 const lab = $('div', 'abs lat', ST, 'right:150px;top:1506px;font-size:32px;color:#C4321F;direction:ltr', 'SABER GROUP ACADEMY');
 const web = $('div', 'abs', ST, 'left:86px;top:1506px;font-size:30px;font-weight:500;line-height:40px;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');   // the site link, bottom-left, on the same line as the label
-U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END))); plate.style.opacity = lab.style.opacity = web.style.opacity = o; });
+U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END))); lab.style.opacity = web.style.opacity = o;
+  plate.style.opacity = o * (1 - env(t, 18.2, 23.9, .3, .3));   // the post's own header carries the page's wordmark during the CTA: no double logo
+});
 
 // ---------- captions (bottom zone): the VO's words, one orange keyword per line ----------
 const CAP = (k, y, o = {}) => phrase(U, ST, k, Object.assign({ y, size: 72, color: K.ink, key: K.red, center: true }, o));
 CAP('first', 1400); CAP('after', 1400, { size: 84 }); CAP('work', 1400, { size: 110 });
 CAP('camp', 1350, { out: 12.04 }); CAP('msg', 1450, { out: 12.04, size: 64 });
-const MAG = CAP('magic', 1350, { out: 15.76 }); CAP('train', 1450, { out: 15.76, size: 64 });
-CAP('story', 1400, { size: 80 }); CAP('turn', 1350, { out: 20.94 }); CAP('start', 1450, { out: 20.94 }); CAP('cmt', 1400, { size: 60 });
+const MAG = CAP('magic', 1350, { out: 15.76 }); CAP('train', 1450, { out: 15.62, size: 64 });
+const STORY = CAP('story', 1400, { size: 80 }); CAP('turn', 1350, { out: 20.94 }); CAP('start', 1450, { out: 20.94 }); CAP('cmt', 1400, { size: 60 });
 // «سحر» is struck through (it is not magic)
 (() => { const w = MAG.ws.find(x => x.f === 's'); const s = $('span', 'st', w.m); w.i.style.color = K.ink;
   U.push(t => { const k = ease(lin(t, 12.80, 13.10)); s.style.transform = `scaleX(${k})`; w.i.style.color = k > .5 ? '#9a9ca1' : K.ink; }); })();
@@ -63,13 +65,13 @@ $('div', 'abs', BUB, 'right:40px;top:26px;font-size:30px;font-weight:700;color:#
 const QL = MO.phraseLine(BUB, PH.quote, { y: 215, size: 54, color: K.ink, key: K.red, wrap: true, lines: 3, maxW: 800, center: true, css: 'left:40px;right:40px;' });
 // S2: the real message (screenshot) takes the bubble's place: proof
 const REAL = $('div', 'shot', FEED, 'left:24px;right:24px;top:300px'); img(REAL, IMG.quote, '', '');
-// the journey: one of her designs, an instructor's feedback, the follow-up thread (real screenshots)
-const EX = [[IMG.lip, 830], [IMG.fbY, 1405], [IMG.fbF, 1963]].map(([s, y], i) => { const d = $('div', 'shot', FEED, `left:${i % 2 ? 70 : 24}px;right:${i % 2 ? 24 : 70}px;top:${y}px`); img(d, s, '', ''); return d; });
-const P3 = pill(2700, '20 أكتوبر');
-const POSTB = $('div', 'shot', FEED, 'left:220px;width:470px;top:2780px;border-radius:26px'); img(POSTB, IMG.p1, '', '');
+// the journey: more instructors' feedback on her work (real screenshots; the process cards later use different ones)
+const EX = [[A2 + 'fb_yasmin2.png', 830], [IMG.fbS, 1360], [IMG.fb, 1720]].map(([s, y], i) => { const d = $('div', 'shot', FEED, `left:${i % 2 ? 70 : 24}px;right:${i % 2 ? 24 : 70}px;top:${y}px`); img(d, s, '', ''); return d; });
+const P3 = pill(2160, '20 أكتوبر');
+const POSTB = $('div', 'shot', FEED, 'left:220px;width:470px;top:2240px;border-radius:26px'); img(POSTB, IMG.p1, '', '');
 U.push(t => {
   if (!vis(VIEW, t < 8.4)) return;
-  const sc = inOut(lin(t, 6.30, 8.05)); FEED.style.transform = `translateY(${lerp(150, -2700, sc)}px)`;
+  const sc = inOut(lin(t, 6.30, 8.05)); FEED.style.transform = `translateY(${lerp(150, -2160, sc)}px)`;
   VIEW.style.opacity = 1 - easeIn(lin(t, 8.05, 8.35));
   apply(P1, pose(t, { at: .0, dy: 10 }), 'translateX(-50%)');
   apply(BUB, pose(t, { at: .02, dy: 28, s0: .94, squash: .02 })); QL.ws.forEach(w => SG.maskRise(w.i, t, w.at));
@@ -82,7 +84,7 @@ U.push(t => {
 
 // ---------- S4: «ده شغلها!» the poster opens out of the chat ----------
 const BIG = $('div', 'shot', ST, 'left:156px;top:300px;width:768px;height:960px;border-radius:30px'); img(BIG, IMG.p1, 'width:100%;height:100%;object-fit:cover', '');
-const TAG = $('div', 'chip', ST, 'left:50%;top:1262px', 'مشروع تدريبي · Rasasi');
+const TAG = $('div', 'chip', ST, 'left:50%;top:1274px', 'مشروع تدريبي · Rasasi');
 // ---------- S5: the campaign album (5 designs), then each one's message is spotlit ----------
 const TILES = [[IMG.p1, 86, 300, 446, 557], [IMG.p2, 548, 300, 446, 557], [IMG.p3, 86, 873, 290, 362], [IMG.p4, 395, 873, 290, 362], [IMG.p5, 704, 873, 290, 362]]
   .map(([s, x, y, w, h], i) => { const d = $('div', 'shot', ST, `left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:22px`); img(d, s, 'width:100%;height:100%;object-fit:cover', '');
@@ -101,10 +103,10 @@ U.push(t => {
 });
 
 // ---------- S7: تمرين / فيدباك / متابعة يومية: three cards, each lands on its word ----------
-const ROWS = [[13.34, 'pen', IMG.lip], [13.90, 'chat', IMG.fbY], [14.68, 'cal', null]].map(([at, ic, src], i) => {
+const ROWS = [[13.34, 'pen', IMG.lip], [13.90, 'chat', IMG.fbY], [14.68, 'cal', IMG.fbF]].map(([at, ic, src], i) => {
   const c = $('div', 'card', ST, `left:120px;right:120px;top:${330 + i * 320}px;height:280px`);
   const ib = $('div', 'abs', c, 'right:34px;top:84px;width:112px;height:112px;border-radius:28px;background:#C4321F;display:grid;place-items:center', icon(ic, 60, '#fff', 2.2));
-  if (src) { const s = $('div', 'shot', c, 'left:30px;top:30px;width:560px;height:220px;border-radius:18px;box-shadow:none'); img(s, src, 'width:100%;height:100%;object-fit:cover;object-position:50% 20%', ''); }
+  if (src) { const s = $('div', 'shot', c, 'left:30px;top:30px;width:634px;height:220px;border-radius:18px;box-shadow:none;background:#7fb0dc'); img(s, src, 'width:100%;height:100%;object-fit:cover;object-position:50% ' + (i === 0 ? '30%' : '0%'), ''); }
   else { const g = $('div', 'abs', c, 'left:30px;top:66px;width:600px;height:150px;display:flex;gap:14px;direction:rtl');
     c.days = [...Array(7)].map(() => $('div', '', g, 'flex:1;border-radius:16px;background:#EFEBEA;display:grid;place-items:center')); }
   return { c, at, i };
@@ -118,26 +120,14 @@ const HERO = $('div', 'shot', ST, 'left:226px;top:330px;width:628px;height:785px
 const GIFT = $('div', 'abs', ST, 'left:700px;top:1010px;width:190px;height:190px;border-radius:50%;background:#C4321F;display:grid;place-items:center;box-shadow:0 14px 40px rgba(196,50,31,.35)', icon('gift', 104, '#fff', 1.8));
 const CF = [...Array(14)].map((_, i) => $('div', 'abs', ST, `left:0;top:0;width:14px;height:30px;border-radius:4px;background:${['#C4321F', '#FF8A1F', '#151515'][i % 3]}`));
 U.push(t => {
-  if (vis(HERO, t > 15.7 && t < 18.7)) { apply(HERO, pose(t, { at: 15.9, dy: 30, s0: .94, follow: .012, out: 18.3 })); }
+  if (vis(HERO, t > 15.7 && t < 18.7)) { apply(HERO, pose(t, { at: 15.9, dy: 30, s0: .94, follow: .012, out: 18.25, exitDy: -30 })); }
   if (vis(GIFT, t > 17.6 && t < 18.7)) { apply(GIFT, pose(t, { at: 17.78, dy: 0, s0: .4, dur: .5, follow: .03, out: 18.3 })); }
   const s = t - 17.85; CF.forEach((c, i) => { if (!vis(c, s > 0 && s < 1.0)) return; const a = (-160 + i * 11) * Math.PI / 180, v = 640 + (i % 4) * 110;
     c.style.opacity = 1 - lin(s, .6, 1); c.style.transform = `translate(${795 + Math.cos(a) * v * s}px,${1100 + Math.sin(a) * v * s + 1100 * s * s}px) rotate(${i * 40 + s * 500}deg)`; });
 });
 
-// ---------- S9: the CTA: a post with a comment box; the comment goes in and the reply lands ----------
-const POST = $('div', 'card', ST, 'left:150px;right:150px;top:320px;height:930px');
-const ph = $('div', 'shot', POST, 'left:150px;width:480px;top:28px;height:600px;border-radius:22px;box-shadow:0 8px 24px rgba(21,21,21,.12)'); img(ph, IMG.p2, 'width:100%;height:100%;object-fit:cover', '');
-const pp = $('div', 'abs', POST, 'right:30px;top:650px;width:220px;height:56px;background:#151515;border-radius:10px;display:grid;place-items:center'); img(pp, MO.LOGO, 'position:static;width:188px', '');
-const INP = $('div', 'abs', POST, 'left:24px;right:24px;top:740px;height:86px;border-radius:999px;background:#F3EFEE;border:3px solid #E4DFDE;display:flex;align-items:center;justify-content:space-between;padding:0 28px;direction:rtl');
-const dots = $('div', '', INP, 'display:flex;gap:12px'); const DOT = [0, 1, 2].map(() => $('div', '', dots, 'width:16px;height:16px;border-radius:50%;background:#5C5F66'));
-const SEND = $('div', '', INP, 'width:58px;height:58px;border-radius:50%;background:#C4321F;display:grid;place-items:center;transform:scaleX(-1)', icon('arrow', 32, '#fff', 2.6));
-const REP = $('div', 'abs', POST, 'right:24px;top:846px;height:64px;padding:0 26px;border-radius:999px;background:#151515;color:#F6F3F2;display:flex;align-items:center;gap:12px;font-size:28px;font-weight:500;direction:rtl', icon('check', 30, '#FF8A1F', 3) + '<span>Saber Group Academy</span>');
-REP.lastChild.style.direction = 'ltr';
-U.push(t => { if (!vis(POST, t > 18.3 && t < 24.4)) return;
-  apply(POST, pose(t, { at: 18.5, dy: 30, s0: .95, follow: .01, out: 24.0 }));
-  const typing = t > 21.44 && t < 22.5; DOT.forEach((d, i) => d.style.opacity = typing ? .35 + .65 * (Math.sin((t - 21.44) * 9 - i * .9) * .5 + .5) : .3);
-  INP.style.borderColor = t > 21.44 ? '#FF8A1F' : '#E4DFDE'; SEND.style.transform = `scaleX(-1) scale(${1 + .12 * Math.sin(Math.PI * lin(t, 22.4, 22.7))})`;
-  apply(REP, pose(t, { at: 22.64, dy: 16, s0: .9, follow: .02 })); });
+// ---------- S9: the CTA as a Facebook post (shared builder: the academy's Mastery post, a viewer comments, the academy replies) ----------
+MO.fbPost(ST, false, U);
 
 // ---------- END: wordmark plate, «مش مجرد كورس… إحنا عيلة!», heart, hold ≥ 3 s ----------
 (() => { const g = $('div', 'abs', ST, 'inset:0');
@@ -149,6 +139,8 @@ U.push(t => { if (!vis(POST, t > 18.3 && t < 24.4)) return;
     pl.style.opacity = clamp((t - END) / .15); pl.style.transform = `scale(${lerp(.94, 1, k)})`; lg.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`;
     MO.words(L1, t); apply(ht, pose(t, { at: 26.7, dy: 0, s0: .5, follow: .04 })); apply(u, pose(t, { at: 25.2, dy: 12 })); }); })();
 
-window.render = t => U.forEach(f => f(t));
+// the «Free access» reward scene runs on real time; everything else on the remapped timeline (frozen at T0 for D)
+const U2 = MO.reward(ST, false, [STORY.row, HERO, GIFT, ...CF]);
+window.render = t => { const m = MO.map(t); U.forEach(f => f(m)); U2.forEach(f => f(t)); };
 window.ready = MO.ready();
 </script></body></html>

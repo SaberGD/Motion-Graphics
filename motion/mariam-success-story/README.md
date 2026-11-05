@@ -30,3 +30,15 @@ Every Rasasi design is labelled **«مشروع تدريبي · Rasasi»**, becau
 **v2 (client feedback)**
 - **C:** the July background (the exercise screens) is gone. The opening and the month roll sit on the kit colours (charcoal, grid, red wash), and her photo and name open the piece. On «ده تمرين / وفيدباك / ومتابعة يومية» the screens are now her lipstick design, Yasmin's real feedback and the follow-up thread. «دي قصة نجاح» shows her photo.
 - **A:** her photo sits on top of her first message. The chat scroll now goes through her design, the feedback and the follow-up, with no moon or simple exercises. The process cards use the same screens, and «دي قصة نجاح» shows her photo.
+
+**v3 (client feedback)**
+- **New VO line** after «دي قصة نجاح تستحق مكافأة!»: «مريم ليها Free access على كورس الـ Mastery Level… المستوى المتقدم لمصممين الجرافيكس… مبروك يا مريم!». It is spliced into the same take (same voice), with lexicon aliases for Free access and Mastery Level.
+  - The piece is now 36.4 s.
+  - `story.js` keeps the original phrase times; `MO.map(t)` freezes the timeline at T0 for D seconds, and the reward scene (`MO.reward`) runs on real time: «مريم ليها», a FREE ACCESS · MASTERY LEVEL ticket, «مبروك يا مريم!» and confetti.
+- **CTA (all three):** a Facebook post (`MO.fbPost`, light or dark). It shows the academy's Mastery Graphic Level post (text line and poster panel) and never the student's photo. A viewer types «عايز أبدأ قصة نجاحي!» on «سيب كومنت», and the academy replies «هنتواصل معاك». The chrome wordmark hides while the post header shows it, so the logo never appears twice.
+- **A:** the chat scroll and the process cards no longer repeat the same screens, the cards are aligned, and the website link sits bottom-left.
+- **B / C (dark):**
+  - Key-word blocks now travel with their word, so no red blocks are left behind.
+  - Dates appear once each: in C the month word shows only on «بعد تلات شهور بس»; in B the «16 يوليو» and split date chips are gone and the timeline leaves before the split.
+  - C's quote and the real message no longer overlap, and the captions sit clear of the bottom chrome.
+  - B uses the feedback screens, her design and her photo instead of the exercises.

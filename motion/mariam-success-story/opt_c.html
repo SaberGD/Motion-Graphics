@@ -20,7 +20,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
 .corner{position:absolute;width:46px;height:46px;border-color:#C4321F;border-style:solid;z-index:50}
 .full{position:absolute;inset:0;overflow:hidden}
 .bg{position:absolute;left:-10%;top:-10%;width:120%;height:120%;object-fit:cover;filter:blur(46px) brightness(.55) saturate(1.2)}
-.fg{position:absolute;left:110px;top:296px;width:860px;height:1075px;border-radius:26px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+.fg{position:absolute;left:140px;top:296px;width:800px;height:1000px;border-radius:26px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.5)}
 .fg img{width:100%;height:100%;object-fit:cover;display:block}
 .chip{position:absolute;padding:6px 20px;border-radius:999px;background:rgba(10,10,10,.72);color:#F6F3F2;font-size:26px;font-weight:500;white-space:nowrap;direction:rtl}
 .shot{position:absolute;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
@@ -36,7 +36,7 @@ const { K, ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, settle, icon }
 const { IMG, PH, phrase, img, env } = MO; const END = 24.12;
 const ST = document.getElementById('stage'), U = [];
 const vis = (el, on) => { el.style.display = on ? '' : 'none'; return on; };
-const KEYBK = L => L.ws.forEach(w => { if (w.f === 'k') { const b = $('span', 'bk', w.m); U.push(t => { b.style.transform = `scaleX(${ease(lin(t, w.at + .06, w.at + .32))})`; }); } });
+const KEYBK = L => MO.keyBlock(U, L);   // the red block travels with its word: nothing is left behind when the word leaves
 
 // ---------- July → October: on the kit's charcoal (grid + red wash), a big outlined month word rolls to October ----------
 const JUL = $('div', 'full', ST);
@@ -44,23 +44,23 @@ const MW = $('div', 'abs', JUL, 'left:0;right:0;top:300px;height:250px;overflow:
 const MONTHS = ['يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر'].map((m, i) => $('div', 'abs', MW, `left:0;right:0;top:0;text-align:center;font-size:200px;font-weight:700;line-height:250px;color:transparent;-webkit-text-stroke:3px ${i === 3 ? '#FF8A1F' : 'rgba(246,243,242,.55)'}`, m));
 const MSTEP = [6.74, 7.04, 7.56];
 U.push(t => { if (!vis(JUL, t < 8.0)) return;
-  MW.style.opacity = clamp((t - 3.9) / .3); const idx = MSTEP.filter(a => t >= a).length;
-  MONTHS.forEach((m, i) => { const a = i === 0 ? -1 : MSTEP[i - 1], k = i === 0 ? 1 : ease(lin(t, a, a + .3)), e = i < 3 ? ease(lin(t, MSTEP[i], MSTEP[i] + .3)) : 0;
-    m.style.transform = `translateY(${(1 - k) * 250 - e * 250}px)`; m.style.opacity = i <= idx ? 1 : 0; }); });
+  MW.style.opacity = clamp((t - 6.30) / .2) * (1 - easeIn(lin(t, 7.78, 7.92))); const idx = MSTEP.filter(a => t >= a).length;
+  MONTHS.forEach((m, i) => { const a = i === 0 ? 6.30 : MSTEP[i - 1], on = i === idx, k = ease(lin(t, a, a + .26));
+    m.style.opacity = on ? clamp((t - a) / .12) : 0; m.style.transform = `translateY(${(1 - k) * 60}px)`; }); });
 
 // S1: she introduces herself: her photo, then her words, big and kinetic (white key words on grey)
 const PHO = $('div', 'abs', ST, 'left:330px;top:300px;width:420px;height:420px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 8px #0A0A0A,0 0 0 14px #C4321F'); img(PHO, IMG.meS, 'width:100%;height:100%;object-fit:cover;object-position:50% 40%');
 const NM = $('div', 'chip', ST, 'left:50%;top:740px;background:#C4321F;font-size:30px;font-weight:700', 'مريم');
-U.push(t => { if (vis(PHO, t < 3.9)) apply(PHO, pose(t, { at: .0, dy: 20, s0: .9, follow: .015, out: 3.5 })); if (vis(NM, t < 3.9)) apply(NM, pose(t, { at: .25, dy: 12, out: 3.5 }), 'translateX(-50%)'); });
+U.push(t => { if (vis(PHO, t < 3.9)) apply(PHO, pose(t, { at: .0, dy: 20, s0: .9, follow: .015, out: 3.36 })); if (vis(NM, t < 3.9)) apply(NM, pose(t, { at: .25, dy: 12, out: 3.36 }), 'translateX(-50%)'); });
 const Q = MO.phraseLine(ST, PH.quote, { y: 1080, size: 104, color: '#9a9ca1', wrap: true, lines: 4, center: true }); Q.ws.forEach(w => { if (w.f === 'k') w.i.style.color = '#F6F3F2'; }); KEYBK(Q);
-U.push(t => { const v = t < 3.9; Q.row.style.display = v ? 'flex' : 'none'; if (v) MO.words(Q, t, 3.5); });
+U.push(t => { const v = t < 3.9; Q.row.style.display = v ? 'flex' : 'none'; if (v) MO.words(Q, t, 3.36); });
 // S2: the real first message
 const REAL = $('div', 'shot', ST, 'left:110px;width:860px;top:640px;height:483px'); img(REAL, IMG.quote, '', '');
-U.push(t => { if (!vis(REAL, t > 3.4 && t < 6.8)) return; apply(REAL, pose(t, { at: 3.62, dy: 60, s0: .9, follow: .015, out: 6.34, exitDy: -60 })); });
+U.push(t => { if (!vis(REAL, t > 3.4 && t < 6.8)) return; apply(REAL, pose(t, { at: 3.74, dy: 60, s0: .9, follow: .015, out: 6.34, exitDy: -60 })); });
 
 // ---------- October: full-colour posters (each over its own blurred light) ----------
 const PST = [IMG.p1, IMG.p2, IMG.p3, IMG.p4, IMG.p5, IMG.me].map(s => { const f = $('div', 'full', ST); img(f, s, '', 'bg'); const g = $('div', 'fg', f); img(g, s, s === IMG.me ? 'object-position:50% 35%' : '', ''); $('div', 'shade', f); return { f, g }; });
-const TAG = $('div', 'chip', ST, 'left:50%;top:1316px;z-index:5;transform:translateX(-50%)', 'مشروع تدريبي · Rasasi');
+const TAG = $('div', 'chip', ST, 'left:50%;top:1238px;z-index:5;transform:translateX(-50%)', 'مشروع تدريبي · Rasasi');
 // which poster is on screen when: «ده» hard cut, then a flip-book on the VO words, the reward on p4
 const CUTS = [[7.92, 0], [8.78, 1], [9.54, 2], [10.20, 3], [10.62, 4], [11.06, 0], [11.68, 1], [12.16, -1], [15.88, 5], [18.38, -1]];   // «دي قصة نجاح»: her own photo
 U.push(t => { let cur = -1, at = 0; CUTS.forEach(([a, i]) => { if (t >= a) { cur = i; at = a; } });
@@ -70,13 +70,13 @@ U.push(t => { let cur = -1, at = 0; CUTS.forEach(([a, i]) => { if (t >= a) { cur
 
 // ---------- captions over the poster's shade (bottom), kinetic with a red block ----------
 const CAP = (k, y, o = {}) => { const L = phrase(U, ST, k, Object.assign({ y, size: 74, color: K.text, center: true }, o)); KEYBK(L); L.row.style.zIndex = 10; return L; };
-CAP('first', 1400, { size: 66 }); CAP('after', 860, { size: 120, wrap: true });
-CAP('work', 1470, { size: 116 });
-CAP('camp', 1430, { out: 12.04, size: 70 }); CAP('msg', 1515, { out: 12.04, size: 60 });
+CAP('first', 1390, { size: 66 }); CAP('after', 860, { size: 120, wrap: true });
+CAP('work', 1400, { size: 116 });
+CAP('camp', 1355, { out: 12.04, size: 70 }); CAP('msg', 1440, { out: 12.04, size: 60 });
 const MAG = CAP('magic', 860, { out: 13.2, size: 150 });
-CAP('train', 1440, { out: 15.76, size: 66 });
-CAP('story', 1470, { size: 74 });
-CAP('turn', 760, { out: 20.94, size: 130 }); CAP('start', 920, { out: 20.94, size: 110 }); CAP('cmt', 1380, { size: 60 });
+CAP('train', 1400, { out: 15.62, size: 60 });
+const STORY = CAP('story', 1400, { size: 74 });
+CAP('turn', 1355, { out: 20.94, size: 70 }); CAP('start', 1440, { out: 20.94, size: 70 }); CAP('cmt', 1400, { size: 56 });
 (() => { const w = MAG.ws.find(x => x.f === 's'); const s = $('span', 'st', w.m);
   U.push(t => { const k = ease(lin(t, 12.80, 13.05)); s.style.transform = `scaleX(${k})`; w.i.style.color = k > .5 ? '#7d8087' : K.text; }); })();
 
@@ -96,23 +96,15 @@ U.push(t => { if (vis(GIFT, t > 17.6 && t < 18.5)) apply(GIFT, pose(t, { at: 17.
   const s = t - 17.85; CF.forEach((c, i) => { if (!vis(c, s > 0 && s < 1.0)) return; const a = (-165 + i * 10) * Math.PI / 180, v = 700 + (i % 4) * 110;
     c.style.opacity = 1 - lin(s, .6, 1); c.style.transform = `translate(${875 + Math.cos(a) * v * s}px,${1270 + Math.sin(a) * v * s + 1100 * s * s}px) rotate(${i * 40 + s * 500}deg)`; }); });
 
-// ---------- CTA: the big words, then the comment bar and the reply ----------
-const CTA = $('div', 'full', ST);
-const BAR = $('div', 'abs', CTA, 'left:110px;right:110px;top:820px;height:110px;border-radius:999px;background:#151515;border:3px solid #C4321F;display:flex;align-items:center;justify-content:space-between;padding:0 30px;direction:rtl');
-$('div', '', BAR, 'display:flex;align-items:center;gap:18px', icon('chat', 52, '#F6F3F2', 2));
-const dots = $('div', '', BAR, 'display:flex;gap:14px'); const DOT = [0, 1, 2].map(() => $('div', '', dots, 'width:18px;height:18px;border-radius:50%;background:#C7C9CD'));
-$('div', '', BAR, 'width:72px;height:72px;border-radius:50%;background:#C4321F;display:grid;place-items:center;transform:scaleX(-1)', icon('arrow', 36, '#fff', 2.6));
-const REP = $('div', 'abs', CTA, 'right:110px;top:960px;height:72px;padding:0 28px;border-radius:999px;background:#F6F3F2;color:#151515;display:flex;align-items:center;gap:12px;font-size:30px;font-weight:500;direction:rtl', icon('check', 32, '#C4321F', 3) + '<span style="direction:ltr">Saber Group Academy</span>');
-U.push(t => { if (!vis(CTA, t > 20.9 && t < 24.4)) return;
-  apply(BAR, pose(t, { at: 21.06, dy: 30, s0: .92, follow: .015, out: 24.0 }));
-  const ty = t > 21.44 && t < 22.5; DOT.forEach((d, i) => d.style.opacity = ty ? .35 + .65 * (Math.sin((t - 21.44) * 9 - i * .9) * .5 + .5) : .35);
-  apply(REP, pose(t, { at: 22.64, dy: 16, s0: .9, follow: .02, out: 24.0 })); });
+// ---------- CTA: a Facebook post (dark mode): the academy's Mastery post, a viewer comments, the academy replies ----------
+MO.fbPost(ST, true, U);
 
 // ---------- chrome on top of everything: corners, wordmark, label (hidden on the full-colour flip-book's top-left chip area) ----------
 $('div', 'corner', ST, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div', 'corner', ST, 'right:86px;top:1528px;border-width:0 4px 4px 0');
 const lgp = $('div', 'abs', ST, 'left:420px;top:206px;width:240px;height:60px;z-index:50;display:grid;place-items:center'); img(lgp, MO.LOGO, 'position:static;width:220px', '');
 const lab = $('div', 'abs lat', ST, 'right:150px;top:1506px;font-size:32px;color:#C4321F;direction:ltr;z-index:50', 'SABER GROUP ACADEMY');
-U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END))); lgp.style.opacity = o; lab.style.opacity = clamp((t - .2) / .4) * (1 - easeIn(lin(t, 3.3, 3.6))); });   // the label leaves before the low captions start
+const web = $('div', 'abs', ST, 'left:86px;top:1506px;font-size:30px;font-weight:500;line-height:40px;color:#C7C9CD;direction:ltr;z-index:50', 'sabergroupacademy.com');
+U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END))); lab.style.opacity = web.style.opacity = o; lgp.style.opacity = o * (1 - env(t, 18.2, 23.9, .3, .3)); });
 
 // ---------- END ----------
 (() => { const g = $('div', 'full', ST); g.style.background = '#0A0A0A'; g.style.zIndex = 40;
@@ -127,6 +119,8 @@ U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END)
     box.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; box.style.transform = `scale(${lerp(.94, 1, k)})`; box.style.opacity = clamp((t - END) / .1);
     MO.words(L1, t); apply(ht, pose(t, { at: 26.7, dy: 0, s0: .5, follow: .04 })); apply(u, pose(t, { at: 25.2, dy: 12 })); }); })();
 
-window.render = t => U.forEach(f => f(t));
+// the «Free access» reward scene runs on real time; everything else on the remapped timeline (frozen at T0 for D)
+const U2 = MO.reward(ST, true, [STORY.row, PST[5].f, GIFT, ...CF]);
+window.render = t => { const m = MO.map(t); U.forEach(f => f(m)); U2.forEach(f => f(t)); };
 window.ready = MO.ready();
 </script></body></html>
