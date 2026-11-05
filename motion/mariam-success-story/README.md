@@ -8,7 +8,9 @@
 
 **Her work and screens** (`assets/`, cropped from the client's screenshots):
 - the 3 high-res posters, plus the citrus and ice designs from the album screenshot
-- the three July Photoshop exercises
+- the three July Photoshop exercises (now only used in B)
+- her lipstick design, the instructors' real feedback (Yasmin Ashour, Sami Mousa) and the follow-up thread
+- her own photos: a selfie on the intro, the bright photo on «دي قصة نجاح»
 - her real first message, 16 July (the other person's reaction avatar is blurred)
 - the October feedback message
 
@@ -24,3 +26,7 @@ Every Rasasi design is labelled **«مشروع تدريبي · Rasasi»**, becau
 - Make style frames with `./frames.sh <a|b|c> 1.5,8.6,…`.
 - Consent: Mariam approved showing her name, her message and her work (client confirmation, 2026-11-04).
 - The voice is a stock library voice, not Mariam's own.
+
+**v2 (client feedback)**
+- **C:** the July background (the exercise screens) is gone. The opening and the month roll sit on the kit colours (charcoal, grid, red wash), and her photo and name open the piece. On «ده تمرين / وفيدباك / ومتابعة يومية» the screens are now her lipstick design, Yasmin's real feedback and the follow-up thread. «دي قصة نجاح» shows her photo.
+- **A:** her photo sits on top of her first message. The chat scroll now goes through her design, the feedback and the follow-up, with no moon or simple exercises. The process cards use the same screens, and «دي قصة نجاح» shows her photo.

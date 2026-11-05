@@ -5,7 +5,9 @@
   const A = 'assets/', LOGO = '../../brand-kit/assets/logos/saber-group-wordmark.png';
   const IMG = { quote: A + 'chat_jul_first.png', ex1: A + 'ex1_building.jpg', ex2: A + 'ex2_cutout.jpg', ex3: A + 'ex3_moon.jpg',
     p1: A + 'poster_discover.jpg', p2: A + 'poster_mood.jpg', p3: A + 'poster_presence.jpg', p4: A + 'poster_citrus.jpg', p5: A + 'poster_ice.jpg',
-    fb: A + 'chat_oct_feedback.png', grid: A + 'chat_oct_grid.png' };
+    fb: A + 'chat_oct_feedback.png', grid: A + 'chat_oct_grid.png',
+    lip: A + 'work_lipstick.png', fbY: A + 'fb_yasmin.png', fbF: A + 'fb_followup.png', fbS: A + 'fb_sami.png',
+    me: A + 'mariam_photo_bright.jpg', meS: A + 'mariam_photo_selfie.jpg' };   // her own photos: shown with her consent
   const PH = {}; MS.PH.forEach(p => PH[p.k] = p);
   const FITS = [];
   /** a centred phrase line of whole words; each word masked vertically and rising on its spoken time */

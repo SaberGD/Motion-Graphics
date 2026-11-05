@@ -51,28 +51,30 @@ CAP('story', 1400, { size: 80 }); CAP('turn', 1350, { out: 20.94 }); CAP('start'
 
 // ---------- S1–S3: the chat feed (her first message → the exercises → October) ----------
 const VIEW = $('div', 'abs', ST, 'left:86px;right:86px;top:300px;height:1010px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0,#000 70px,#000 calc(100% - 70px),transparent 100%)');
-const FEED = $('div', 'abs', VIEW, 'left:0;right:0;top:0;height:2600px');
+const FEED = $('div', 'abs', VIEW, 'left:0;right:0;top:0;height:3400px');
 const pill = (y, tx) => $('div', 'pill', FEED, `top:${y}px`, tx);
-const P1 = pill(40, '16 يوليو');
+// she introduces herself: her photo on top of her first message
+const PHO = $('div', 'abs', FEED, 'left:354px;top:0;width:200px;height:200px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 6px #fff,0 0 0 11px #C4321F,0 14px 40px rgba(21,21,21,.18)'); img(PHO, IMG.meS, 'width:100%;height:100%;object-fit:cover;object-position:50% 40%');
+const P1 = pill(232, '16 يوليو');
 // S1: her words in a kit bubble, rising on the VO; the name tag on top
-const BUB = $('div', 'card', FEED, 'left:24px;right:24px;top:120px;height:400px;border-radius:34px 34px 34px 8px');
+const BUB = $('div', 'card', FEED, 'left:24px;right:24px;top:310px;height:400px;border-radius:34px 34px 34px 8px');
 $('div', 'abs', BUB, 'right:40px;top:26px;font-size:30px;font-weight:700;color:#C4321F', 'مريم');
 const QL = MO.phraseLine(BUB, PH.quote, { y: 215, size: 54, color: K.ink, key: K.red, wrap: true, lines: 3, maxW: 800, center: true, css: 'left:40px;right:40px;' });
 // S2: the real message (screenshot) takes the bubble's place: proof
-const REAL = $('div', 'shot', FEED, 'left:24px;right:24px;top:110px'); img(REAL, IMG.quote, '', '');
-const P2 = pill(640, '20 يوليو');
-const EX = [IMG.ex1, IMG.ex2, IMG.ex3].map((s, i) => { const d = $('div', 'shot', FEED, `left:${i % 2 ? 70 : 24}px;right:${i % 2 ? 24 : 70}px;top:${720 + i * 470}px`); img(d, s, '', ''); return d; });
-const P3 = pill(2160, '20 أكتوبر');
-const POSTB = $('div', 'shot', FEED, 'left:220px;width:470px;top:2240px;border-radius:26px'); img(POSTB, IMG.p1, '', '');
+const REAL = $('div', 'shot', FEED, 'left:24px;right:24px;top:300px'); img(REAL, IMG.quote, '', '');
+// the journey: one of her designs, an instructor's feedback, the follow-up thread (real screenshots)
+const EX = [[IMG.lip, 830], [IMG.fbY, 1405], [IMG.fbF, 1963]].map(([s, y], i) => { const d = $('div', 'shot', FEED, `left:${i % 2 ? 70 : 24}px;right:${i % 2 ? 24 : 70}px;top:${y}px`); img(d, s, '', ''); return d; });
+const P3 = pill(2700, '20 أكتوبر');
+const POSTB = $('div', 'shot', FEED, 'left:220px;width:470px;top:2780px;border-radius:26px'); img(POSTB, IMG.p1, '', '');
 U.push(t => {
   if (!vis(VIEW, t < 8.4)) return;
-  const sc = inOut(lin(t, 6.30, 8.05)); FEED.style.transform = `translateY(${lerp(170, -2160, sc)}px)`;
+  const sc = inOut(lin(t, 6.30, 8.05)); FEED.style.transform = `translateY(${lerp(150, -2700, sc)}px)`;
   VIEW.style.opacity = 1 - easeIn(lin(t, 8.05, 8.35));
   apply(P1, pose(t, { at: .0, dy: 10 }), 'translateX(-50%)');
   apply(BUB, pose(t, { at: .02, dy: 28, s0: .94, squash: .02 })); QL.ws.forEach(w => SG.maskRise(w.i, t, w.at));
   const sw = ease(lin(t, 3.58, 4.0)); BUB.style.opacity = (+BUB.style.opacity) * (1 - sw);
   apply(REAL, pose(t, { at: 3.62, dy: 0, s0: .96, follow: .012 })); REAL.style.transform += ` rotate(${lerp(-2, 0, ease(lin(t, 3.62, 4.2)))}deg)`;
-  [P2, P3].forEach((p, i) => { p.style.opacity = t > [6.3, 7.2][i] ? 1 : 0; });
+  P3.style.opacity = t > 7.2 ? 1 : 0; apply(PHO, pose(t, { at: 0, dy: 16, s0: .85, follow: .02 }));
   EX.forEach((e, i) => apply(e, pose(t, { at: 6.45 + i * .22, dy: 40, dur: .4 })));
   apply(POSTB, pose(t, { at: 7.45, dy: 40, dur: .4 }));
 });
@@ -98,7 +100,7 @@ U.push(t => {
 });
 
 // ---------- S7: تمرين / فيدباك / متابعة يومية: three cards, each lands on its word ----------
-const ROWS = [[13.34, 'pen', IMG.ex1], [13.90, 'chat', IMG.fb], [14.68, 'cal', null]].map(([at, ic, src], i) => {
+const ROWS = [[13.34, 'pen', IMG.lip], [13.90, 'chat', IMG.fbY], [14.68, 'cal', null]].map(([at, ic, src], i) => {
   const c = $('div', 'card', ST, `left:120px;right:120px;top:${330 + i * 320}px;height:280px`);
   const ib = $('div', 'abs', c, 'right:34px;top:84px;width:112px;height:112px;border-radius:28px;background:#C4321F;display:grid;place-items:center', icon(ic, 60, '#fff', 2.2));
   if (src) { const s = $('div', 'shot', c, 'left:30px;top:30px;width:560px;height:220px;border-radius:18px;box-shadow:none'); img(s, src, 'width:100%;height:100%;object-fit:cover;object-position:50% 20%', ''); }
@@ -111,7 +113,7 @@ U.push(t => ROWS.forEach(R => { if (!vis(R.c, t > R.at - .2 && t < 16.2)) return
   if (R.c.days) R.c.days.forEach((d, j) => { const on = t > R.at + .25 + j * .1; d.style.background = on ? '#FF8A1F' : '#EFEBEA'; d.innerHTML = on ? icon('check', 40, '#fff', 3) : ''; }); }));
 
 // ---------- S8: «قصة نجاح تستحق مكافأة!» the poster + a gift badge + a few confetti ----------
-const HERO = $('div', 'shot', ST, 'left:226px;top:330px;width:628px;height:785px;border-radius:30px'); img(HERO, IMG.p3, 'width:100%;height:100%;object-fit:cover', '');
+const HERO = $('div', 'shot', ST, 'left:226px;top:330px;width:628px;height:785px;border-radius:30px'); img(HERO, IMG.me, 'width:100%;height:100%;object-fit:cover;object-position:50% 35%', '');   // «دي قصة نجاح»: her photo
 const GIFT = $('div', 'abs', ST, 'left:700px;top:1010px;width:190px;height:190px;border-radius:50%;background:#C4321F;display:grid;place-items:center;box-shadow:0 14px 40px rgba(196,50,31,.35)', icon('gift', 104, '#fff', 1.8));
 const CF = [...Array(14)].map((_, i) => $('div', 'abs', ST, `left:0;top:0;width:14px;height:30px;border-radius:4px;background:${['#C4321F', '#FF8A1F', '#151515'][i % 3]}`));
 U.push(t => {

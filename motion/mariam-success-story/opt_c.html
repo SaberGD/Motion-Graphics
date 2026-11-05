@@ -25,9 +25,11 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
 .chip{position:absolute;padding:6px 20px;border-radius:999px;background:rgba(10,10,10,.72);color:#F6F3F2;font-size:26px;font-weight:500;white-space:nowrap;direction:rtl}
 .shot{position:absolute;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
 .shot img{display:block;width:100%;height:100%;object-fit:cover}
+.grid{position:absolute;inset:0;background-size:72px 72px;background-image:linear-gradient(rgba(246,243,242,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(246,243,242,.03) 1px,transparent 1px)}
+.wash{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 50%,transparent 58%,rgba(122,27,18,.28) 100%)}
 .shade{position:absolute;left:0;right:0;bottom:0;height:700px;background:linear-gradient(transparent,rgba(10,10,10,.92) 62%)}
 </style></head>
-<body><div id="stage"></div>
+<body><div id="stage"><div class="grid"></div><div class="wash"></div></div>
 <script src="../engine/kit.js"></script><script src="story.js"></script><script src="common.js"></script>
 <script>
 const { K, ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, settle, icon } = SG;
@@ -36,31 +38,31 @@ const ST = document.getElementById('stage'), U = [];
 const vis = (el, on) => { el.style.display = on ? '' : 'none'; return on; };
 const KEYBK = L => L.ws.forEach(w => { if (w.f === 'k') { const b = $('span', 'bk', w.m); U.push(t => { b.style.transform = `scaleX(${ease(lin(t, w.at + .06, w.at + .32))})`; }); } });
 
-// ---------- July: the desaturated exercises scroll behind, a big outlined month word rolls to October ----------
+// ---------- July → October: on the kit's charcoal (grid + red wash), a big outlined month word rolls to October ----------
 const JUL = $('div', 'full', ST);
-const STRIP = $('div', 'abs', JUL, 'left:-60px;right:-60px;top:0;height:3600px');
-[IMG.ex1, IMG.ex2, IMG.ex3, IMG.ex1, IMG.ex2, IMG.ex3].forEach((s, i) => img(STRIP, s, `left:0;top:${i * 640}px;width:1200px;height:620px;object-fit:cover;filter:grayscale(1) brightness(.45)`));
 const MW = $('div', 'abs', JUL, 'left:0;right:0;top:300px;height:250px;overflow:hidden;clip-path:inset(0)');
 const MONTHS = ['يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر'].map((m, i) => $('div', 'abs', MW, `left:0;right:0;top:0;text-align:center;font-size:200px;font-weight:700;line-height:250px;color:transparent;-webkit-text-stroke:3px ${i === 3 ? '#FF8A1F' : 'rgba(246,243,242,.55)'}`, m));
 const MSTEP = [6.74, 7.04, 7.56];
 U.push(t => { if (!vis(JUL, t < 8.0)) return;
-  STRIP.style.transform = `translateY(${-t * 60 - inOut(lin(t, 6.34, 7.9)) * 900}px)`; STRIP.style.opacity = clamp((t - 3.5) / .5);
   MW.style.opacity = clamp((t - 3.9) / .3); const idx = MSTEP.filter(a => t >= a).length;
   MONTHS.forEach((m, i) => { const a = i === 0 ? -1 : MSTEP[i - 1], k = i === 0 ? 1 : ease(lin(t, a, a + .3)), e = i < 3 ? ease(lin(t, MSTEP[i], MSTEP[i] + .3)) : 0;
     m.style.transform = `translateY(${(1 - k) * 250 - e * 250}px)`; m.style.opacity = i <= idx ? 1 : 0; }); });
 
-// S1: her words, huge and kinetic, white key words on grey
-const Q = MO.phraseLine(ST, PH.quote, { y: 860, size: 128, color: '#9a9ca1', wrap: true, lines: 4, center: true }); Q.ws.forEach(w => { if (w.f === 'k') w.i.style.color = '#F6F3F2'; }); KEYBK(Q);
+// S1: she introduces herself: her photo, then her words, big and kinetic (white key words on grey)
+const PHO = $('div', 'abs', ST, 'left:330px;top:300px;width:420px;height:420px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 8px #0A0A0A,0 0 0 14px #C4321F'); img(PHO, IMG.meS, 'width:100%;height:100%;object-fit:cover;object-position:50% 40%');
+const NM = $('div', 'chip', ST, 'left:50%;top:740px;background:#C4321F;font-size:30px;font-weight:700', 'مريم');
+U.push(t => { if (vis(PHO, t < 3.9)) apply(PHO, pose(t, { at: .0, dy: 20, s0: .9, follow: .015, out: 3.5 })); if (vis(NM, t < 3.9)) apply(NM, pose(t, { at: .25, dy: 12, out: 3.5 }), 'translateX(-50%)'); });
+const Q = MO.phraseLine(ST, PH.quote, { y: 1080, size: 104, color: '#9a9ca1', wrap: true, lines: 4, center: true }); Q.ws.forEach(w => { if (w.f === 'k') w.i.style.color = '#F6F3F2'; }); KEYBK(Q);
 U.push(t => { const v = t < 3.9; Q.row.style.display = v ? 'flex' : 'none'; if (v) MO.words(Q, t, 3.5); });
 // S2: the real first message
 const REAL = $('div', 'shot', ST, 'left:110px;width:860px;top:640px;height:483px'); img(REAL, IMG.quote, '', '');
 U.push(t => { if (!vis(REAL, t > 3.4 && t < 6.8)) return; apply(REAL, pose(t, { at: 3.62, dy: 60, s0: .9, follow: .015, out: 6.34, exitDy: -60 })); });
 
 // ---------- October: full-colour posters (each over its own blurred light) ----------
-const PST = [IMG.p1, IMG.p2, IMG.p3, IMG.p4, IMG.p5].map(s => { const f = $('div', 'full', ST); img(f, s, '', 'bg'); const g = $('div', 'fg', f); img(g, s, '', ''); $('div', 'shade', f); return { f, g }; });
+const PST = [IMG.p1, IMG.p2, IMG.p3, IMG.p4, IMG.p5, IMG.me].map(s => { const f = $('div', 'full', ST); img(f, s, '', 'bg'); const g = $('div', 'fg', f); img(g, s, s === IMG.me ? 'object-position:50% 35%' : '', ''); $('div', 'shade', f); return { f, g }; });
 const TAG = $('div', 'chip', ST, 'left:50%;top:1316px;z-index:5;transform:translateX(-50%)', 'مشروع تدريبي · Rasasi');
 // which poster is on screen when: «ده» hard cut, then a flip-book on the VO words, the reward on p4
-const CUTS = [[7.92, 0], [8.78, 1], [9.54, 2], [10.20, 3], [10.62, 4], [11.06, 0], [11.68, 1], [12.16, -1], [15.88, 3], [18.38, -1]];
+const CUTS = [[7.92, 0], [8.78, 1], [9.54, 2], [10.20, 3], [10.62, 4], [11.06, 0], [11.68, 1], [12.16, -1], [15.88, 5], [18.38, -1]];   // «دي قصة نجاح»: her own photo
 U.push(t => { let cur = -1, at = 0; CUTS.forEach(([a, i]) => { if (t >= a) { cur = i; at = a; } });
   PST.forEach((P, i) => { if (!vis(P.f, i === cur)) return; const k = ease(lin(t, at, at + .4));
     P.g.style.transform = `scale(${lerp(1.045, 1, k)})`; P.f.style.opacity = at === 15.88 ? clamp((t - at) / .2) * (1 - easeIn(lin(t, 18.2, 18.38))) : 1; });
@@ -78,15 +80,14 @@ CAP('turn', 760, { out: 20.94, size: 130 }); CAP('start', 920, { out: 20.94, siz
 (() => { const w = MAG.ws.find(x => x.f === 's'); const s = $('span', 'st', w.m);
   U.push(t => { const k = ease(lin(t, 12.80, 13.05)); s.style.transform = `scaleX(${k})`; w.i.style.color = k > .5 ? '#7d8087' : K.text; }); })();
 
-// ---------- process slams: تمرين (an exercise) / فيدباك (the real feedback message) / متابعة يومية (seven days) ----------
+// ---------- process slams: تمرين (one of her designs) / فيدباك (an instructor's real feedback) / متابعة يومية (the follow-up thread) ----------
 const PR = $('div', 'full', ST);
-const p1 = $('div', 'shot', PR, 'left:110px;top:520px;width:860px;height:484px'); img(p1, IMG.ex2, '', '');
-const p2 = $('div', 'shot', PR, 'left:110px;top:520px;width:860px;height:370px;background:#fff'); img(p2, IMG.fb, 'object-fit:contain', '');
-const p3 = $('div', 'abs', PR, 'left:110px;right:110px;top:600px;height:240px'); const p3i = $('div', 'abs', p3, 'inset:0;display:flex;gap:16px;direction:rtl');
-const DAYS = [...Array(7)].map(() => $('div', '', p3i, 'flex:1;border-radius:22px;background:#1C1C1C;display:grid;place-items:center'));
+const p1 = $('div', 'shot', PR, 'left:110px;top:470px;width:860px;height:577px'); img(p1, IMG.lip, '', '');
+const p2 = $('div', 'shot', PR, 'left:110px;top:470px;width:860px;height:559px;background:#fff'); img(p2, IMG.fbY, 'object-fit:contain', '');
+const p3 = $('div', 'shot', PR, 'left:190px;top:440px;width:700px;height:602px;background:#7fb0dc'); img(p3, IMG.fbF, '', '');
 U.push(t => { if (!vis(PR, t > 13.2 && t < 15.95)) return; PR.style.opacity = 1 - easeIn(lin(t, 15.7, 15.88));
   const s = [13.34, 13.90, 14.68]; [p1, p2, p3].forEach((e, i) => { const on = t >= s[i] && t < (s[i + 1] ?? 16); vis(e, on); if (on) apply(e, pose(t, { at: s[i], dy: 0, s0: 1.08, dur: .3 })); });
-  DAYS.forEach((d, j) => { const on = t > 14.9 + j * .1; d.style.background = on ? '#C4321F' : '#1C1C1C'; d.innerHTML = on ? icon('check', 64, '#fff', 3) : ''; }); });
+ });
 
 // ---------- reward: a gift lands on the poster's corner, a few confetti ----------
 const GIFT = $('div', 'abs', ST, 'left:780px;top:1180px;width:190px;height:190px;border-radius:50%;background:#C4321F;display:grid;place-items:center;z-index:6;box-shadow:0 0 0 14px rgba(196,50,31,.25)', icon('gift', 104, '#fff', 1.8));
