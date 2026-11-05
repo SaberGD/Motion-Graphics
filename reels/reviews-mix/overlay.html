@@ -1,0 +1,80 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Student reviews mix · graphics layer in the language of the Mariam piece (option A, light kit):
+     red kit corners and the wordmark on its charcoal plate over the footage, white name pills (who is talking),
+     light chapter cards (off-white + grid, one word, red underline drawing in) and a light end card.
+     Kit easing / timings (kit.js). The sources' burned-in captions and top titles stay, so nothing is placed over them
+     (captions sit at y≈1450–1575, titles at y≈250–290). -->
+<style>
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo;color:#151515}
+.abs{position:absolute}
+.page{position:absolute;inset:0;background:#F6F3F2;overflow:hidden}
+.grid{position:absolute;inset:0;background-size:72px 72px;background-image:linear-gradient(rgba(21,21,21,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(21,21,21,.035) 1px,transparent 1px)}
+.corner{position:absolute;width:46px;height:46px;border-color:#C4321F;border-style:solid}
+.plate{position:absolute;background:#151515;border-radius:12px;display:grid;place-items:center}
+.pill{position:absolute;right:86px;top:318px;height:66px;padding:0 26px;border-radius:999px;background:#fff;display:flex;align-items:center;gap:12px;direction:rtl;white-space:nowrap;
+      box-shadow:0 14px 40px rgba(0,0,0,.28);font-size:32px;font-weight:700;color:#151515}
+.pill i{width:12px;height:12px;border-radius:50%;background:#C4321F;display:block}
+.pill span{color:#C4321F;font-weight:500;font-size:27px}
+.word{position:absolute;left:0;right:0;top:770px;text-align:center;font-size:170px;font-weight:700;line-height:1.3;direction:rtl}
+.wm{display:inline-block;clip-path:inset(-.22em -.8em -.30em -.8em)}
+.bar{position:absolute;left:380px;right:380px;top:1035px;height:8px;border-radius:4px;background:#C4321F;transform-origin:100% 50%}
+.chip{position:absolute;left:50%;top:680px;transform:translateX(-50%);padding:8px 26px;border-radius:999px;background:#151515;color:#F6F3F2;font-size:30px;font-weight:500;white-space:nowrap;direction:rtl}
+</style></head>
+<body><div id="stage"></div>
+<script src="../../motion/engine/kit.js"></script><script src="edl.js"></script>
+<script>
+const { ease, easeIn, lin, lerp, clamp, pose, apply, $, maskRise, settle } = SG;
+const ST = document.getElementById('stage'), U = [];
+const LOGO = '../../brand-kit/assets/logos/saber-group-wordmark.png';
+const WORD = { work: ['النتيجة', 'من الكورس للشغل'], tip: ['النصيحة', 'للي حابب يبدأ'] };
+const INFO = { r1: ['خلود خالد', '19 سنة'], r2: ['رحمة', '21 سنة'], r3: ['دينا', 'Designer'] };
+const E = window.EDL, END = E.tl.find(r => r.kind === 'outro').t0;
+const plateLogo = (parent, css, w) => { const p = $('div', 'plate', parent, css); const i = $('img', '', p, `width:${w}px`); i.src = LOGO; return p; };
+
+// ---------- chrome over the footage (as in option A): corners + the wordmark plate, top-left, clear of the sources' titles ----------
+const C1 = $('div', 'corner', ST, 'left:86px;top:192px;border-width:4px 0 0 4px'), C2 = $('div', 'corner', ST, 'right:86px;top:1528px;border-width:0 4px 4px 0');
+const PL = plateLogo(ST, 'left:150px;top:196px;width:236px;height:58px', 200);
+U.push(t => { const o = clamp((t - .15) / .35) * (1 - easeIn(lin(t, END - .2, END))); [C1, C2, PL].forEach(e => e.style.opacity = o); });
+
+E.tl.forEach(r => {
+  if (r.kind === 'clip') {
+    // a white name pill per clip: who is talking (slides in from the right edge, kit ease + a tiny settle)
+    const [nm, info] = INFO[r.src]; const p = $('div', 'pill', ST, '', `<i></i>${nm}<span>· ${info}</span>`);
+    U.push(t => { const on = t >= r.t0 && t < r.t1; p.style.display = on ? '' : 'none'; if (!on) return;
+      apply(p, pose(t, { at: r.t0 + .05, dx: 30, dy: 0, dur: .4, follow: .015 })); });
+  } else if (r.kind === 'card') {
+    // light chapter card: off-white page, the chip line, ONE big word rising in its mask, the red underline draws
+    const g = $('div', 'page', ST); $('div', 'grid', g);
+    $('div', 'corner', g, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div', 'corner', g, 'right:86px;top:1528px;border-width:0 4px 4px 0');
+    plateLogo(g, 'left:422px;top:196px;width:236px;height:58px', 200);
+    const [w, sub] = WORD[r.ch]; const chip = $('div', 'chip', g, '', sub);
+    const W = $('div', 'word', g); const m = $('span', 'wm', W); const wi = $('span', '', m, 'display:inline-block;color:#151515', w.replace('ال', '<span style="color:#C4321F">ال</span>'));
+    wi.innerHTML = w; const bar = $('div', 'bar', g);
+    U.push(t => { const on = t >= r.t0 && t < r.t1; g.style.display = on ? '' : 'none'; if (!on) return;
+      g.style.opacity = clamp((t - r.t0) / .08) * (1 - easeIn(lin(t, r.t1 - .08, r.t1)));
+      maskRise(wi, t, r.t0 + .02); apply(chip, pose(t, { at: r.t0 + .1, dy: 14, dur: .3 }), 'translateX(-50%)');
+      bar.style.transform = `scaleX(${ease(lin(t, r.t0 + .2, r.t0 + .6))})`; });
+  } else if (r.kind === 'outro') {
+    // light end card (option A): the wordmark plate, the line, the site, the corners
+    const g = $('div', 'page', ST); $('div', 'grid', g);
+    $('div', 'corner', g, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div', 'corner', g, 'right:86px;top:1528px;border-width:0 4px 4px 0');
+    const pl = $('div', 'plate', g, 'left:190px;top:700px;width:700px;height:164px;border-radius:18px;overflow:hidden;display:block');
+    const lg = $('img', 'abs', pl, 'left:50px;top:40px;width:600px'); lg.src = LOGO;
+    const ln = $('div', 'abs', g, 'left:0;right:0;top:930px;text-align:center;font-size:62px;font-weight:700;direction:rtl', 'قصص نجاح <span style="color:#C4321F">حقيقية</span> من طلابنا');
+    const u = $('div', 'abs', g, 'left:0;right:0;top:1050px;text-align:center;font-size:34px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
+    const lab = $('div', 'abs', g, 'right:150px;top:1506px;font-family:Bebas;font-size:32px;color:#C4321F;direction:ltr', 'SABER GROUP ACADEMY');
+    U.push(t => { const on = t >= r.t0; g.style.display = on ? '' : 'none'; if (!on) return; g.style.opacity = clamp((t - r.t0) / .2);
+      const k = ease(lin(t, r.t0 + .1, r.t0 + .9)); pl.style.transform = `scale(${lerp(.94, 1, k)})`; lg.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`;
+      apply(ln, pose(t, { at: r.t0 + .55, dy: 20 })); apply(u, pose(t, { at: r.t0 + .8, dy: 12 })); apply(lab, pose(t, { at: r.t0 + .9, dy: 10 })); });
+  }
+});
+window.render = t => U.forEach(f => f(t));
+window.ready = Promise.all([document.fonts.load('700 60px Cairo'), document.fonts.load('500 40px Cairo'), document.fonts.load('60px Bebas'),
+  ...[...document.images].map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; }))]).then(() => document.fonts.ready);
+</script></body></html>

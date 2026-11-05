@@ -1,0 +1,102 @@
+{
+  "passed": true,
+  "frames": [
+    {
+      "frame": "01-academy-landscape",
+      "width": 1920,
+      "height": 1080,
+      "images": true,
+      "textOverflow": [],
+      "font": true
+    },
+    {
+      "frame": "02-maro-portrait",
+      "width": 1080,
+      "height": 1920,
+      "images": true,
+      "textOverflow": [],
+      "font": true
+    },
+    {
+      "frame": "03-light-portrait",
+      "width": 1080,
+      "height": 1920,
+      "images": true,
+      "textOverflow": [],
+      "font": true
+    },
+    {
+      "frame": "04-endcard-square",
+      "width": 1080,
+      "height": 1080,
+      "images": true,
+      "textOverflow": [],
+      "font": true
+    }
+  ],
+  "guide": [
+    {
+      "page": 1,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 2,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 3,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 4,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 5,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 6,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 7,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 8,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    },
+    {
+      "page": 9,
+      "height": 794,
+      "scrollHeight": 794,
+      "clashes": []
+    }
+  ],
+  "video": {
+    "width": 1280,
+    "height": 720,
+    "fps": 25,
+    "frames": 200,
+    "seconds": 8,
+    "audio": false,
+    "generatedBy": "Native HTML composition using original supplied assets; not AI generated video or a 3D rig."
+  }
+}

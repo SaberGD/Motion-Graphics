@@ -1,0 +1,76 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- White Friday · Option A · BOLD TYPE: a dark poster. One phrase at a time, very large, hard cuts between phrases;
+     key words get a red block that wipes in behind them; scene counter and progress in Bebas. Kit palette, 25 fps. -->
+<style>
+@font-face{font-family:Cairo;src:url(../../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo;background:#0A0A0A}
+.grid{position:absolute;inset:0;background-size:72px 72px;background-image:linear-gradient(rgba(246,243,242,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(246,243,242,.03) 1px,transparent 1px)}
+.wash{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 50%,transparent 58%,rgba(122,27,18,.26) 100%)}
+.pl{position:absolute;left:86px;right:86px;display:flex;justify-content:center;direction:rtl;gap:0 .24em;font-weight:700;line-height:1.2;white-space:nowrap}
+.wm{display:inline-block;position:relative;clip-path:inset(-.22em -.8em -.30em -.8em)}
+.wi{display:inline-block;position:relative;z-index:1}
+.bk{position:absolute;left:-.12em;right:-.12em;top:.16em;bottom:.04em;background:#C4321F;transform-origin:100% 50%;z-index:0}
+.stl{position:absolute;left:-.05em;right:-.05em;top:52%;height:.09em;background:#C4321F;transform-origin:100% 50%;z-index:2}
+.abs{position:absolute}.lat{font-family:Bebas;font-weight:400}
+.corner{position:absolute;width:46px;height:46px;border-color:#C4321F;border-style:solid}
+</style></head>
+<body><div id="stage"><div class="grid"></div><div class="wash"></div></div>
+<script src="../../engine/kit.js"></script><script src="phrases.js"></script><script src="common.js"></script>
+<script>
+const { ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, settle, maskRise } = SG;
+const { PH, SCENES, TIMES } = WF; const { FLIP, TITLE, END, DUR, BEAT0, BEAT } = TIMES;
+const ST = document.getElementById('stage'), U = [];
+// chrome: corners, the wordmark (white on dark = no plate), scene counter, progress bar, url
+$('div', 'corner', ST, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div', 'corner', ST, 'right:86px;top:1528px;border-width:0 4px 4px 0');
+const lg = $('img', 'abs', ST, 'left:420px;top:212px;width:240px'); lg.src = OPT.LOGO;
+const cnt = $('div', 'abs lat', ST, 'right:86px;top:200px;font-size:44px;color:#F6F3F2;direction:ltr', '');
+const url = $('div', 'abs', ST, 'left:0;right:0;top:1516px;text-align:center;font-size:26px;font-weight:500;color:#7d8087;direction:ltr', 'sabergroupacademy.com');
+const bar = $('div', 'abs', ST, 'left:86px;right:86px;top:1474px;height:4px;background:rgba(246,243,242,.1)'); const barI = $('div', 'abs', bar, 'inset:0;background:#C4321F;transform-origin:100% 50%');
+U.push(t => { const s = SCENES.findIndex(w => t >= w[0] && t < w[1]); cnt.textContent = s >= 0 && t < END ? String(s + 1).padStart(2, '0') + ' / ' + String(SCENES.length).padStart(2, '0') : '';
+  barI.style.transform = `scaleX(${clamp(t / END)})`; const on = t > .3 && t < END - .2 ? 1 : 0; [lg, cnt, url, bar].forEach(e => e.style.opacity = on * (t > TITLE - .1 && t < 15.25 ? .25 : 1)); });
+
+// phrases: one at a time, centred; old phrase leaves upward as the next arrives (hard, quick cut)
+PH.forEach(p => {
+  if (p.type) return;
+  const L = OPT.phraseLine(ST, p, { y: 920, size: 150, color: '#F6F3F2', wrap: p.w.length > 2, center: true });
+  L.ws.forEach(w => { if (w.f === 'k') { w.bk = $('span', 'bk', w.m); } if (w.f === 's') { w.sl = $('span', 'stl', w.m); } });
+  U.push(t => { const vis = t >= p.t0 - .05 && t < p.t1 + .2; L.row.style.display = vis ? 'flex' : 'none'; if (!vis) return;
+    const k = ease(lin(t, p.t0 + .1, p.t0 + .6)); L.row.style.transform = `scale(${lerp(1.06, 1, k)})`;        // slight push-in settle
+    L.ws.forEach(w => { maskRise(w.i, t, w.at, p.t1 - .16);
+      if (w.bk) { const b = ease(lin(t, w.at + .06, w.at + .36)) * (1 - easeIn(lin(t, p.t1 - .16, p.t1 + .1))); w.bk.style.transform = `scaleX(${b})`; }
+      if (w.sl) { const sk = ease(lin(t, p.strike, p.strike + .3)); w.sl.style.transform = `scaleX(${sk})`; w.sl.style.opacity = 1 - easeIn(lin(t, p.t1 - .16, p.t1)); w.i.style.color = sk > .5 ? '#7d8087' : '#F6F3F2'; } }); });
+});
+// logo phrase: «إحنا في» small, then the wordmark reveals (container only)
+(() => { const p = PH.find(q => q.type === 'logo'); const L = OPT.phraseLine(ST, { w: p.lead }, { y: 700, size: 64, color: '#C7C9CD' });
+  const box = $('div', 'abs', ST, 'left:170px;top:820px;width:740px;height:107px;overflow:hidden'); const im = $('img', '', box, 'position:absolute;right:0;top:0;width:740px'); im.src = OPT.LOGO;
+  U.push(t => { const v = t >= p.t0 - .05 && t < p.t1 + .2; L.row.style.display = box.style.display = v ? '' : 'none'; if (!v) return; OPT.words(L, t, p.t1 - .16);
+    const k = ease(lin(t, p.at, p.at + .8)), e = easeIn(lin(t, p.t1 - .16, p.t1 + .1)); box.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; box.style.opacity = (t >= p.at) * (1 - e); }); })();
+// "the switch": on the build bar a white rule draws across the frame (the white is coming)
+(() => { const r = $('div', 'abs', ST, 'left:0;right:0;top:1060px;height:10px;background:#F6F3F2;transform-origin:100% 50%');
+  U.push(t => { const k = ease(lin(t, FLIP, FLIP + .45)), e = easeIn(lin(t, FLIP + .55, FLIP + .8)); r.style.transform = `scaleX(${k})`; r.style.opacity = 1 - e; }); })();
+// TITLE: an inverted white panel slams in on the downbeat (anticipation dip), WHITE FRIDAY / FESTIVAL in Bebas
+(() => { const pn = $('div', 'abs', ST, 'left:86px;top:560px;width:908px;height:760px;background:#F6F3F2;clip-path:polygon(17px 0,100% 0,100% calc(100% - 17px),calc(100% - 17px) 100%,0 100%,0 17px)');
+  const pl = $('div', 'abs', pn, 'left:194px;top:70px;width:520px;height:120px;background:#151515;border-radius:7px;display:grid;place-items:center'); const im = $('img', '', pl, 'width:450px'); im.src = OPT.LOGO;
+  const w1 = $('div', 'abs lat', pn, 'left:0;right:0;top:230px;text-align:center;font-size:200px;line-height:1;color:#151515;direction:ltr', 'WHITE FRIDAY');
+  const w2 = $('div', 'abs lat', pn, 'left:0;right:0;top:450px;text-align:center;font-size:200px;line-height:1;color:#C4321F;direction:ltr', 'FESTIVAL');
+  U.push(t => { const v = t >= TITLE - .2 && t < 15.5; pn.style.display = v ? '' : 'none'; if (!v) return;
+    const k = ease(lin(t, TITLE, TITLE + .5)), e = easeIn(lin(t, 15.25, 15.5)); pn.style.transform = `scale(${lerp(.92, 1, k) * (1 + settle(lin(t, TITLE + .3, TITLE + 1.1), .012)) * (t < TITLE ? 1 - .02 * easeIn(lin(t, TITLE - .14, TITLE)) : 1)})`; pn.style.opacity = clamp((t - TITLE) / .08) * (1 - e);
+    [[w1, 14.00], [w2, 14.78]].forEach(([w, at]) => { const q = ease(lin(t, at, at + .4)); w.style.opacity = clamp((t - at) / .06); w.style.transform = `translateY(${(1 - q) * 40}px) scale(${lerp(1.12, 1, q)})`; });
+    pl.style.opacity = clamp((t - TITLE - .1) / .2); }); })();
+// END card: wordmark large, WHITE FRIDAY FESTIVAL, the script's CTA, the kit URL (hold 3.1 s)
+(() => { const g = $('div', 'abs', ST, 'left:0;right:0;top:0;height:1920px');
+  const im = $('img', 'abs', g, 'left:190px;top:700px;width:700px'); im.src = OPT.LOGO;
+  const t1 = $('div', 'abs lat', g, 'left:0;right:0;top:860px;text-align:center;font-size:120px;color:#F6F3F2;direction:ltr', 'WHITE FRIDAY <span style="color:#C4321F">FESTIVAL</span>');
+  const L = OPT.phraseLine(g, { w: [['استنوا', END + .7], ['البوست', END + .78], ['النهاردة', END + .86, 'k']] }, { y: 1050, size: 64 }); L.ws[2].bk = $('span', 'bk', L.ws[2].m);
+  const u = $('div', 'abs', g, 'left:0;right:0;top:1180px;text-align:center;font-size:38px;font-weight:500;color:#C7C9CD;direction:ltr', 'sabergroupacademy.com');
+  U.push(t => { g.style.display = t >= END - .2 ? '' : 'none'; if (t < END - .2) return; const k = ease(lin(t, END, END + .8));
+    im.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; im.style.transform = `scale(${lerp(.94, 1, k)})`;
+    apply(t1, pose(t, { at: END + .35, dy: 24 })); OPT.words(L, t); L.ws[2].bk.style.transform = `scaleX(${ease(lin(t, END + .95, END + 1.25))})`; apply(u, pose(t, { at: END + 1.0, dy: 12 })); }); })();
+window.render = t => U.forEach(f => f(t));
+window.ready = OPT.ready();
+</script></body></html>

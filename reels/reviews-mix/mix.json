@@ -1,0 +1,34 @@
+{
+ "dur": 41.633,
+ "vo": {
+  "file": "/tmp/claude-0/-home-user-Motion-Graphics/cfcab57f-4778-576c-9172-688cb8894c2c/scratchpad/revbuild/dialogue_n.wav",
+  "at": 0,
+  "gain": 0
+ },
+ "sfx": [
+  {
+   "t": 20.287,
+   "file": "/home/user/Motion-Graphics/reels/reviews-mix/../../reels/library/sfx/maximize_008.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 20.407,
+   "file": "/home/user/Motion-Graphics/reels/reviews-mix/../../reels/library/sfx/tick_004.ogg",
+   "g": -35,
+   "rate": 1.0
+  },
+  {
+   "t": 38.783,
+   "file": "/home/user/Motion-Graphics/reels/reviews-mix/../../reels/library/sfx/confirmation_004.ogg",
+   "g": -29,
+   "rate": 1.0
+  },
+  {
+   "t": 38.763,
+   "file": "/home/user/Motion-Graphics/reels/reviews-mix/../../reels/library/sfx/bong_001.ogg",
+   "g": -32,
+   "rate": 0.8
+  }
+ ]
+}

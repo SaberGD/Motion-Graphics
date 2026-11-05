@@ -1,5 +1,9 @@
 # Motion-Graphics: Reel montage pipeline
 
+> **Two styles.** **SG EDIT** (montage, talking-head reels): [`reels/SYSTEM.md`](reels/SYSTEM.md), start with `reels/new_reel.sh`.
+> **SG MOTION** (designed motion pieces): [`brand-kit/`](brand-kit/README.md).
+> The reference implementation is [`reels/saber7/`](reels/saber7/), and the references are in [`reels/references/`](reels/references/).
+
 `output/montaj1_reel.mp4` is the finished 1080×1920 reel (30 fps, −14 LUFS).
 
 ## Pipeline (`project/`)
@@ -32,3 +36,37 @@ Four reels with the funk bed ("Radio Feelings"): beat 1 from 4:19.6, beat 2 from
 | `reel2_newhook_beat2.mp4` | alternate hook | beat 2 |
 
 `make_timing.py` snaps punch-ins and mid-shot cutaway transitions to the beat grid (cuts in the footage stay put) and adds zoom "hits" where the track lifts. `assemble_music.sh` mixes the untouched voice (gain only) + SFX + music ducked under the voice, master ≈ −14 LUFS.
+
+---
+
+# Reel: الـ Visual Hierarchy (`reels/saber7/`)
+
+Same Saber Group × Mushroom style as *SaberGroup_Reel_v6* (`reels/STYLE.md`), built on the reel engine (`reels/engine/`). The source is 1080×1920 at 30 fps, and the output keeps 1080×1920 at 30 fps. There are two looks:
+
+| Output | Look |
+|---|---|
+| `out/saber7_original_colors.mp4` | footage colours untouched |
+| `out/saber7_graded.mp4` | `GRADE=cine`: soft face-follow light, gentle S-curve, cool highlights / neutral shadows, skin-safe saturation, light vignette |
+
+| File | Role |
+|---|---|
+| `build_spec.py` | writes `spec.json`. Every time is written in **source** seconds, taken from `words.json`, and mapped through the jump cuts. Free visual events snap to the music's beat grid |
+| `render.sh` | builds the audio once, then each look (base plate, graphics, encode) |
+| `words.json` / `face.json` | Whisper large-v3 word timings (with the dropped words re-timed) and the YuNet face track |
+| `brand/` | white Saber Group mark for the corner (cut out of the agency logo), the red agency logo and the Mushroom logo for the outro |
+| `assets/` | burger, hierarchy icon and light leaks from the asset pack; `pdf_cover.jpg` is the real cover of the PDF shown on "سايبلك ملف" |
+| `sfx/` | recorded UI sounds from *Kenney Interface Sounds* (CC0, licence included) |
+
+**Edit:** the dead air at 3.16–3.40 (after the whole "Perfect"), 18.28–18.48, 22.58–22.66 (hidden under the motion scene, which stays up until the voice comes back) and 35.26–35.80 s is cut. Every cut sits after the word has fully ended, including its unvoiced tail. The tail is trimmed so the end card lands on a beat. Cuts are hidden by zoom-blur, a light leak or the cutaways. There are no left/right moves. The camera zooms in and out slowly, never past 1.14× on this 1080p source, with Lanczos scaling and zoom-aware sharpening.
+
+**Music:** *This Funk Groove* (liosound), main mix, played from 0:00 to the end of the video. It follows the voice with a gentle, slow dip of 4 dB (0.6 s smoothing, so it doesn't pump). A static EQ pocket at 1.5 and 3 kHz keeps the voice clearly on top: the voice is about 11 dB above the music overall and about 18.5 dB above it in the 1–4 kHz speech band. The music fades over the last 1.2 s. The tempo is about 153 BPM. Cutaways, the motion scene, cards and leaks snap to beats; the groove drop at 8.37 s gets a small punch-in.
+
+**Voice:** the camera mic is dull: 2–4 kHz sits about 22 dB under 500 Hz–1 kHz. The chain is a de-mud cut at 180/380 Hz, presence at 1.8/3.4/5.5 kHz, an air shelf, light denoise, a de-esser and gentle compression. The master is −14 LUFS.
+
+**SFX:** recorded UI sounds, one per on-screen motion, kept low (peaks about −25 to −33 dBFS before the master). Drops for the ad items, question sounds for the "؟", rising glass notes for the reading order 1→2→3→4, confirmations for ✓, a soft error for ✗, and maximize/minimize for the cutaways. No whooshes.
+
+```bash
+BUILD_ROOT=/tmp/reels_build reels/saber7/render.sh          # both looks
+BUILD_ROOT=/tmp/reels_build reels/saber7/render.sh cine     # graded only
+```
+Source files go in `raw/s7/` (not in git): `saber7.mp4` and `music/liosound_This-Funk-Groove/…_main.wav`.
