@@ -37,7 +37,8 @@ $('div', 'corner', ST, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div',
 const plate = $('div', 'abs', ST, 'left:400px;top:196px;width:280px;height:70px;background:#151515;border-radius:12px;display:grid;place-items:center');
 img(plate, MO.LOGO, 'position:static;width:236px', '');
 const lab = $('div', 'abs lat', ST, 'right:150px;top:1506px;font-size:32px;color:#C4321F;direction:ltr', 'SABER GROUP ACADEMY');
-U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END))); plate.style.opacity = lab.style.opacity = o; });
+const web = $('div', 'abs', ST, 'left:86px;top:1506px;font-size:30px;font-weight:500;line-height:40px;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');   // the site link, bottom-left, on the same line as the label
+U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END))); plate.style.opacity = lab.style.opacity = web.style.opacity = o; });
 
 // ---------- captions (bottom zone): the VO's words, one orange keyword per line ----------
 const CAP = (k, y, o = {}) => phrase(U, ST, k, Object.assign({ y, size: 72, color: K.ink, key: K.red, center: true }, o));
