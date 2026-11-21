@@ -1,0 +1,175 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Saber Group Academy · Student Portal ad (SG MOTION, 1080x1920, 25 fps, ~58 s). Fast, feature by feature:
+     the REAL portal screens (assets/screens/*.png, the portal's own UI rendered with demo data) inside a phone,
+     zooms and pans to the feature the VO names, callout chips with the VO's words, kinetic captions with a red block
+     on one keyword, and the Academy end card. VO: Fatima (ElevenLabs library voice), words in WORDS below. -->
+<style>
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo;background:#0A0A0A;color:#F6F3F2}
+.grid{position:absolute;inset:0;background-size:72px 72px;background-image:linear-gradient(rgba(246,243,242,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(246,243,242,.03) 1px,transparent 1px)}
+.wash{position:absolute;inset:0;background:radial-gradient(ellipse 90% 70% at 50% 45%,transparent 55%,rgba(122,27,18,.3) 100%)}
+.abs{position:absolute}.lat{font-family:Bebas;font-weight:400}
+.corner{position:absolute;width:46px;height:46px;border-color:#C4321F;border-style:solid}
+.pl{position:absolute;left:86px;right:86px;display:flex;justify-content:center;direction:rtl;gap:0 .24em;font-weight:700;line-height:1.25;white-space:nowrap}
+.wm{display:inline-block;position:relative;clip-path:inset(-.22em -.8em -.30em -.8em)}
+.wi{display:inline-block;position:relative}
+.phone{position:absolute;left:290px;top:300px;width:500px;height:1082px;border-radius:62px;background:#050505;box-shadow:0 0 0 3px #2a2a2a,0 0 0 12px #111,0 40px 120px rgba(0,0,0,.7),0 0 160px rgba(196,50,31,.18);overflow:hidden}
+.notch{position:absolute;left:50%;top:14px;width:130px;height:34px;margin-left:-65px;border-radius:20px;background:#000;z-index:5}
+.scr{position:absolute;left:0;top:0;width:100%;transform-origin:50% 0}
+.scr img{display:block;width:100%}
+.ph{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(160deg,#141821,#0b0d12);color:#5C5F66;font-size:30px;font-weight:700;text-align:center;padding:40px;direction:rtl}
+.chip{position:absolute;padding:12px 28px;border-radius:999px;background:#F6F3F2;color:#151515;font-size:36px;font-weight:700;white-space:nowrap;direction:rtl;box-shadow:0 16px 44px rgba(0,0,0,.45);display:flex;align-items:center;gap:12px}
+.chip i{width:14px;height:14px;border-radius:50%;background:#C4321F;display:block}
+.ring{position:absolute;border:5px solid #FF8A1F;border-radius:22px;box-shadow:0 0 0 9999px rgba(0,0,0,.35),0 0 30px rgba(255,138,31,.6);pointer-events:none}
+.tap{position:absolute;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;border:5px solid #fff;background:rgba(255,255,255,.18)}
+.bubble{position:absolute;height:110px;border-radius:30px;background:#1C1C1C;box-shadow:0 14px 40px rgba(0,0,0,.5);display:flex;align-items:center;gap:22px;padding:0 30px;direction:rtl}
+.bubble .av{width:64px;height:64px;border-radius:50%;background:#2a2a2a;flex:none}
+.bubble .ln{height:18px;border-radius:9px;background:#3a3a3a}
+.badge{position:absolute;min-width:70px;height:70px;padding:0 16px;border-radius:35px;background:#C4321F;color:#fff;font-family:Bebas;font-size:48px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(196,50,31,.5)}
+</style></head>
+<body><div id="stage"><div class="grid"></div><div class="wash"></div></div>
+<script src="../engine/kit.js"></script>
+<script>
+const { K, ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, maskRise, settle, icon } = SG;
+const ST = document.getElementById('stage'), U = [];
+const LOGO = '../../brand-kit/assets/logos/saber-group-wordmark.png', SCR = n => `assets/screens/${n}.png`;
+const vis = (el, on) => { el.style.display = on ? '' : 'none'; return on; };
+const END = 50.8, DUR = 58.4;
+
+// ---------- the VO, phrase by phrase: [words with times], the keyword index gets a red block ----------
+const PH = [
+  [[['لسه',0.00],['بتدوّر',.24],['على',.64],['لينك',.82],['المحاضرة',1.12],['في',1.60],['الجروب؟',1.74]], 3],
+  [[['في',2.16],['بوابة',2.32],['طالب',2.78],['صابر',3.26],['جروب…',3.64]], 1, [['كل',3.94],['حاجة',4.36],['في',4.98],['مكان',5.16],['واحد',5.52]], 4],
+  [[['الرئيسية',5.92],['بتقولك',6.70],['محاضرتك',7.24],['الجاية…',8.06]], 2, [['والخطوة',8.56],['اللي',9.30],['عليك',9.46]], 0],
+  [[['كل',9.88],['محاضرة:',10.20],['التسجيل،',10.88],['والتطبيق',11.70],['المطلوب،',12.54]], 1, [['وملاحظات',13.16],['المدرب',13.98]], 1],
+  [[['حضورك',14.52],['بيتسجل',15.18],['بكود…',15.84],['في',16.24],['ثانية',16.62]], 2],
+  [[['تسلّم',17.10],['تطبيقك…',17.70],['وتاخد',18.34],['نقاط',18.98]], 3, [['على',19.32],['كل',19.52],['تاسك',19.86],['وكل',20.40],['تفاعل',20.82]], 2],
+  [[['وفي',21.38],['«تقدمي»:',21.82],['نقاطك،',22.48],['وحضورك،',23.32]], 1, [['ونقاط',24.06],['الضعف',24.78],['اللي',25.24],['تشتغل',25.36],['عليها',25.78]], 1],
+  [[['والمنافسة',26.18],['شغالة…',27.08],['اسأل',27.62],['مارو:',28.16]], 0, [['نقاطي',28.44],['وترتيبي',29.10],['عامل',29.64],['إيه؟',29.94]], 1],
+  [[['مشروع',30.26],['التخرج:',30.78],['المطلوب،',31.38],['والمواعيد،',32.24]], 1, [['والتقييم',33.14],['بالمعايير…',33.84],['وملاحظات',34.54],['على',35.42],['تصميمك',35.62],['نفسه',36.24]], 4],
+  [[['خلّصت؟',36.64],['شهادتك',37.48],['تنزّلها',38.12],['من',38.62],['البورتال',38.76]], 1],
+  [[['إشعار',39.32],['بكل',40.00],['جديد…',40.32]], 0, [['والتليجرام',40.92],['والريكوردات',41.80],['كلها',42.42],['هنا',43.02]], 0],
+  [[['ورشّح',43.28],['صاحبك',44.08],['بكودك…',44.48]], 2, [['ياخد',44.98],['خصم',45.54],['15%',45.88]], 2],
+  [[['مش',46.90],['مجرد',47.38],['كورس…',47.92]], 2, [['دي',48.26],['رحلة',48.76],['متابَعة',49.10],['لحد',49.70],['ما',50.18],['توصل',50.40]], 2],
+];
+const nextT0 = i => i + 1 < PH.length ? PH[i + 1][0][0][1] : END;
+function capLine(words, key, y, size, out) {
+  const row = $('div', 'pl', ST, `top:${y}px;font-size:${size}px;z-index:30`);
+  const ws = words.map(([t, at], j) => { const m = $('span', 'wm', row), i = $('span', 'wi', m, 'z-index:1', t);
+    if (/^[A-Za-z0-9%]+$/.test(t)) { i.style.direction = 'ltr'; i.style.unicodeBidi = 'isolate'; }
+    if (j === key) { const b = $('span', '', i, 'position:absolute;left:-.1em;right:-.1em;top:.2em;bottom:.06em;background:#C4321F;z-index:-1;transform-origin:100% 50%;transform:scaleX(0)'); U.push(t => b.style.transform = `scaleX(${ease(lin(t, at + .06, at + .3))})`); }
+    return { i, at }; });
+  U.push(t => { const v = t >= words[0][1] - .3 && t < out + .4; row.style.display = v ? 'flex' : 'none'; if (v) ws.forEach(w => maskRise(w.i, t, w.at, out)); });
+}
+PH.forEach((p, i) => { const out = nextT0(i) - .1;
+  if (p.length === 2) capLine(p[0], p[1], 1490, 64, out);
+  else { capLine(p[0], p[1], 1440, 60, out); capLine(p[2], p[3], 1525, 60, out); } });
+
+// ---------- chrome ----------
+$('div', 'corner', ST, 'left:86px;top:192px;border-width:4px 0 0 4px;z-index:40'); $('div', 'corner', ST, 'right:86px;top:1528px;border-width:0 4px 4px 0;z-index:40');
+const LG = $('img', 'abs', ST, 'left:420px;top:212px;width:240px;z-index:40'); LG.src = LOGO;
+U.push(t => { LG.style.opacity = clamp((t - .2) / .3) * (1 - easeIn(lin(t, END - .2, END))); });
+
+// ---------- S1: the chaos (group-chat notifications pile up, no text), then a hard cut ----------
+const CH = [...Array(7)].map((_, i) => { const b = $('div', 'bubble', ST, `left:${130 + (i % 2) * 90}px;width:${700 - (i % 3) * 60}px;top:${420 + i * 130}px`);
+  $('div', 'av', b); const col = $('div', '', b, 'flex:1;display:flex;flex-direction:column;gap:14px'); $('div', 'ln', col, `width:${50 + (i * 17) % 40}%;background:#4a4a4a`); $('div', 'ln', col, `width:${70 + (i * 11) % 25}%`);
+  const bd = $('div', 'badge', b, 'position:static;font-size:34px;min-width:56px;height:56px', String(3 + i * 7)); return b; });
+U.push(t => CH.forEach((b, i) => { if (!vis(b, t < 2.2)) return; apply(b, pose(t, { at: .05 + i * .2, dy: 40, s0: .9, dur: .3, follow: .02 }));
+  b.style.transform += ` rotate(${(i % 2 ? 1 : -1) * 1.5}deg)`; }));
+
+// ---------- the phone and its screens ----------
+const PHN = $('div', 'phone', ST); $('div', 'notch', PHN);
+// shot list: [t0, screen file, pan start, pan end (fraction of the image's extra height, 0 = top), zoom start, zoom end, zoom origin y %]
+const SHOTS = [
+  [2.16, '01_login', 0, 0, 1, 1.02, 40],
+  [3.94, '02_home', 0, 0, 1.0, 1.0, 0],
+  [5.92, '02_home', 0, .05, 1.0, 1.18, 18],
+  [9.88, '03_lectures', 0, .1, 1.0, 1.0, 0],
+  [10.88, '03b_lecture', 0, .25, 1.06, 1.06, 20],
+  [14.52, '04_attendance', 0, 0, 1.0, 1.05, 45],
+  [17.10, '03_lectures', 0, 0, 1.12, 1.12, 30],
+  [18.98, '05_progress', 0, 0, 1.0, 1.15, 12],
+  [21.38, '05_progress', 0, .0, 1.0, 1.0, 0],
+  [24.06, '05_progress', .35, .55, 1.0, 1.0, 0],
+  [26.18, '06_maro', 0, .15, 1.0, 1.04, 60],
+  [30.26, '07_project', 0, .2, 1.0, 1.0, 0],
+  [33.14, '07b_project_result', 0, .45, 1.0, 1.0, 0],
+  [36.64, '08_certificate', 0, 0, 1.0, 1.12, 40],
+  [39.32, '09_notifications', 0, 0, 1.0, 1.0, 0],
+  [40.92, '10_help', 0, .15, 1.0, 1.0, 0],
+  [43.28, '11_referral', 0, 0, 1.0, 1.15, 45],
+  // montage: every screen, quick cuts
+  ...['02_home', '03_lectures', '05_progress', '06_maro', '07b_project_result', '08_certificate', '10_help', '11_referral', '03b_lecture', '04_attendance', '07_project'].map((n, i) => [46.90 + i * .35, n, .1, .1, 1.04, 1.0, 30]),
+];
+const LOADED = {};
+const shots = SHOTS.map(([t0, name, p0, p1, z0, z1, oy], i) => {
+  const s = $('div', 'scr', PHN); const im = $('img', '', s); im.src = SCR(name);
+  const ph = $('div', 'ph', s, 'height:1082px;position:relative', `شاشة البورتال<br><span style="font-size:24px">${name}</span>`);   // until the real screen exists
+  im.addEventListener('load', () => ph.remove()); im.addEventListener('error', () => im.remove());
+  return { s, im, t0, t1: (SHOTS[i + 1] || [END])[0], p0, p1, z0, z1, oy };
+});
+U.push(t => {
+  const on = t > 2.0 && t < END + .3; if (!vis(PHN, on)) return;
+  // the phone pops in on the portal line, a small settle; it leaves into the end card
+  const k = ease(lin(t, 2.16, 2.66)); PHN.style.opacity = clamp((t - 2.16) / .12) * (1 - easeIn(lin(t, END - .1, END + .2)));
+  PHN.style.transform = `translateY(${lerp(120, 0, k)}px) scale(${lerp(.86, 1, k) * (1 + settle(lin(t, 2.5, 3.4), .012))})`;
+  shots.forEach(S => { if (!vis(S.s, t >= S.t0 && t < S.t1)) return; const q = inOut(lin(t, S.t0, S.t1));
+    const ih = S.im.isConnected && S.im.naturalHeight ? 500 * S.im.naturalHeight / S.im.naturalWidth : 1082, extra = Math.max(0, ih - 1082);
+    const z = lerp(S.z0, S.z1, q); S.s.style.transformOrigin = `50% ${S.oy}%`;
+    S.s.style.transform = `translateY(${-lerp(S.p0, S.p1, q) * extra}px) scale(${z})`; });
+});
+
+// ---------- callouts: the VO's own words beside the phone, one per feature ----------
+const CALL = [
+  [10.88, 'التسجيل', 'video', 'r', 520], [11.70, 'التطبيق المطلوب', 'pen', 'l', 700], [13.16, 'ملاحظات المدرب', 'chat', 'r', 880],
+  [22.48, 'نقاطك', 'star', 'l', 520], [23.32, 'حضورك', 'check', 'r', 700], [24.06, 'نقاط الضعف', 'target', 'l', 880],
+  [31.38, 'المطلوب', 'book', 'r', 520], [32.24, 'المواعيد', 'cal', 'l', 680], [33.84, 'التقييم بالمعايير', 'check', 'r', 840], [34.54, 'ملاحظات على تصميمك', 'chat', 'l', 1000],
+  [39.32, 'إشعار بكل جديد', 'bell', 'r', 560], [40.92, 'التليجرام', 'chat', 'l', 760], [41.80, 'الريكوردات', 'video', 'r', 960],
+];
+const IC = { video: '<path d="M3 6h12v12H3zM15 10l6-3v10l-6-3z"/>', pen: '<path d="M14.5 4.5l5 5L9 20H4v-5z"/>', chat: '<path d="M20 15a3 3 0 0 1-3 3H9l-5 4V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3z"/>',
+  star: '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8 6.8 19.6l1-5.8L3.5 9.7l5.9-.8z"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+  book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>', cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>', bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21a2 2 0 0 0 4 0"/>' };
+const svgI = (n, s, c) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+CALL.forEach(([at, txt, ic, side, y], i) => {
+  const c = $('div', 'chip', ST, `${side === 'r' ? 'right:86px' : 'left:86px'};top:${y}px;z-index:20`, `<span style="width:52px;height:52px;border-radius:50%;background:#C4321F;display:grid;place-items:center;flex:none">${svgI(ic, 30, '#fff')}</span>${txt}`);
+  const grp = CALL.filter(x => Math.abs(x[0] - at) < 4.5), end = PH.map((p, j) => nextT0(j)).find(n => n > at) - .15;
+  U.push(t => { if (!vis(c, t > at - .1 && t < end + .4)) return; apply(c, pose(t, { at, dx: side === 'r' ? 40 : -40, dy: 0, dur: .35, follow: .02, out: end })); });
+});
+
+// ---------- accents: attendance tick, +points pops, rank badge, tap on download, 15% ----------
+const TICK = $('div', 'abs', ST, 'left:430px;top:1120px;width:220px;height:220px;border-radius:50%;background:#1f9d55;display:grid;place-items:center;z-index:25;box-shadow:0 0 0 16px rgba(31,157,85,.25)', svgI('check', 140, '#fff'));
+U.push(t => { if (vis(TICK, t > 16.5 && t < 17.15)) apply(TICK, pose(t, { at: 16.62, dy: 0, s0: .3, dur: .3, follow: .05, out: 17.0 })); });
+const PTS = [[19.86, '+10', 780, 640], [20.82, '+5', 170, 820]].map(([at, tx, x, y]) => ({ at, e: $('div', 'abs lat', ST, `left:${x}px;top:${y}px;font-size:150px;color:#FF8A1F;z-index:25;text-shadow:0 10px 40px rgba(255,138,31,.5)`, tx) }));
+U.push(t => PTS.forEach(P => { if (!vis(P.e, t > P.at - .05 && t < P.at + 1.1)) return; const k = ease(lin(t, P.at, P.at + .3)); P.e.style.opacity = clamp((t - P.at) / .08) * (1 - lin(t, P.at + .7, P.at + 1.05)); P.e.style.transform = `translateY(${-90 * ease(lin(t, P.at, P.at + 1.05))}px) scale(${lerp(.5, 1, k)})`; }));
+const RANK = $('div', 'abs', ST, 'left:96px;top:560px;width:220px;height:220px;border-radius:40px;background:#F6F3F2;color:#151515;display:grid;place-items:center;z-index:25;box-shadow:0 20px 60px rgba(0,0,0,.5)', '<div style="text-align:center;line-height:1"><div style="font-family:Bebas;font-size:120px;color:#C4321F">#2</div><div style="font-size:30px;font-weight:700;margin-top:6px">في جروبك</div></div>');
+U.push(t => { if (vis(RANK, t > 29.0 && t < 30.6)) apply(RANK, pose(t, { at: 29.10, dy: 30, s0: .6, dur: .35, follow: .03, out: 30.15 })); });
+const TAP = $('div', 'tap', ST, 'left:540px;top:1080px;z-index:25');
+U.push(t => { if (!vis(TAP, t > 38.0 && t < 38.7)) return; const k = lin(t, 38.12, 38.6); TAP.style.opacity = 1 - k; TAP.style.transform = `scale(${lerp(.6, 1.6, ease(k))})`; });
+const PCT = $('div', 'abs lat', ST, 'left:0;right:0;top:420px;text-align:center;font-size:300px;line-height:1;color:#FF8A1F;z-index:25;text-shadow:0 20px 70px rgba(0,0,0,.6);direction:ltr', '15%');
+U.push(t => { if (vis(PCT, t > 45.8 && t < 46.95)) { const k = ease(lin(t, 45.88, 46.2)); PCT.style.opacity = clamp((t - 45.88) / .06) * (1 - easeIn(lin(t, 46.6, 46.9))); PCT.style.transform = `scale(${lerp(1.4, 1, k)})`; } });
+
+// ---------- END card (Academy): wordmark, the CTA line, comment icon, the site, hold ----------
+(() => { const g = $('div', 'abs', ST, 'inset:0;z-index:50;background:#0A0A0A'); $('div', 'grid', g); $('div', 'wash', g);
+  $('div', 'corner', g, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div', 'corner', g, 'right:86px;top:1528px;border-width:0 4px 4px 0');
+  const box = $('div', 'abs', g, 'left:190px;top:640px;width:700px;height:101px;overflow:hidden'); const im = $('img', 'abs', box, 'right:0;top:0;width:700px'); im.src = LOGO;
+  const L1 = $('div', 'abs', g, 'left:0;right:0;top:820px;text-align:center;font-size:64px;font-weight:700;direction:rtl', 'ابدأ رحلتك مع <span style="color:#FF8A1F">بوابة الطالب</span>');
+  const CI = $('div', 'abs', g, 'left:470px;top:960px;width:140px;height:140px;border-radius:38px;background:#C4321F;display:grid;place-items:center;box-shadow:0 20px 60px rgba(196,50,31,.4)', svgI('chat', 76, '#fff'));
+  const L2 = $('div', 'abs', g, 'left:0;right:0;top:1140px;text-align:center;font-size:52px;font-weight:700;direction:rtl', 'سيب كومنت… <span style="color:#FF8A1F">وهنتواصل معاك</span>');
+  const u = $('div', 'abs', g, 'left:0;right:0;top:1250px;text-align:center;font-size:34px;font-weight:500;color:#C7C9CD;direction:ltr', 'sabergroupacademy.com');
+  U.push(t => { if (!vis(g, t > END - .05)) return; g.style.opacity = clamp((t - END + .05) / .2);
+    const k = ease(lin(t, END, END + .8)); box.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`; box.style.transform = `scale(${lerp(.94, 1, k)})`;
+    apply(L1, pose(t, { at: END + .4, dy: 20 })); apply(CI, pose(t, { at: 52.84, dy: 0, s0: .5, dur: .4, follow: .03 })); apply(L2, pose(t, { at: 53.0, dy: 18 })); apply(u, pose(t, { at: 53.6, dy: 12 })); }); })();
+
+window.render = t => U.forEach(f => f(t));
+window.ready = Promise.all([document.fonts.load('700 60px Cairo'), document.fonts.load('500 40px Cairo'), document.fonts.load('60px Bebas'),
+  ...[...document.images].map(i => i.complete ? 1 : new Promise(r => { i.addEventListener('load', r); i.addEventListener('error', r); }))]).then(() => document.fonts.ready).then(() => {
+  // fit every caption line inside the safe width (908 px), never above its design size
+  document.querySelectorAll('.pl').forEach(row => { const d = row.style.display; row.style.display = 'flex'; let fs = parseFloat(row.style.fontSize);
+    while (row.scrollWidth > 908 && fs > 34) { fs -= 2; row.style.fontSize = fs + 'px'; } row.style.display = d; });
+});
+</script></body></html>
