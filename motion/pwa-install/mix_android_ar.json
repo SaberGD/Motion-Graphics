@@ -1,5 +1,5 @@
 {
- "dur": 27.93,
+ "dur": 23.49,
  "vo": {
   "file": "vo/pwa_vo_android_ar.flac",
   "at": 0,
@@ -22,103 +22,91 @@
    "rate": 1.0
   },
   {
-   "t": 0.8,
-   "file": "../../reels/library/sfx/question_001.ogg",
-   "g": -31,
-   "rate": 1.0
-  },
-  {
-   "t": 4.93,
-   "file": "../../reels/library/sfx/maximize_006.ogg",
-   "g": -32,
-   "rate": 1.0
-  },
-  {
-   "t": 7.21,
+   "t": 2.77,
    "file": "../../reels/library/sfx/tick_004.ogg",
    "g": -34,
    "rate": 1.0
   },
   {
-   "t": 9.46,
+   "t": 5.02,
    "file": "../../reels/library/sfx/open_004.ogg",
    "g": -34,
    "rate": 1.0
   },
   {
-   "t": 10.44,
+   "t": 6.0,
    "file": "../../reels/library/sfx/tick_004.ogg",
    "g": -34,
    "rate": 1.0
   },
   {
-   "t": 11.54,
+   "t": 7.1,
    "file": "../../reels/library/sfx/open_004.ogg",
    "g": -34,
    "rate": 1.0
   },
   {
-   "t": 12.44,
+   "t": 8.0,
    "file": "../../reels/library/sfx/select_004.ogg",
    "g": -32,
    "rate": 1.0
   },
   {
-   "t": 13.56,
+   "t": 9.12,
    "file": "../../reels/library/sfx/drop_002.ogg",
    "g": -28,
    "rate": 1.0
   },
   {
-   "t": 16.605,
+   "t": 12.165,
    "file": "../../reels/library/sfx/tick_004.ogg",
    "g": -34,
    "rate": 1.0
   },
   {
-   "t": 16.855,
+   "t": 12.415,
    "file": "../../reels/library/sfx/maximize_008.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 20.46,
+   "t": 16.02,
    "file": "../../reels/library/sfx/drop_003.ogg",
    "g": -29,
    "rate": 1.0
   },
   {
-   "t": 24.78,
+   "t": 20.34,
    "file": "../../reels/library/sfx/confirmation_004.ogg",
    "g": -30,
    "rate": 1.0
   },
   {
-   "t": 24.76,
+   "t": 20.32,
    "file": "../../reels/library/sfx/bong_001.ogg",
    "g": -33,
    "rate": 0.8
   },
   {
-   "t": 5.28,
+   "t": 1.0,
    "file": "../../reels/library/sfx/drop_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 6.96,
+   "t": 2.52,
    "file": "../../reels/library/sfx/drop_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 9.74,
+   "t": 5.3,
    "file": "../../reels/library/sfx/drop_004.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 11.84,
+   "t": 7.4,
    "file": "../../reels/library/sfx/drop_004.ogg",
    "g": -31,
    "rate": 1.0

@@ -20,3 +20,8 @@
 - **VO:** Fatima (the ElevenLabs library voice, as in the Mariam and portal pieces), one take per variant, seed 21. The English UI terms are spoken as the student sees them (Share / Add to Home Screen / Install app). Texts are in `vo/spoken_<variant>.txt`, timings in `timing.js`.
 - **Sound:** `build_mix.py <variant> <dur>`. Funky Fusion plays from its start, ducked, with a 1.5k/3k pocket, plus one UI SFX per motion. Master: −14 LUFS.
 - **Render:** `./build.sh [variants…]` → `out/pwa_install_<variant>_9x16.mp4`.
+
+## Arabic variants start on the steps (client)
+`ios_ar` and `android_ar` have no intro line: the phone comes in on the browser and the VO starts at «افتح البوابة من…».
+`vo/pwa_vo_<v>.flac` is the full VO trimmed at the quiet frame before line 2 (ios_ar 5.27 s, android_ar 5.13 s) with 0.69 s of lead;
+the untrimmed VO stays in `vo/pwa_vo_<v>_withintro.flac`. `timing.js` marks them `"intro": false`.

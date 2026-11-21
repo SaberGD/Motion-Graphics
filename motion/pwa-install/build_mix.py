@@ -6,8 +6,8 @@ MAP = json.load(open(os.path.join(HERE, '..', '..', 'reels', 'library', 'sfx_map
 def sfx(role, t, dg=-3):
     m = MAP[role]; S.append(dict(t=round(t, 3), file='../../reels/library/sfx/' + m['file'] + '.ogg', g=m['g'] + dg, rate=m.get('rate', 1.0)))
 ios = V.startswith('ios'); app_open = st[5] + (st[6] - st[5]) * .55
-sfx('reveal', .1); sfx('question', .8)                                   # phone, «؟»
-sfx('cutaway_in', st[1] - .05)                                           # the browser
+sfx('reveal', .1)                                                        # the phone
+if T.get('intro', True): sfx('question', .8); sfx('cutaway_in', st[1] - .05)   # «؟», the browser (no intro: the phone opens on the browser)
 sfx('tick', st[2] + .55); sfx('doc_open', st[3] + .02)                   # tap share/menu, sheet opens
 sfx('tick', st[3] + (1.7 if ios else 1.0)); sfx('doc_open', st[4])      # tap the row, the confirm panel
 sfx('check', st[4] + .9)                                                 # tap Add / Install
