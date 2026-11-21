@@ -1,0 +1,127 @@
+{
+ "dur": 32.51,
+ "vo": {
+  "file": "vo/pwa_vo_ios_ar.flac",
+  "at": 0,
+  "gain": 0
+ },
+ "music": {
+  "file": "../../raw/mariam/Funky_Fusion.mp3",
+  "at": 0,
+  "gain": -16.5,
+  "duck": -4,
+  "duck_smooth": 0.6,
+  "fade": 1.6,
+  "af": "equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5"
+ },
+ "sfx": [
+  {
+   "t": 0.1,
+   "file": "../../reels/library/sfx/maximize_008.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 0.8,
+   "file": "../../reels/library/sfx/question_001.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 5.05,
+   "file": "../../reels/library/sfx/maximize_006.ogg",
+   "g": -32,
+   "rate": 1.0
+  },
+  {
+   "t": 8.77,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 10.64,
+   "file": "../../reels/library/sfx/open_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 12.32,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 14.5,
+   "file": "../../reels/library/sfx/open_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 15.4,
+   "file": "../../reels/library/sfx/select_004.ogg",
+   "g": -32,
+   "rate": 1.0
+  },
+  {
+   "t": 18.76,
+   "file": "../../reels/library/sfx/drop_002.ogg",
+   "g": -28,
+   "rate": 1.0
+  },
+  {
+   "t": 21.31,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 21.56,
+   "file": "../../reels/library/sfx/maximize_008.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 24.76,
+   "file": "../../reels/library/sfx/drop_003.ogg",
+   "g": -29,
+   "rate": 1.0
+  },
+  {
+   "t": 29.36,
+   "file": "../../reels/library/sfx/confirmation_004.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 29.34,
+   "file": "../../reels/library/sfx/bong_001.ogg",
+   "g": -33,
+   "rate": 0.8
+  },
+  {
+   "t": 5.4,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 8.52,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 10.92,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 14.8,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  }
+ ]
+}
