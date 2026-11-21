@@ -1,0 +1,184 @@
+{
+ "dur": 37.3,
+ "vo": {
+  "file": "vo/mariam_vo_fatima_narrator.flac",
+  "at": 0,
+  "gain": 0
+ },
+ "music": {
+  "file": "../../raw/mariam/Funky_Fusion.mp3",
+  "at": 0,
+  "gain": -15.5,
+  "af": "equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5"
+ },
+ "sfx": [
+  {
+   "t": 0.05,
+   "file": "../../reels/library/sfx/drop_002.ogg",
+   "g": -27,
+   "rate": 1.0
+  },
+  {
+   "t": 3.62,
+   "file": "../../reels/library/sfx/select_005.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 5.94,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 6.74,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 7.04,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 8.3,
+   "file": "../../reels/library/sfx/confirmation_002.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 8.8,
+   "file": "../../reels/library/sfx/glass_001.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 8.96,
+   "file": "../../reels/library/sfx/glass_001.ogg",
+   "g": -30,
+   "rate": 1.125
+  },
+  {
+   "t": 9.12,
+   "file": "../../reels/library/sfx/glass_001.ogg",
+   "g": -30,
+   "rate": 1.25
+  },
+  {
+   "t": 9.28,
+   "file": "../../reels/library/sfx/glass_001.ogg",
+   "g": -30,
+   "rate": 1.5
+  },
+  {
+   "t": 11.06,
+   "file": "../../reels/library/sfx/glass_004.ogg",
+   "g": -35,
+   "rate": 1.0
+  },
+  {
+   "t": 12.54,
+   "file": "../../reels/library/sfx/toggle_001.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 13.34,
+   "file": "../../reels/library/sfx/drop_002.ogg",
+   "g": -27,
+   "rate": 1.0
+  },
+  {
+   "t": 13.9,
+   "file": "../../reels/library/sfx/drop_003.ogg",
+   "g": -28,
+   "rate": 1.0
+  },
+  {
+   "t": 14.68,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -28,
+   "rate": 1.0
+  },
+  {
+   "t": 17.78,
+   "file": "../../reels/library/sfx/confirmation_003.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 17.9,
+   "file": "../../reels/library/sfx/glass_004.ogg",
+   "g": -35,
+   "rate": 1.0
+  },
+  {
+   "t": 18.62,
+   "file": "../../reels/library/sfx/drop_002.ogg",
+   "g": -27,
+   "rate": 1.0
+  },
+  {
+   "t": 19.62,
+   "file": "../../reels/library/sfx/maximize_008.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 21.28,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 22.22,
+   "file": "../../reels/library/sfx/select_005.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 25.12,
+   "file": "../../reels/library/sfx/confirmation_002.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 25.18,
+   "file": "../../reels/library/sfx/glass_004.ogg",
+   "g": -35,
+   "rate": 1.0
+  },
+  {
+   "t": 27.365,
+   "file": "../../reels/library/sfx/maximize_008.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 29.745,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -33,
+   "rate": 1.0
+  },
+  {
+   "t": 30.945,
+   "file": "../../reels/library/sfx/select_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 32.505,
+   "file": "../../reels/library/sfx/confirmation_004.ogg",
+   "g": -29,
+   "rate": 1.0
+  },
+  {
+   "t": 32.485,
+   "file": "../../reels/library/sfx/bong_001.ogg",
+   "g": -32,
+   "rate": 0.8
+  }
+ ]
+}

@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "reviewedAt": "2026-11-03",
+  "assetHashes": 36,
+  "originalLogoPixelsPreserved": true,
+  "layouts": [
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "font": true,
+      "badImages": 0
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "font": true,
+      "badImages": 0
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768,
+      "font": true,
+      "badImages": 0
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "font": true,
+      "badImages": 0
+    }
+  ],
+  "controls": [
+    "play",
+    "pause",
+    "seek",
+    "reduced-motion replay"
+  ],
+  "pdfPages": 9,
+  "video": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "25/1",
+        "nb_read_frames": "200"
+      }
+    ],
+    "format": {
+      "duration": "8.000000"
+    }
+  },
+  "excluded": [
+    "source/",
+    "references/guide-pages/",
+    ".DS_Store"
+  ],
+  "privateSourceIncluded": false
+}

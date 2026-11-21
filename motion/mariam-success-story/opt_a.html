@@ -1,0 +1,144 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Mariam success story · Option A · CHAT STORY: light, UI-led. The story is told inside the chat itself:
+     her first message (kit bubble → the real screenshot), the chat scrolls through her July exercises to October,
+     her poster arrives as an image message and opens up, then the campaign album, the process cards, the reward,
+     the comment CTA and the end card. Kit palette, Cairo / Bebas, 25 fps, safe box 86–994 × 192–1574. -->
+<style>
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#F6F3F2}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo;background:#F6F3F2;color:#151515}
+.grid{position:absolute;inset:0;background-size:72px 72px;background-image:linear-gradient(rgba(21,21,21,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(21,21,21,.035) 1px,transparent 1px)}
+.pl{position:absolute;left:86px;right:86px;display:flex;justify-content:center;direction:rtl;gap:0 .24em;font-weight:700;line-height:1.25;white-space:nowrap}
+.wm{display:inline-block;position:relative;clip-path:inset(-.22em -.8em -.30em -.8em)}
+.wi{display:inline-block;position:relative}
+.abs{position:absolute}.lat{font-family:Bebas;font-weight:400}
+.corner{position:absolute;width:46px;height:46px;border-color:#C4321F;border-style:solid}
+.card{position:absolute;background:#fff;border-radius:34px;box-shadow:0 18px 50px rgba(21,21,21,.10),0 2px 6px rgba(21,21,21,.06)}
+.pill{position:absolute;left:50%;transform:translateX(-50%);padding:8px 26px;border-radius:999px;background:#151515;color:#F6F3F2;font-size:30px;font-weight:500;white-space:nowrap}
+.shot{position:absolute;border-radius:26px;box-shadow:0 18px 50px rgba(21,21,21,.14);overflow:hidden;background:#fff}
+.shot img{display:block;width:100%}
+.chip{position:absolute;padding:6px 20px;border-radius:999px;background:#151515;color:#F6F3F2;font-size:26px;font-weight:500;white-space:nowrap;direction:rtl}
+.st{position:absolute;left:-.05em;right:-.05em;top:54%;height:.1em;background:#C4321F;transform-origin:100% 50%}
+</style></head>
+<body><div id="stage"><div class="grid"></div></div>
+<script src="../engine/kit.js"></script><script src="story.js"></script><script src="common.js"></script>
+<script>
+const { K, ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, settle, icon } = SG;
+const { IMG, PH, phrase, img, env } = MO; const A2 = 'assets/'; const DUR = MS.DUR, END = 24.12;
+const ST = document.getElementById('stage'), U = [];
+const vis = (el, on) => { el.style.display = on ? '' : 'none'; return on; };
+
+// ---------- chrome: corners, wordmark on a charcoal plate (light frame), academy label ----------
+$('div', 'corner', ST, 'left:86px;top:192px;border-width:4px 0 0 4px'); $('div', 'corner', ST, 'right:86px;top:1528px;border-width:0 4px 4px 0');
+const plate = $('div', 'abs', ST, 'left:400px;top:196px;width:280px;height:70px;background:#151515;border-radius:12px;display:grid;place-items:center');
+img(plate, MO.LOGO, 'position:static;width:236px', '');
+const lab = $('div', 'abs lat', ST, 'right:150px;top:1506px;font-size:32px;color:#C4321F;direction:ltr', 'SABER GROUP ACADEMY');
+const web = $('div', 'abs', ST, 'left:86px;top:1506px;font-size:30px;font-weight:500;line-height:40px;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');   // the site link, bottom-left, on the same line as the label
+U.push(t => { const o = clamp((t - .2) / .4) * (1 - easeIn(lin(t, END - .3, END))); lab.style.opacity = web.style.opacity = o;
+  plate.style.opacity = o * (1 - env(t, 18.2, 23.9, .3, .3));   // the post's own header carries the page's wordmark during the CTA: no double logo
+});
+
+// ---------- captions (bottom zone): the VO's words, one orange keyword per line ----------
+const CAP = (k, y, o = {}) => phrase(U, ST, k, Object.assign({ y, size: 72, color: K.ink, key: K.red, center: true }, o));
+CAP('first', 1400); CAP('after', 1400, { size: 84 }); CAP('work', 1400, { size: 110 });
+CAP('camp', 1350, { out: 12.04 }); CAP('msg', 1450, { out: 12.04, size: 64 });
+const MAG = CAP('magic', 1350, { out: 15.76 }); CAP('train', 1450, { out: 15.62, size: 64 });
+const STORY = CAP('story', 1400, { size: 80 }); CAP('turn', 1350, { out: 20.94 }); CAP('start', 1450, { out: 20.94 }); CAP('cmt', 1400, { size: 60 });
+// «سحر» is struck through (it is not magic)
+(() => { const w = MAG.ws.find(x => x.f === 's'); const s = $('span', 'st', w.m); w.i.style.color = K.ink;
+  U.push(t => { const k = ease(lin(t, 12.80, 13.10)); s.style.transform = `scaleX(${k})`; w.i.style.color = k > .5 ? '#9a9ca1' : K.ink; }); })();
+
+// ---------- S1–S3: the chat feed (her first message → the exercises → October) ----------
+const VIEW = $('div', 'abs', ST, 'left:86px;right:86px;top:300px;height:1010px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0,#000 70px,#000 calc(100% - 70px),transparent 100%)');
+const FEED = $('div', 'abs', VIEW, 'left:0;right:0;top:0;height:3400px');
+const pill = (y, tx) => $('div', 'pill', FEED, `top:${y}px`, tx);
+// she introduces herself: her photo on top of her first message
+const PHO = $('div', 'abs', FEED, 'left:354px;top:0;width:200px;height:200px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 6px #fff,0 0 0 11px #C4321F,0 14px 40px rgba(21,21,21,.18)'); img(PHO, IMG.mar, 'position:absolute;left:-204px;top:-15px;width:482px;height:321px');   // Mariam's illustration, framed on her face
+const P1 = pill(232, '16 يوليو');
+// S1: her words in a kit bubble, rising on the VO; the name tag on top
+const BUB = $('div', 'card', FEED, 'left:24px;right:24px;top:310px;height:400px;border-radius:34px 34px 34px 8px');
+$('div', 'abs', BUB, 'right:40px;top:26px;font-size:30px;font-weight:700;color:#C4321F', 'مريم');
+const QL = MO.phraseLine(BUB, PH.quote, { y: 215, size: 54, color: K.ink, key: K.red, wrap: true, lines: 3, maxW: 800, center: true, css: 'left:40px;right:40px;' });
+// S2: the real message (screenshot) takes the bubble's place: proof
+const REAL = $('div', 'shot', FEED, 'left:24px;right:24px;top:300px'); img(REAL, IMG.quote, '', '');
+// the journey: more instructors' feedback on her work (real screenshots; the process cards later use different ones)
+const EX = [[A2 + 'fb_yasmin2.png', 830], [IMG.fbS, 1360]].map(([s, y], i) => { const d = $('div', 'shot', FEED, `left:${i % 2 ? 70 : 24}px;right:${i % 2 ? 24 : 70}px;top:${y}px`); img(d, s, '', ''); return d; });
+const P3 = pill(1730, '20 أكتوبر');
+const POSTB = $('div', 'shot', FEED, 'left:220px;width:470px;top:1810px;border-radius:26px'); img(POSTB, IMG.p1, '', '');
+U.push(t => {
+  if (!vis(VIEW, t < 8.4)) return;
+  const sc = inOut(lin(t, 6.30, 8.05)); FEED.style.transform = `translateY(${lerp(150, -1730, sc)}px)`;
+  VIEW.style.opacity = 1 - easeIn(lin(t, 8.05, 8.35));
+  apply(P1, pose(t, { at: .0, dy: 10, out: 3.55 }), 'translateX(-50%)');   // the real message carries «July 16» itself: no second date
+  apply(BUB, pose(t, { at: .02, dy: 28, s0: .94, squash: .02 })); QL.ws.forEach(w => SG.maskRise(w.i, t, w.at));
+  const sw = ease(lin(t, 3.58, 4.0)); BUB.style.opacity = (+BUB.style.opacity) * (1 - sw);
+  apply(REAL, pose(t, { at: 3.62, dy: 0, s0: .96, follow: .012 })); REAL.style.transform += ` rotate(${lerp(-2, 0, ease(lin(t, 3.62, 4.2)))}deg)`;
+  P3.style.opacity = t > 7.2 ? 1 : 0; apply(PHO, pose(t, { at: 0, dy: 16, s0: .85, follow: .02 }));
+  EX.forEach((e, i) => apply(e, pose(t, { at: 6.45 + i * .22, dy: 40, dur: .4 })));
+  apply(POSTB, pose(t, { at: 7.45, dy: 40, dur: .4 }));
+});
+
+// ---------- S4: «ده شغلها!» the poster opens out of the chat ----------
+const BIG = $('div', 'shot', ST, 'left:156px;top:300px;width:768px;height:960px;border-radius:30px'); img(BIG, IMG.p1, 'width:100%;height:100%;object-fit:cover', '');
+// ---------- S5: the campaign album (5 designs), then each one's message is spotlit ----------
+const TILES = [[IMG.p1, 86, 300, 446, 557], [IMG.p2, 548, 300, 446, 557], [IMG.p3, 86, 873, 290, 362], [IMG.p4, 395, 873, 290, 362], [IMG.p5, 704, 873, 290, 362]]
+  .map(([s, x, y, w, h], i) => { const d = $('div', 'shot', ST, `left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:22px`); img(d, s, 'width:100%;height:100%;object-fit:cover', '');
+    const ring = $('div', 'abs', d, 'inset:0;border-radius:22px;box-shadow:inset 0 0 0 7px #FF8A1F;opacity:0'); return { d, ring, x, y, w, h, i }; });
+const SPOT = [10.20, 10.62, 11.06, 11.68];
+U.push(t => {
+  // the big poster: in on «ده», out into the album on «campaign»
+  if (vis(BIG, t > 7.8 && t < 9.4)) { const k = ease(lin(t, 7.92, 8.5)), g = inOut(lin(t, 8.78, 9.3));
+    BIG.style.opacity = clamp((t - 7.92) / .2) * (1 - g); BIG.style.transform = `scale(${lerp(.62, 1, k) * (1 + settle(lin(t, 8.3, 9.0), .015))}) translateY(${lerp(80, 0, k)}px)`; }
+  const alb = t > 8.6 && t < 13.4; TILES.forEach(T => { if (!vis(T.d, alb)) return;
+    const p = pose(t, { at: 8.78 + T.i * .08, dy: 30, s0: .9, follow: .012, out: 12.95, exitDy: -20 });
+    const sp = SPOT.findIndex((a, j) => t >= a && t < (SPOT[j + 1] ?? 12.2)); const on = sp === T.i || (sp === 3 && T.i >= 3);
+    const hi = t >= 10.2 && t < 12.2 ? (on ? 1 : 0) : 0, dim = t >= 10.2 && t < 12.2 ? (on ? 1 : .45) : t >= 12.2 ? .2 : 1;
+    T.ring.style.opacity = hi; apply(T.d, p); T.d.style.opacity = p.o * dim; T.d.style.transform += ` scale(${1 + .03 * hi})`; T.d.style.zIndex = hi ? 2 : 1; });
+});
+
+// ---------- S7: تمرين / فيدباك / متابعة يومية: three cards, each lands on its word ----------
+const ROWS = [[13.34, 'pen', IMG.lip], [13.90, 'chat', IMG.fbY], [14.68, 'cal', null]].map(([at, ic, src], i) => {
+  const c = $('div', 'card', ST, `left:120px;right:120px;top:${330 + i * 320}px;height:280px`);
+  const ib = $('div', 'abs', c, 'right:34px;top:84px;width:112px;height:112px;border-radius:28px;background:#C4321F;display:grid;place-items:center', icon(ic, 60, '#fff', 2.2));
+  if (src) { const s = $('div', 'shot', c, 'left:30px;top:30px;width:634px;height:220px;border-radius:18px;box-shadow:none;background:#7fb0dc'); img(s, src, 'width:100%;height:100%;object-fit:cover;object-position:50% ' + (i === 0 ? '30%' : '0%'), ''); }
+  else { const g = $('div', 'abs', c, 'left:30px;top:66px;width:634px;height:150px;display:flex;gap:14px;direction:rtl');
+    c.days = [...Array(7)].map(() => $('div', '', g, 'flex:1;border-radius:16px;background:#EFEBEA;display:grid;place-items:center')); }
+  return { c, at, i };
+});
+U.push(t => ROWS.forEach(R => { if (!vis(R.c, t > R.at - .2 && t < 16.2)) return;
+  apply(R.c, pose(t, { at: R.at, dy: 24, s0: .96, squash: .02, out: 15.66 }));
+  if (R.c.days) R.c.days.forEach((d, j) => { const on = t > R.at + .25 + j * .1; d.style.background = on ? '#FF8A1F' : '#EFEBEA'; d.innerHTML = on ? icon('check', 40, '#fff', 3) : ''; }); }));
+
+// ---------- S8: «قصة نجاح تستحق مكافأة!» the poster + a gift badge + a few confetti ----------
+const HERO = $('div', 'shot', ST, 'left:130px;top:400px;width:820px;height:546px;border-radius:30px'); img(HERO, IMG.mar, 'width:100%;height:100%;object-fit:cover', '');   // «دي قصة نجاح»: Mariam's illustration
+const GIFT = $('div', 'abs', ST, 'left:800px;top:840px;width:190px;height:190px;border-radius:50%;background:#C4321F;display:grid;place-items:center;box-shadow:0 14px 40px rgba(196,50,31,.35)', icon('gift', 104, '#fff', 1.8));
+const CF = [...Array(14)].map((_, i) => $('div', 'abs', ST, `left:0;top:0;width:14px;height:30px;border-radius:4px;background:${['#C4321F', '#FF8A1F', '#151515'][i % 3]}`));
+U.push(t => {
+  if (vis(HERO, t > 15.7 && t < 18.7)) { apply(HERO, pose(t, { at: 15.9, dy: 30, s0: .94, follow: .012, out: 18.25, exitDy: -30 })); }
+  if (vis(GIFT, t > 17.6 && t < 18.7)) { apply(GIFT, pose(t, { at: 17.78, dy: 0, s0: .4, dur: .5, follow: .03, out: 18.3 })); }
+  const s = t - 17.85; CF.forEach((c, i) => { if (!vis(c, s > 0 && s < 1.0)) return; const a = (-160 + i * 11) * Math.PI / 180, v = 640 + (i % 4) * 110;
+    c.style.opacity = 1 - lin(s, .6, 1); c.style.transform = `translate(${895 + Math.cos(a) * v * s}px,${935 + Math.sin(a) * v * s + 1100 * s * s}px) rotate(${i * 40 + s * 500}deg)`; });
+});
+
+// ---------- S9: the CTA as a Facebook post (shared builder: the academy's Mastery post, a viewer comments, the academy replies) ----------
+MO.fbPost(ST, false, U);
+
+// ---------- END: wordmark plate, «مش مجرد كورس… إحنا عيلة!», heart, hold ≥ 3 s ----------
+(() => { const g = $('div', 'abs', ST, 'inset:0');
+  const pl = $('div', 'abs', g, 'left:190px;top:640px;width:700px;height:164px;background:#151515;border-radius:18px;overflow:hidden'); const lg = img(pl, MO.LOGO, 'left:50px;top:40px;width:600px');
+  const L1 = MO.phraseLine(g, PH.fam.w.slice(2), { y: 960, size: 84, color: K.ink, key: K.red, center: true });
+  const ht = $('div', 'abs', g, 'left:495px;top:1080px;width:90px;height:90px', `<svg viewBox="0 0 24 24" width="90" height="90"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.9 1.3 5.3 3.2 1.4-1.9 3.1-3.2 5.3-3.2 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#C4321F"/></svg>`);
+  const u = $('div', 'abs', g, 'left:0;right:0;top:1240px;text-align:center;font-size:34px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
+  U.push(t => { if (!vis(g, t > END - .1)) return; const k = ease(lin(t, END, END + .8));
+    pl.style.opacity = clamp((t - END) / .15); pl.style.transform = `scale(${lerp(.94, 1, k)})`; lg.style.clipPath = `inset(0 0 0 ${(1 - k) * 100}%)`;
+    MO.words(L1, t); apply(ht, pose(t, { at: 26.7, dy: 0, s0: .5, follow: .04 })); apply(u, pose(t, { at: 25.2, dy: 12 })); }); })();
+
+// the «Free access» reward scene runs on real time; everything else on the remapped timeline (frozen at T0 for D)
+const U2 = MO.reward(ST, false, [STORY.row, HERO, GIFT, ...CF]);
+window.render = t => { const m = MO.map(t); U.forEach(f => f(m)); U2.forEach(f => f(t)); };
+window.ready = MO.ready();
+</script></body></html>

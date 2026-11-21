@@ -1,0 +1,66 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Reel cover for the Visual Hierarchy reel. Rendered by render_thumb.js; variant chosen with ?v=a|b -->
+<style>
+@font-face{font-family:Cairo;src:url(../../../project/fonts/Cairo.ttf);font-weight:200 1000}
+@font-face{font-family:Poppins;src:url(../../../project/fonts/Poppins-SemiBold.ttf);font-weight:600}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#070707}
+#s{position:relative;width:1080px;height:1920px;overflow:hidden}
+#bg{position:absolute;transform-origin:0 0}
+.L{position:absolute;inset:0}
+.shade{background:linear-gradient(180deg,rgba(7,7,7,.0) 0%,rgba(7,7,7,0) 42%,rgba(7,7,7,.55) 58%,rgba(7,7,7,.9) 72%,rgba(7,7,7,.96) 100%)}
+.vig{background:radial-gradient(ellipse 75% 55% at 50% 38%,transparent 55%,rgba(0,0,0,.55) 100%)}
+.ember{mix-blend-mode:screen;background:radial-gradient(circle at 12% 92%,rgba(216,59,37,.45),transparent 38%),radial-gradient(circle at 92% 70%,rgba(255,138,31,.22),transparent 36%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.4 -.2'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>")}
+#logo{position:absolute;top:292px;left:72px;width:132px;opacity:.95;filter:drop-shadow(0 4px 14px rgba(0,0,0,.6))}
+.txt{position:absolute;left:70px;right:70px;direction:rtl;text-align:right;font-family:Cairo;font-weight:900;color:#F6F3F2;line-height:1.12;
+  text-shadow:0 6px 30px rgba(0,0,0,.65)}
+.org{color:#FF8A1F;text-shadow:0 0 36px rgba(255,120,20,.55),0 6px 30px rgba(0,0,0,.6)}
+.lat{font-family:Poppins;font-weight:600;font-size:.86em;letter-spacing:-1px}
+.pill{position:absolute;right:70px;display:inline-flex;align-items:center;gap:14px;padding:12px 28px 14px;border-radius:999px;
+  font-family:Poppins;font-weight:600;font-size:38px;color:#fff;background:linear-gradient(270deg,#D83B25,#FF8A1F);
+  box-shadow:0 0 40px rgba(255,120,20,.55),0 14px 30px rgba(0,0,0,.45)}
+.num{position:absolute;width:66px;height:66px;border-radius:50%;display:grid;place-items:center;font-family:Poppins;font-weight:600;font-size:34px;color:#fff;
+  background:linear-gradient(135deg,#FF8A1F,#D83B25);border:3px solid #fff;box-shadow:0 0 26px rgba(255,120,20,.8)}
+svg.path{position:absolute;left:0;top:0;overflow:visible}
+.eye{position:absolute;width:118px;height:118px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.95);
+  box-shadow:0 0 0 12px rgba(255,138,31,.25),0 0 44px rgba(255,138,31,.7)}
+</style></head>
+<body><div id="s">
+  <img id="bg">
+  <div class="L vig"></div><div class="L shade"></div><div class="L ember"></div>
+  <img id="logo" src="../../brand/saber_white.png">
+  <div id="v"></div>
+  <div class="L grain"></div>
+</div>
+<script>
+const v = new URLSearchParams(location.search).get('v') || 'a';
+const V = {
+  // a: the hook ("everything perfect, still not good") on the pointing frame
+  a: { img: 'stills/still_04_graded.png', face: [504, 575], scale: 1.42, at: [560, 640],
+       html: `<div class="pill" style="top:1118px">Visual Hierarchy</div>
+              <div class="txt" style="top:1212px;font-size:118px;white-space:nowrap">كل حاجة <span class="lat">Perfect</span></div>
+              <div class="txt org" style="top:1360px;font-size:100px;white-space:nowrap">والتصميم مش حلو؟</div>`,
+       nums: [] },
+  // b: the viewer's eye question, on the open-hands frame
+  b: { img: 'stills/still_06_graded.png', face: [522, 575], scale: 1.42, at: [540, 640],
+       html: `<div class="eye" style="top:1370px;left:70px"><svg width="76" height="76" viewBox="0 0 24 24"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" fill="none" stroke="#1A1614" stroke-width="2"/><circle cx="12" cy="12" r="3.6" fill="#FF8A1F"/><circle cx="12" cy="12" r="1.5" fill="#1A1614"/></svg></div>
+              <div class="txt" style="top:1190px;font-size:128px">عين المشاهد</div>
+              <div class="txt org" style="top:1346px;font-size:128px">بتبص فين؟</div>
+              <div class="pill" style="top:1528px;right:auto;left:70px">Visual Hierarchy</div>`,
+       nums: [] },
+}[v];
+const bg = document.getElementById('bg');
+bg.src = V.img;
+bg.style.width = 1080 * V.scale + 'px';
+bg.style.left = (V.at[0] - V.face[0] * V.scale) + 'px';
+bg.style.top = (V.at[1] - V.face[1] * V.scale) + 'px';
+document.getElementById('v').innerHTML = V.html;
+if (V.nums.length) {
+  const s = document.getElementById('v');
+  s.insertAdjacentHTML('beforeend', `<svg class="path" width="1080" height="1920"><polyline fill="none" stroke="#FF8A1F" stroke-width="6" stroke-dasharray="2 16" stroke-linecap="round" opacity=".85"
+    points="${V.nums.map(p => (p[0] + 33) + ',' + (p[1] + 33)).join(' ')}"/></svg>`);
+  V.nums.forEach((p, k) => s.insertAdjacentHTML('beforeend', `<div class="num" style="left:${p[0]}px;top:${p[1]}px">${k + 1}</div>`));
+}
+</script></body></html>

@@ -1,0 +1,115 @@
+{
+ "dur": 23.49,
+ "vo": {
+  "file": "vo/pwa_vo_android_ar.flac",
+  "at": 0,
+  "gain": 0
+ },
+ "music": {
+  "file": "../../raw/mariam/Funky_Fusion.mp3",
+  "at": 0,
+  "gain": -16.5,
+  "duck": -4,
+  "duck_smooth": 0.6,
+  "fade": 1.6,
+  "af": "equalizer=f=1500:t=q:w=1.2:g=-3.5,equalizer=f=3000:t=q:w=1.0:g=-4.5"
+ },
+ "sfx": [
+  {
+   "t": 0.1,
+   "file": "../../reels/library/sfx/maximize_008.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 2.77,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 5.02,
+   "file": "../../reels/library/sfx/open_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 6.0,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 7.1,
+   "file": "../../reels/library/sfx/open_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 8.0,
+   "file": "../../reels/library/sfx/select_004.ogg",
+   "g": -32,
+   "rate": 1.0
+  },
+  {
+   "t": 9.12,
+   "file": "../../reels/library/sfx/drop_002.ogg",
+   "g": -28,
+   "rate": 1.0
+  },
+  {
+   "t": 12.165,
+   "file": "../../reels/library/sfx/tick_004.ogg",
+   "g": -34,
+   "rate": 1.0
+  },
+  {
+   "t": 12.415,
+   "file": "../../reels/library/sfx/maximize_008.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 16.02,
+   "file": "../../reels/library/sfx/drop_003.ogg",
+   "g": -29,
+   "rate": 1.0
+  },
+  {
+   "t": 20.34,
+   "file": "../../reels/library/sfx/confirmation_004.ogg",
+   "g": -30,
+   "rate": 1.0
+  },
+  {
+   "t": 20.32,
+   "file": "../../reels/library/sfx/bong_001.ogg",
+   "g": -33,
+   "rate": 0.8
+  },
+  {
+   "t": 1.0,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 2.52,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 5.3,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  },
+  {
+   "t": 7.4,
+   "file": "../../reels/library/sfx/drop_004.ogg",
+   "g": -31,
+   "rate": 1.0
+  }
+ ]
+}

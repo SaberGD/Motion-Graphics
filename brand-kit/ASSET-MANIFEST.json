@@ -1,0 +1,327 @@
+{
+  "version": "1.0",
+  "reviewedAt": "2026-11-03",
+  "assets": [
+    {
+      "id": "SG-LOGO-ACADEMY-SQUARE-OWNER",
+      "file": "assets/logos/saber-group-academy-square-original.png",
+      "width": 1080,
+      "height": 1080,
+      "hasAlpha": true,
+      "isOpaque": true,
+      "sha256": "f8b51f3ef6710d7e9de76d694c5de57bc379026955bbb4619d9ae203802472a9",
+      "role": "Additional owner-supplied stacked academy logo on its original dark red background. Preserve the full square, original colors and lettering. Not a transparent cutout and not a replacement for the wide compositing logo unless explicitly requested.",
+      "source": "Owner attachment: logo.png, 2026-11-03",
+      "provenance": "byte-preserved owner-supplied original; no background removal, recolor, crop or redraw"
+    },
+    {
+      "id": "SG-LOGO-WIDE-MASTER",
+      "file": "assets/logos/saber-group-wordmark.webp",
+      "width": 1922,
+      "height": 278,
+      "hasAlpha": true,
+      "isOpaque": false,
+      "sha256": "73e0797bee4ef24de6aa27bed2fbff36459e035b886f8f9524bd4a5d5553e45e",
+      "role": "Primary original wide wordmark; white lettering plus orange AI badge. Use intact on dark background.",
+      "source": "maro:public/sabergroup-ai-logo.webp",
+      "provenance": "byte-preserved original"
+    },
+    {
+      "id": "SG-LOGO-WIDE",
+      "file": "assets/logos/saber-group-wordmark.png",
+      "width": 1922,
+      "height": 278,
+      "hasAlpha": true,
+      "isOpaque": false,
+      "sha256": "b1b4855f36f3adeb37e457e5feea4b444e045b1917360231f11b40029685d503",
+      "role": "Primary logo for video compositing. Same original pixels decoded to PNG.",
+      "source": "SG-LOGO-WIDE-MASTER",
+      "provenance": "format conversion only; no redraw or recolor"
+    },
+    {
+      "id": "SG-LOGO-SQUARE-REFERENCE",
+      "file": "assets/logos/saber-group-square-reference.webp",
+      "width": 391,
+      "height": 385,
+      "hasAlpha": true,
+      "isOpaque": false,
+      "sha256": "0c67ebebb47679beb32ed69b73af9c4318d01419c97922292e6df9d6b3b857c2",
+      "role": "Secondary / legacy square identity reference, not the primary full-screen logo.",
+      "source": "maro:public/logo.webp",
+      "provenance": "byte-preserved original"
+    },
+    {
+      "id": "SG-SYSTEM-WORDMARK",
+      "file": "assets/logos/saber-group-system-wordmark.png",
+      "width": 2106,
+      "height": 357,
+      "hasAlpha": true,
+      "isOpaque": false,
+      "sha256": "b807f4147ee79c942ef5f11a04113013294a12de4dd6e3335ce8352302278d81",
+      "role": "Original system wordmark reference. Prefer the primary master for one campaign.",
+      "source": "training:public/saber-group-logo.png; identical accounting asset",
+      "provenance": "byte-preserved original"
+    },
+    {
+      "id": "MARO-NEUTRAL",
+      "file": "assets/mascot/maro-fullbody-neutral.png",
+      "width": 1024,
+      "height": 1536,
+      "hasAlpha": true,
+      "isOpaque": false,
+      "sha256": "c3761903231bbf787d92c805b57ebdc60f8599482f792d67177e81aef7efa8ba",
+      "role": "Original raster pose. Preserve proportions and any existing glow; do not mirror or deform.",
+      "source": "maro:public/maro/maro-fullbody-neutral.png",
+      "provenance": "byte-preserved original"
+    },
+    {
+      "id": "MARO-WAVE",
+      "file": "assets/mascot/maro-fullbody-wave.png",
+      "width": 1145,
+      "height": 1374,
+      "hasAlpha": true,
+      "isOpaque": false,
+      "sha256": "de16600cb2e164984ce3813d3f7d609cb706bd98781afa2d86fac689d65194e0",
+      "role": "Original raster pose. Preserve proportions and any existing glow; do not mirror or deform.",
+      "source": "maro:public/maro/maro-fullbody-wave.png",
+      "provenance": "byte-preserved original"
+    },
+    {
+      "id": "MARO-POINTING",
+      "file": "assets/mascot/maro-fullbody-pointing.png",
+      "width": 1145,
+      "height": 1374,
+      "hasAlpha": true,
+      "isOpaque": false,
+      "sha256": "db4f4040a95fd83dc8c721f9f79fbec068c3567b9b02817ba4ec83f547714b83",
+      "role": "Original raster pose. Preserve proportions and any existing glow; do not mirror or deform.",
+      "source": "maro:public/maro/maro-fullbody-pointing.png",
+      "provenance": "byte-preserved original"
+    },
+    {
+      "id": "MARO-EXPRESSIONS-REFERENCE",
+      "file": "assets/mascot/maro-visor-expressions.png",
+      "width": 1920,
+      "height": 1080,
+      "hasAlpha": false,
+      "isOpaque": true,
+      "sha256": "d4d04c26d21a3af8edb8a46c9fb6a18ced981ab17f06968892edd305806edd13",
+      "role": "Expression reference sheet only; not an editable rig or separate eye layers.",
+      "source": "maro:public/maro/maro-visor-expressions.png",
+      "provenance": "byte-preserved original"
+    },
+    {
+      "id": "FONT-CAIRO-VARIABLE",
+      "file": "assets/fonts/Cairo-Variable.ttf",
+      "sha256": "667c987182391c91f4e57a2f455b1794fb5e3ee6ca4ef3383e86bb690fa9c964",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/Cairo%5Bslnt,wght%5D.ttf",
+      "license": "SIL Open Font License; see licenses/"
+    },
+    {
+      "id": "FONT-BEBASNEUE-REGULAR",
+      "file": "assets/fonts/BebasNeue-Regular.ttf",
+      "sha256": "08e4623805102d819f58601e46e345648846075e363b2ceb23313c2d1c83ec73",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/bebasneue/BebasNeue-Regular.ttf",
+      "license": "SIL Open Font License; see licenses/"
+    },
+    {
+      "id": "FONT-TAJAWAL-REGULAR",
+      "file": "assets/fonts/Tajawal-Regular.ttf",
+      "sha256": "6882892da3e03527d5db2bbab3b48bde6ef2e878a43f522d1a4eebda90010a19",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal/Tajawal-Regular.ttf",
+      "license": "SIL Open Font License; see licenses/"
+    },
+    {
+      "id": "FONT-TAJAWAL-BOLD",
+      "file": "assets/fonts/Tajawal-Bold.ttf",
+      "sha256": "0342ab6b74b6bd1b4b5bf7beda45a9734a2b3147a31e8a3a45b6a3417a52d9d7",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal/Tajawal-Bold.ttf",
+      "license": "SIL Open Font License; see licenses/"
+    },
+    {
+      "id": "ICON-PEN",
+      "file": "assets/icons/pen.svg",
+      "sha256": "da054f62d1328be4eda98d250eeb4564625bd2b59e63244769cec3aafc526816",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-BOOK",
+      "file": "assets/icons/book.svg",
+      "sha256": "843e7dec1d9b8017188678fdd6d90226d72893c968e708bc26071c3b40fa06c3",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-LAYERS",
+      "file": "assets/icons/layers.svg",
+      "sha256": "99f01a85868d57ac6ec87d14a2a0199fd6092cb60cd389d60a514ea1cc84b1cf",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-SPARKLES",
+      "file": "assets/icons/sparkles.svg",
+      "sha256": "0870d401a1d8761bdaeef8a4946e85b406e28498dada47b94fd625ad6592606a",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-CHECK",
+      "file": "assets/icons/check.svg",
+      "sha256": "f52503df3a38eb20df6a02c2187ea3552c1c9af380c7744a4484484356f81071",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-ARROW",
+      "file": "assets/icons/arrow.svg",
+      "sha256": "5b10a9fedf564e37a583fc644e13690f3b514bfa3dd0d15a92100e99c1513bfd",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-EXTERNAL",
+      "file": "assets/icons/external.svg",
+      "sha256": "5716bd6a187e9c98aad3b9fc0e8fe3f185df2e2d65e2a6602968c4a75439d0ce",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-PLAY",
+      "file": "assets/icons/play.svg",
+      "sha256": "1a120897466c2bc76122d7a3202a051dc7b9a90bfec623d61ad2a6b91b43315b",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-CLOSE",
+      "file": "assets/icons/close.svg",
+      "sha256": "2641d9c7e17903853b6ea9b0c9a75c948f0db35483afe5adc913e4da58f5b5a3",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-DOWNLOAD",
+      "file": "assets/icons/download.svg",
+      "sha256": "905be99d62e19a9d42dc7e7d2aa75f7b1af4a1664fc263583ecfe4d78cd5a063",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-FACEBOOK",
+      "file": "assets/icons/facebook.svg",
+      "sha256": "b06d18d844ed621b89faffb1a33440cc0ec4f1ffea9f36191f50db19a47c59a6",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-INSTAGRAM",
+      "file": "assets/icons/instagram.svg",
+      "sha256": "f53af2d1fc5292ba1433b5c1faf50005ce6a997fa302d1816989929f379a59dc",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-TELEGRAM",
+      "file": "assets/icons/telegram.svg",
+      "sha256": "147fd8f8923e7e5f463fe98c0eb9913bead6b2ae59935728cda141002ec8a7c9",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "ICON-WHATSAPP",
+      "file": "assets/icons/whatsapp.svg",
+      "sha256": "8fb209a53a61618c3483594b3e070481a35575d6aaecbe00a6fe386670c8fb1c",
+      "role": "Supporting icon only, not a brand logo.",
+      "source": "Existing locally bundled Lucide / brand icon asset",
+      "license": "See licenses/Lucide-ISC.txt and Simple-Icons-CC0.md"
+    },
+    {
+      "id": "PATTERN-GRID-PORTRAIT",
+      "file": "assets/patterns/grid-portrait.svg",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "1d5ce173b00c8f26cf466bf99c824184d0d6564f61e69c51bc5e2d37fd4f8ff2",
+      "provenance": "New code-native production asset based on observed brand geometry; not extracted original artwork"
+    },
+    {
+      "id": "PATTERN-CORNERS-PORTRAIT",
+      "file": "assets/patterns/corners-portrait.svg",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "2fd4eaaf23828d70b62acd20c91e18fc9bc513f70d0b5fa8aa84675961cf6b0d",
+      "provenance": "New code-native production asset based on observed brand geometry; not extracted original artwork"
+    },
+    {
+      "id": "PATTERN-GRID-LANDSCAPE",
+      "file": "assets/patterns/grid-landscape.svg",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "5606012cb8079e508834d4c6246928c2fa237404c21767fe4d31818a09bcff9e",
+      "provenance": "New code-native production asset based on observed brand geometry; not extracted original artwork"
+    },
+    {
+      "id": "PATTERN-CORNERS-LANDSCAPE",
+      "file": "assets/patterns/corners-landscape.svg",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "a8d2bfd4016352e0b99641ba912cdab93b388cce05b6a398b5115ac197fbf5fe",
+      "provenance": "New code-native production asset based on observed brand geometry; not extracted original artwork"
+    },
+    {
+      "id": "PATTERN-GRID-SQUARE",
+      "file": "assets/patterns/grid-square.svg",
+      "width": 1080,
+      "height": 1080,
+      "sha256": "c01e0d1b035becbe81ca6962d24e6ce7b9c269d2c2bc39b190ba1dc43c2e14ea",
+      "provenance": "New code-native production asset based on observed brand geometry; not extracted original artwork"
+    },
+    {
+      "id": "PATTERN-CORNERS-SQUARE",
+      "file": "assets/patterns/corners-square.svg",
+      "width": 1080,
+      "height": 1080,
+      "sha256": "18ec50a3ddc3451d0e3e7e3758183e0eaaefead90ee88c9dfd684cf0f1f2b820",
+      "provenance": "New code-native production asset based on observed brand geometry; not extracted original artwork"
+    },
+    {
+      "id": "FONT-CAIRO-REGULAR",
+      "file": "assets/fonts/Cairo-Regular.ttf",
+      "sha256": "af030ac712e8a0fe9dbe602937d64dd669231b3d2b21c6f2a109494caccc48af",
+      "source": "FONT-CAIRO-VARIABLE",
+      "provenance": "Static font instance at weight 400, slant 0, generated using fontTools; glyph artwork not redrawn",
+      "license": "SIL Open Font License; see licenses/cairo-OFL.txt"
+    },
+    {
+      "id": "FONT-CAIRO-MEDIUM",
+      "file": "assets/fonts/Cairo-Medium.ttf",
+      "sha256": "4a9b9f0eee1deea7879da4124695692036400a2fb8ec9a2d8e02e713c03c6f0d",
+      "source": "FONT-CAIRO-VARIABLE",
+      "provenance": "Static font instance at weight 500, slant 0, generated using fontTools; glyph artwork not redrawn",
+      "license": "SIL Open Font License; see licenses/cairo-OFL.txt"
+    },
+    {
+      "id": "FONT-CAIRO-BOLD",
+      "file": "assets/fonts/Cairo-Bold.ttf",
+      "sha256": "7de6881fd6f3edcae0a19cacda0f01d8af9755df4c14b14756e8932387920477",
+      "source": "FONT-CAIRO-VARIABLE",
+      "provenance": "Static font instance at weight 700, slant 0, generated using fontTools; glyph artwork not redrawn",
+      "license": "SIL Open Font License; see licenses/cairo-OFL.txt"
+    }
+  ],
+  "policy": "Original brand artwork is preserved. Generated production patterns and format-only conversions are explicitly labelled; no logos or mascot poses have been regenerated."
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- White Friday · Option B · FEED SCROLL: light, UI-led. Each scene is a card in a vertical feed; on each scene change
+     the camera scrolls the feed up to the next card (kit ease + a small overshoot = follow-through). The first cards are
+     black (Black Friday), and from the switch on they turn white. Lines accumulate inside the active card on their spoken times. -->
+<style>
+@font-face{font-family:Cairo;src:url(../../../brand-kit/assets/fonts/Cairo-Bold.ttf);font-weight:700}
+@font-face{font-family:Cairo;src:url(../../../brand-kit/assets/fonts/Cairo-Medium.ttf);font-weight:500}
+@font-face{font-family:Bebas;src:url(../../../brand-kit/assets/fonts/BebasNeue-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#F6F3F2}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo;background:#F6F3F2}
+.grid{position:absolute;inset:0;background-size:72px 72px;background-image:linear-gradient(rgba(21,21,21,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(21,21,21,.045) 1px,transparent 1px)}
+#world{position:absolute;left:0;top:0;width:1080px}
+.cd{position:absolute;left:126px;width:828px;border-radius:7px;background:#fff;clip-path:polygon(17px 0,100% 0,100% calc(100% - 17px),calc(100% - 17px) 100%,0 100%,0 17px)}
+.cds{position:absolute;left:126px;width:828px;filter:drop-shadow(0 22px 34px rgba(21,21,21,.10)) drop-shadow(0 2px 5px rgba(21,21,21,.06))}
+.cds.dark .cd{background:#151515}
+.hd{position:absolute;top:30px;left:36px;right:36px;height:48px;display:flex;align-items:center;justify-content:space-between;direction:rtl}
+.hd .ic{width:48px;height:48px;border-radius:7px;background:rgba(196,50,31,.1);display:grid;place-items:center}
+.hd .n{font-family:Bebas;font-size:34px;color:#9a9ca2;direction:ltr}
+.pl{position:absolute;left:36px;right:36px;display:flex;justify-content:center;direction:rtl;gap:0 .24em;font-weight:700;line-height:1.25;white-space:nowrap}
+.wm{display:inline-block;position:relative;clip-path:inset(-.22em -.8em -.30em -.8em)}
+.wi{display:inline-block}
+.key{color:#C4321F}
+.stl{position:absolute;left:-.05em;right:-.05em;top:54%;height:.08em;background:#C4321F;transform-origin:100% 50%}
+.abs{position:absolute}.lat{font-family:Bebas;font-weight:400}
+.plate{position:absolute;background:#151515;display:grid;place-items:center;border-radius:7px}
+</style></head>
+<body><div id="stage"><div class="grid"></div><div id="world"></div></div>
+<script src="../../engine/kit.js"></script><script src="phrases.js"></script><script src="common.js"></script>
+<script>
+const { ease, easeIn, inOut, lin, lerp, clamp, pose, apply, $, settle, maskRise, icon } = SG;
+const { PH, SCENES, TIMES } = WF; const { FLIP, TITLE, END } = TIMES;
+const ST = document.getElementById('stage'), WD = document.getElementById('world'), U = [];
+const ICONS = ['cal', 'star', 'arrow', 'x', 'star', 'star', 'gift', 'book', 'user', 'plus', 'trophy', 'chat', 'bell', 'chat', 'check'];
+// build one card per scene; each phrase of the scene is a line inside it
+const cards = SCENES.map((w, s) => {
+  const ps = PH.filter(p => p.s === s); const dark = w[0] < FLIP - .3 || s === 5;
+  const sh = $('div', 'cds' + (dark ? ' dark' : ''), WD); const c = $('div', 'cd', sh);
+  const hd = $('div', 'hd', c, '', `<span class="ic">${icon(ICONS[s], 30, '#C4321F', 2.2)}</span><span class="n">${String(s + 1).padStart(2, '0')} · WHITE FRIDAY FESTIVAL</span>`);
+  let y = 110; const lines = [];
+  ps.forEach(p => {
+    if (p.type === 'logo') { const L = OPT.phraseLine(c, { w: p.lead }, { y, size: 52, color: '#C7C9CD', maxW: 756, css: 'left:36px;right:36px' }); lines.push({ L, p }); y += 80;
+      const box = $('div', 'abs', c, `left:${(828 - 560) / 2}px;top:${y}px;width:560px;height:81px;overflow:hidden`); const im = $('img', '', box, 'position:absolute;right:0;top:0;width:560px'); im.src = OPT.LOGO;
+      U.push(t => { box.style.clipPath = `inset(0 0 0 ${(1 - ease(lin(t, p.at, p.at + .8))) * 100}%)`; box.style.opacity = t >= p.at ? 1 : 0; }); y += 120; return; }
+    if (p.type === 'title') { const pl = $('div', 'plate', c, `left:${(828 - 560) / 2}px;top:${y}px;width:560px;height:130px;background:#0A0A0A;border:1px solid rgba(246,243,242,.1)`); const im = $('img', '', pl, 'width:490px'); im.src = OPT.LOGO;
+      const t1 = $('div', 'abs lat', c, `left:0;right:0;top:${y + 160}px;text-align:center;font-size:150px;line-height:1;color:#F6F3F2;direction:ltr`, 'WHITE FRIDAY');
+      const t2 = $('div', 'abs lat', c, `left:0;right:0;top:${y + 310}px;text-align:center;font-size:150px;line-height:1;color:#C4321F;direction:ltr`, 'FESTIVAL');
+      U.push(t => { pl.style.clipPath = `inset(0 0 0 ${(1 - ease(lin(t, TITLE, TITLE + .8))) * 100}%)`; apply(t1, pose(t, { at: 14.0, dy: 30, s0: 1.08 })); apply(t2, pose(t, { at: 14.78, dy: 30, s0: 1.08 })); });
+      y += 500; return; }
+    if (p.type === 'end') return;
+    const big = p.w.some(w => w[2] === 'k') && p.w.length <= 3;
+    const L = OPT.phraseLine(c, p, { y, size: big ? 84 : 60, color: dark ? '#F6F3F2' : '#151515', maxW: 756, css: 'left:36px;right:36px' });
+    L.ws.forEach(w => { if (w.f === 's') w.sl = $('span', 'stl', w.m); });
+    lines.push({ L, p }); y += big ? 118 : 90;
+  });
+  const H = y + 40; sh.style.height = c.style.height = H + 'px'; c.style.position = 'absolute'; c.style.inset = '0';
+  return { sh, c, H, s, lines, dark };
+});
+// stack the feed, then each scene scrolls its card to the frame's centre (cards taller than the frame align their top)
+let acc = 520; cards.forEach(k => { k.y = acc; k.sh.style.top = acc + 'px'; acc += k.H + 56; });
+const target = k => k.H > 1100 ? k.y - 330 : k.y + k.H / 2 - 940;
+U.push(t => {
+  let s = SCENES.findIndex(w => t >= w[0] && t < w[1]); if (s < 0) s = t >= END ? cards.length - 1 : 0;
+  const prev = cards[Math.max(0, s - 1)], cur = cards[s], at = SCENES[s][0];
+  const k = ease(lin(t, at - .05, at + .55)), ov = settle(lin(t, at + .3, at + 1.2), .05);   // scroll + small overshoot
+  const y = s === 0 ? target(cur) : lerp(target(prev), target(cur), k) + ov * (target(cur) - target(prev)) * .4;
+  WD.style.transform = `translateY(${-y}px)`;
+  cards.forEach(c => { const a = c.s === s ? 1 : c.s < s ? .4 : (c.dark ? .12 : .3); c.sh.style.opacity = a; c.sh.style.transform = `scale(${c.s === s ? 1 : .96})`; });   // past cards readable-dim, upcoming barely there
+  cur.lines.forEach(({ L, p }) => { L.ws.forEach(w => { maskRise(w.i, t, w.at); if (w.sl) { const q = ease(lin(t, p.strike, p.strike + .3)); w.sl.style.transform = `scaleX(${q})`; w.i.style.opacity = lerp(1, .45, q); } }); });
+  cards.forEach(c => { if (c.s < s) c.lines.forEach(({ L }) => L.ws.forEach(w => { w.i.style.transform = 'none'; w.i.style.opacity = 1; })); if (c.s > s) c.lines.forEach(({ L }) => L.ws.forEach(w => { w.i.style.opacity = 0; })); });
+});
+// fixed chrome over the feed: the wordmark on a charcoal plate + url (kit light frame)
+const plate = $('div', 'plate', ST, 'left:390px;top:200px;width:300px;height:76px'); const pim = $('img', '', plate, 'width:256px'); pim.src = OPT.LOGO;
+const fade = $('div', 'abs', ST, 'left:0;right:0;top:0;height:330px;background:linear-gradient(#F6F3F2 55%,rgba(246,243,242,0))'); ST.insertBefore(fade, plate);
+const fadeB = $('div', 'abs', ST, 'left:0;right:0;bottom:0;height:300px;background:linear-gradient(rgba(246,243,242,0),#F6F3F2 60%)');
+const url = $('div', 'abs', ST, 'left:0;right:0;top:1520px;text-align:center;font-size:26px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
+// END card replaces the feed (hold 3.1 s)
+(() => { const g = $('div', 'abs', ST, 'inset:0;background:#F6F3F2');
+  const pl = $('div', 'plate', g, 'left:200px;top:700px;width:680px;height:160px'); const im = $('img', '', pl, 'width:600px'); im.src = OPT.LOGO;
+  const t1 = $('div', 'abs lat', g, 'left:0;right:0;top:900px;text-align:center;font-size:110px;color:#151515;direction:ltr', 'WHITE FRIDAY <span style="color:#C4321F">FESTIVAL</span>');
+  const L = OPT.phraseLine(g, { w: [['استنوا', END + .7], ['البوست', END + .78], ['النهاردة', END + .86, 'k']] }, { y: 1060, size: 60, color: '#151515' });
+  const u = $('div', 'abs', g, 'left:0;right:0;top:1170px;text-align:center;font-size:36px;font-weight:500;color:#5C5F66;direction:ltr', 'sabergroupacademy.com');
+  U.push(t => { const v = t >= END - .3; g.style.display = v ? '' : 'none'; plate.style.opacity = url.style.opacity = v ? 0 : 1; if (!v) return;
+    g.style.clipPath = `inset(${(1 - ease(lin(t, END - .3, END + .2))) * 100}% 0 0 0)`; pl.style.clipPath = `inset(0 0 0 ${(1 - ease(lin(t, END, END + .8))) * 100}%)`;
+    apply(t1, pose(t, { at: END + .35, dy: 24 })); OPT.words(L, t); apply(u, pose(t, { at: END + 1.0, dy: 12 })); }); })();
+window.render = t => U.forEach(f => f(t));
+window.ready = OPT.ready();
+</script></body></html>
