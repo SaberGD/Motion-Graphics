@@ -1,5 +1,5 @@
 {
- "dur": 26.85,
+ "dur": 27.39,
  "vo": {
   "file": "vo/pwa_vo_android_en.flac",
   "at": 0,
@@ -70,31 +70,31 @@
    "rate": 1.0
   },
   {
-   "t": 15.985,
+   "t": 16.128,
    "file": "../../reels/library/sfx/tick_004.ogg",
    "g": -34,
    "rate": 1.0
   },
   {
-   "t": 16.235,
+   "t": 16.378,
    "file": "../../reels/library/sfx/maximize_008.ogg",
    "g": -31,
    "rate": 1.0
   },
   {
-   "t": 19.66,
+   "t": 19.92,
    "file": "../../reels/library/sfx/drop_003.ogg",
    "g": -29,
    "rate": 1.0
   },
   {
-   "t": 23.7,
+   "t": 24.24,
    "file": "../../reels/library/sfx/confirmation_004.ogg",
    "g": -30,
    "rate": 1.0
   },
   {
-   "t": 23.68,
+   "t": 24.22,
    "file": "../../reels/library/sfx/bong_001.ogg",
    "g": -33,
    "rate": 0.8
