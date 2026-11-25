@@ -1,0 +1,36 @@
+    <!-- portal: help tab (StudentPortal.tsx portal-panel-help) -->
+    <div class="layer portal" id="help">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll" id="hpScroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>المساعدة</b></div><span class="sbtn">حسابي</span></div>
+        <div class="hc" id="hWa"><span class="hk grn">تواصل مباشر وتكنيكال سيبورت</span><h3>جروب الواتس آب التفاعلي</h3>
+          <p>جروب تفاعلي مغلق لطلاب ومحاضري المجموعة، يتم فيه تبادل المناقشات المباشرة، وحل البجات والأخطاء التكنيكال.</p><span class="hb grn">دخول جروب الواتس آب <svg><use href="#i-ext"/></svg></span></div>
+        <div class="hc" id="hRec"><span class="hk red">تسجيلات ريكوردات المحاضرات</span><h3>قناة ريكوردات المحاضرات</h3>
+          <p>هذه القناة مخصصة لرفع وتسجيل المحاضرات الأسبوعية والمسجلة مباشرة عقب انتهائها.</p><span class="hb red">فتح قناة الريكوردات <svg><use href="#i-ext"/></svg></span></div>
+        <div class="hc acc" id="hAcc"><span class="hk amb">بياناتك في مكان واحد</span><h3>حسابك وتقاريرك</h3>
+          <span class="hb2" id="hMe">بياناتي الشخصية (تعديل رقم الهواتف/الواتس)</span>
+          <span class="hb2" id="hRep">تحميل تقرير المهام المتأخرة (Missing Tasks)</span></div>
+      </div>
+      <div class="mbub" id="mBub">أهلاً أحمد! أنا مارو<br>اسألني عن محاضراتك وتقييمك ونقاطك.</div>
+      <div class="mfab" id="mFab"><img src="../assets/maro/body-wave.webp"><span>MARO</span></div>
+      <div class="nav"><span><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span><i></i>تقدمي</span><span><i></i>المشروع</span><span class="on" id="navHelp2"><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- Maro, the assistant panel (components/maro/MaroAssistant.tsx) -->
+    <div class="layer portal" id="maro">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <section class="mpanel">
+        <header class="mhead"><img id="mFace" src="../assets/maro/happy.webp"><div><b>مارو</b><small><i></i><span id="mSub">المساعد الذكي · نص فقط</span></small></div><span class="x">✕</span></header>
+        <div class="mbody">
+          <div class="mempty" id="mEmpty">أهلاً أحمد! أنا مارو<br>بجاوب من بياناتك إنت بس داخل البوابة.</div>
+          <div class="mmsg me" id="mQ"><p>عليا تاسكات ناقصة؟</p></div>
+          <div class="mmsg bot think" id="mThink"><span class="dots"><i></i><i></i><i></i></span><span>بجيب تاسكاتك…</span></div>
+          <div class="mmsg bot" id="mA"><p>أيوه، عندك تاسك واحد ناقص:</p><p>• <b>المحاضرة 3: الألوان والتكوين</b>، مطلوب تسليمه.</p><p>سلّمه في توبيكك على تليجرام قبل الديدلاين.</p>
+            <small id="mUsed">اعتمدت على: تاسكاتك</small></div>
+        </div>
+        <footer class="mfoot">
+          <div class="mform"><span class="ta" id="mTa"><span id="mTyped"></span><i class="caret" id="mCaret"></i><span class="tph" id="mPh">اكتب سؤالك…</span></span><span class="send"><svg><use href="#i-plane"/></svg></span></div>
+          <p class="mnote" id="mNote">مارو بيقرأ بس ومش بيعدّل أي بيانات. راجع الأرقام المهمة بنفسك.</p>
+        </footer>
+      </section>
+    </div>

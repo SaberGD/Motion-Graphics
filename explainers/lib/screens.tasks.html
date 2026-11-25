@@ -1,0 +1,69 @@
+    <!-- portal: overview with the red "deliver" button (pages/StudentPortal.tsx, .sg-portal-deliver) -->
+    <div class="layer portal" id="pHome">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>بوابة الطالب</b></div><span class="sbtn">حسابي</span></div>
+        <div class="home-hero"><div><p>مساحة التعلم</p><h1>أهلاً أحمد</h1></div></div>
+        <div class="card next"><span class="tag">المحاضرة القادمة</span><h4>المحاضرة رقم 3: الألوان والتكوين</h4>
+          <div class="meta"><span>التاريخ:<b>2026-12-06</b></span><span>الوقت:<b>09:00 PM</b></span><span>المدرب:<b>م. محمد</b></span></div></div>
+        <a class="deliver" id="bDeliver"><svg><use href="#i-plane"/></svg><span><strong>سلّم التطبيق المطلوب منك في المحاضرة</strong><small>يفتح توبيكك على تليجرام لتسليم تطبيق المحاضرة</small></span><svg class="ext"><use href="#i-ext"/></svg></a>
+        <div class="ostats"><div><span>الحضور</span><b>100%</b><small>2 من 2 محاضرة</small></div><div><span>نقاطك</span><b>35</b><small>تفاصيل التقييم في «تقدمي»</small></div><div><span>رحلتك</span><b>2<small> / 16</small></b><small>محاضرة مكتملة</small></div></div>
+      </div>
+      <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- telegram: the student's own topic, after sending the work -->
+    <div class="layer tg" id="myT">
+      <div class="chatbg"></div>
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="tgh"><span class="back"><svg><use href="#i-back"/></svg>Topics</span><div class="ttl"><b>أحمد محمد - 123456</b><span>2614 SG-Graphic-Beginners</span></div><div class="av" style="background:#3390ec;font:800 16px Taj">أ</div></div>
+      <div class="msgs">
+        <div class="b in"><span class="sender">Saber Group Academy</span>أهلاً بيك في عيلة صابر جروب ♥ عرفنا بنفسك ومجالك، ولو ليك أعمال سابقة يشرفنا تشاركنا بيها يا <span class="mention">@ahmed_m</span><span class="tm">9:41</span></div>
+        <div class="b in" id="w2"><span class="sender">Saber Group Academy</span>هنا هيكون المكان اللي هتسلّم فيه التاسكات الخاصة بيك، وهنتابعك من خلاله يا <span class="mention">@ahmed_m</span><span class="tm">9:41</span></div>
+        <div class="b out photo" id="sImg"><div class="art"><i></i><i></i><i></i></div><span class="cap">تاسك محاضرة 2</span><span class="tm">8:12 PM ✓✓</span></div>
+        <div class="b out file" id="sFile"><span class="fic">PSD</span><span class="fn"><b>poster_lecture2.psd</b><small>18.4 MB</small></span><span class="tm">8:13 PM ✓✓</span></div>
+      </div>
+      <div class="bottombar"><div class="inputbar"><span class="clip">📎</span><i>Message</i></div></div>
+    </div>
+
+    <!-- telegram: pinned rules, message 2 (group_topics_ar.json) -->
+    <div class="layer tg" id="rules2">
+      <div class="chatbg"></div>
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="tgh"><span class="back"><svg><use href="#i-back"/></svg>Topics</span><div class="ttl"><b>القواعد العامة</b><span>2614 SG-Graphic-Beginners</span></div><div class="av" style="background:#e2361d;font:800 18px Taj">!</div></div>
+      <div class="pinbar"><i></i><div><b>Pinned Message</b><span>تعليمات الحضور وتسليم التاسكات</span></div></div>
+      <div class="msgs" style="top:150px">
+        <div class="b in rule-msg" id="rule2"><span class="sender">Saber Group Academy</span>
+          <b>تعليمات الحضور وتسليم التاسكات</b>
+          <div class="rsec">ثانيًا: مواعيد تسليم التاسكات</div>
+          <div class="rl" id="ruleDead">• الـ Deadline الأساسي لأي تاسك هو <b>قبل المحاضرة التالية بيوم، الساعة 8 مساءً</b>.</div>
+          <div class="rl" id="ruleOther">• لو اتحدد موعد مختلف مع التاسك، بنلتزم بالموعد المحدد.</div>
+          <div class="rl">• الالتزام بالمواعيد مهم جدًا علشان نقدر نراجع شغلكم ونديكم Feedback مناسب.</div>
+          <span class="tm">9:00</span></div>
+      </div>
+      <div class="bottombar"><div class="inputbar"><i>Message</i></div></div>
+    </div>
+
+    <!-- portal: lectures tab, one lecture row (components/portal/PortalLectureList.tsx) -->
+    <div class="layer portal" id="lect">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>المحاضرات</b></div><span class="sbtn">حسابي</span></div>
+        <p class="ltool">كل محاضرة بسجل واحد: الحضور، التطبيق، التسجيل والملاحظات.</p>
+        <div class="lrow" id="lRow">
+          <div class="lid"><span class="num">02</span><div><h3>المحاضرة 2: أساسيات الفوتوشوب</h3><p>2026-11-29</p></div></div>
+          <div class="badges"><span class="bdg ok">الحضور: حضرت</span><span class="bdg warn" id="bdgTask">التطبيق: مطلوب تسليمه</span><span class="bdg ok" id="bdgDone">✓ التطبيق: تم التسليم</span></div>
+          <div class="ldet">
+            <h4>التطبيق المطلوب</h4><p>بوستر بمقاس A4 بالأدوات اللي اتشرحت في المحاضرة.</p>
+            <span class="lbtn2">افتح توبيك التسليم <svg><use href="#i-ext"/></svg></span>
+            <p class="muted" id="lMuted">التسليم على تليجرام؛ فتح الرابط لا يغيّر حالة التسليم.</p>
+            <div id="lNotes"><h4>ملاحظات تساعدك تتطور</h4><p id="noteTxt">مفيش ملاحظات من المدرب على المحاضرة دي حتى الآن.</p></div>
+          </div>
+        </div>
+        <div class="lrow" style="margin-top:10px">
+          <div class="lid"><span class="num">01</span><div><h3>المحاضرة 1: مقدمة الكورس</h3><p>2026-11-22</p></div></div>
+          <div class="badges" style="margin-bottom:0"><span class="bdg ok">الحضور: حضرت</span><span class="bdg ok">✓ التطبيق: تم التسليم</span></div>
+        </div>
+      </div>
+      <div class="nav"><span><i></i>الرئيسية</span><span class="on"><i></i>المحاضرات</span><span><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>تاب المحاضرات</title>
+<link rel="stylesheet" href="../lib/sg.css">
+<link rel="stylesheet" href="../lib/ui.css">
+<style>
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 50px; display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 32px 0; font: 700 15px -apple-system, Plex; direction: ltr; z-index: 40; }
+  .status .icons { display: flex; gap: 6px; align-items: center; }
+  .status .batt { width: 24px; height: 12px; border: 2px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
+  .status .batt::after { content: ''; position: absolute; inset: 1px 4px 1px 1px; background: currentColor; border-radius: 1px; }
+  .login .status, .portal .status { color: #fff; }
+  .ostats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+  .ostats div { background: #1b1718; border: 1px solid #2a2425; border-radius: 13px; padding: 9px 6px; display: grid; gap: 3px; font: 600 9px Plex; color: #9a908e; }
+  .ostats b { font: 800 17px Taj; color: #fff; } .ostats small { font: 500 8px Plex; color: #7d7472; }
+  .ltbar p { font: 500 11px/1.6 Plex; color: #9a908e; }
+  .ltbtns { display: flex; gap: 7px; margin: 9px 0 11px; }
+  .ub { flex: 1; text-align: center; font: 700 11px Plex; border-radius: 11px; padding: 8px 6px; border: 1px solid #3a3132; color: #e7e2e1; background: #1b1718; }
+  .ub.pri { background: #c4321f; border-color: #c4321f; color: #fff; }
+  .srow { display: flex; gap: 7px; }
+  .search { flex: 1; height: 38px; border-radius: 12px; border: 1px solid #3a3132; background: #151213; display: flex; align-items: center; gap: 7px; padding: 0 10px; position: relative; }
+  .search svg { width: 16px; height: 16px; fill: none; stroke: #9a908e; stroke-width: 2; flex: none; }
+  .search .q { font: 700 13px Plex; color: #fff; } .search .sph { font: 500 11.5px Plex; color: #6f6564; position: absolute; right: 34px; }
+  .search .caret { width: 2px; height: 17px; background: #fb923c; display: inline-block; opacity: 0; }
+  .sort { height: 38px; border-radius: 12px; border: 1px solid #3a3132; background: #151213; font: 700 11px Plex; color: #c9c0be; padding: 0 10px; display: grid; place-items: center; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 8px; }
+  .chips span { font: 700 11px Plex; color: #c9c0be; border: 1px solid #3a3132; border-radius: 999px; padding: 5px 11px; }
+  .chips span.on { background: #fb923c; border-color: #fb923c; color: #1a0f08; }
+  .cnt { font: 600 10.5px Plex; color: #8d8482; margin-bottom: 8px; }
+  .lrow2 { background: #1b1718; border: 1px solid #2a2425; border-radius: 16px; padding: 11px 12px; margin-bottom: 9px; }
+  .lid { display: flex; gap: 10px; align-items: center; } .lid .num { font: 800 20px Taj; color: #fb923c; }
+  .lid h3 { font: 800 14.5px Taj; } .lid p { font: 500 10px Plex; color: #9a908e; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 9px 0 8px; }
+  .bdg { font: 700 11px Plex; border-radius: 999px; padding: 4px 10px; }
+  .bdg.ok { color: #86efac; background: rgba(16,185,129,.15); } .bdg.warn { color: #fcd34d; background: rgba(245,158,11,.15); }
+  .racts { display: flex; } .watch { font: 700 11.5px Plex; color: #fff; border: 1px solid #3a3132; border-radius: 10px; padding: 6px 12px; background: #231d1e; }
+  .pend { font: 600 11px Plex; color: #8d8482; padding: 6px 0; }
+  .sum { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #2a2425; margin-top: 9px; padding-top: 8px; font: 700 11.5px Plex; color: #e7e2e1; }
+  .sum i { font-style: normal; color: #9a908e; display: inline-block; }
+  .det { overflow: hidden; height: 0; }
+  .det h4 { font: 800 13px Taj; margin: 10px 0 3px; } .det p { font: 500 11.5px/1.7 Plex; color: #c9c0be; }
+  .det p.muted { font-size: 10px; color: #8d8482; }
+  .lbtn2 { display: inline-flex; gap: 6px; align-items: center; margin: 8px 0 5px; background: #c4321f; color: #fff; font: 700 11px Plex; border-radius: 10px; padding: 7px 11px; }
+  .lbtn2 svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2; }
+  #pdf { background: #e5e5ea; }
+  .pdfbar { position: absolute; top: 50px; left: 0; right: 0; height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; background: #f9f9f9; border-bottom: 1px solid #d1d1d6; font: 400 16px -apple-system, sans-serif; color: #007aff; }
+  .pdfbar b { font: 600 13px Plex; color: #000; }
+  .pdfpage { position: absolute; top: 120px; left: 14px; right: 14px; background: #fff; padding: 20px 14px; box-shadow: 0 6px 20px rgba(0,0,0,.15); direction: rtl; font-family: Plex; color: #0f172a; }
+  .phd { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; }
+  .phd h1 { font: 800 17px -apple-system, sans-serif; } .phd h2 { font: 700 12px Plex; color: #334155; margin-top: 5px; }
+  .pinfo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0; }
+  .pinfo div { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 7px 9px; }
+  .pinfo small { display: block; font: 600 9px Plex; color: #64748b; } .pinfo b { font: 800 13px Plex; }
+  .pdfpage table { width: 100%; border-collapse: collapse; font: 600 9.5px Plex; }
+  .pdfpage th { background: #0f172a; color: #fff; padding: 6px 3px; font-weight: 700; } .pdfpage td { border-bottom: 1px solid #e2e8f0; padding: 8px 3px; text-align: center; }
+  .pdfpage td.rem { color: #dc2626; font-weight: 800; }
+  .pwarn { margin-top: 12px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 8px; padding: 9px; font: 700 10.5px/1.6 Plex; }
+</style>
+</head>
+<body>
+<!--#include ../lib/icons.svg.html-->
+<div id="stage" class="layoutB">
+  <svg id="corners" width="1080" height="1920" viewBox="0 0 1080 1920"><g fill="none" stroke-width="2"><path stroke="#FF8A1F" d="M86 140v-37l17-17h37"/><path stroke="#C4321F" d="M994 1780v37l-17 17h-37"/></g></svg>
+  <div id="logo"><img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP"></div>
+  <div id="stepTag"><b id="stepNum">▤</b><span id="stepLbl">LECTURES</span></div>
+  <div id="head"></div>
+
+  <div id="phone"><div id="screen">
+    <div class="notch"></div>
+<!--#include ../lib/screens.telegram.html-->
+<!--#include ../lib/screens.lectures.html-->
+<!--#include ../lib/screens.groups.html-->
+    <div id="ring"></div><div class="tapring" id="ripple"></div><div class="tapdot" id="finger"></div>
+  </div></div>
+
+  <div id="cap"></div>
+  <div id="foot"><span class="url">portal.sabergroupacademy.com</span><span class="lbl">SABER GROUP ACADEMY</span></div>
+
+  <div id="end">
+    <img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP">
+    <h2>بوابة الطالب</h2>
+    <div class="sub">كل محاضرة… في سطر واحد</div>
+    <div class="rule"></div>
+    <p>portal.sabergroupacademy.com</p>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const show = (sel, on) => { const el = $(sel); el.style.display = on ? '' : 'none'; return el; };
+const FPS = 25, IN = 12 / FPS, OUT = 8 / FPS, STAG = 2 / FPS, PHONE_K = 1.3;
+function bez(x1, y1, x2, y2) {
+  return (x) => { let t = x; for (let i = 0; i < 6; i++) { const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3 - x; const d = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t; if (Math.abs(d) < 1e-6) break; t -= cx / d; t = Math.min(1, Math.max(0, t)); } return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3; };
+}
+const ease = bez(0.16, 1, 0.3, 1);
+const inX = (t, t0) => ease(Math.min(1, Math.max(0, (t - t0) / IN)));
+
+const HEADS = {
+  h:  { tag: ['▤', 'LECTURES'], eyebrow: 'LECTURES TAB', title: 'تاب المحاضرات', sub: 'الحضور والتطبيق والتسجيل… في سطر' },
+  f1: { tag: ['01', 'FIND'], eyebrow: 'SEARCH & FILTER', title: 'دوّر وفلتر', sub: 'بالاسم أو الرقم… أو بالحالة' },
+  r1: { tag: ['02', 'WATCH'], eyebrow: 'RECORDING', title: 'شاهد التسجيل', sub: 'أول ما يترفع' },
+  d1: { tag: ['03', 'DETAILS'], eyebrow: 'TASK & NOTES', title: 'المطلوب والملاحظات', sub: 'التطبيق… ولينك التسليم… وملاحظات المدرب' },
+  x1: { tag: ['04', 'REPORT'], eyebrow: 'PDF REPORT', title: 'تقرير المتأخر', sub: 'كل اللي لسه مطلوب منك' },
+};
+const FILTERS = { fAll: () => true, fMissing: (k) => k.includes('missing'), fDone: (k) => k.includes('done'), fRec: (k) => k.includes('rec') };
+
+window.SCENE = {
+  setup(E) {
+    const W = E.W, L = E.L, T = (this.T = {});
+    const head = $('#head');
+    this.heads = Object.entries(HEADS).map(([id, h]) => {
+      const el = document.createElement('div');
+      el.className = 'blk';
+      el.innerHTML = `<div class="eyebrow">${h.eyebrow}</div><h1>${h.title}</h1><p>${h.sub}</p><div class="rule"></div>`;
+      head.appendChild(el);
+      return { id, el, h, parts: [...el.children], t0: L(id).start - 0.15 };
+    });
+    this.heads.forEach((b, i) => (b.t1 = this.heads[i + 1] ? this.heads[i + 1].t0 : E.tl.outro_start));
+    T.type0 = W('f1', 1); T.clear = W('f1', 7) - 0.3;
+    T.fMissing = W('f1', 8); T.fDone = W('f1', 10); T.fRec = W('f1', 13); T.fAll = L('r1').start - 0.2;
+    T.watch = W('r1', 10) + 0.1;
+    T.open = W('d1', 1) + 0.1; T.close = L('x1').start - 0.2;
+    T.report = W('x1', 6) + 0.1;
+    T.end = E.tl.outro_start;
+    this.beats = [
+      { t: 0, layer: 'lt', focus: '#navLect', ring: false },
+      { t: W('h', 1) - 0.1, layer: 'lt', focus: '#navLect' },
+      { t: W('h', 4) - 0.1, layer: 'lt', focus: '#row3' },
+      { t: W('h', 9) - 0.1, layer: 'lt', focus: '#b3Att' },
+      { t: W('h', 10) - 0.1, layer: 'lt', focus: '#b3Task' },
+      { t: W('h', 11) - 0.1, layer: 'lt', focus: '#r3Rec' },
+      { t: L('f1').start - 0.15, layer: 'lt', focus: '#lSearch' },
+      { t: T.clear, layer: 'lt', focus: '#chips' },
+      { t: L('r1').start - 0.15, layer: 'lt', focus: '#b2Att' },
+      { t: W('r1', 5) - 0.1, layer: 'lt', focus: '#b2Task' },
+      { t: W('r1', 8) - 0.1, layer: 'lt', focus: '#r2Rec' },
+      { t: T.watch + 0.4, layer: 'feed', focus: '#p2' },
+      { t: L('d1').start - 0.15, layer: 'lt', focus: '#sum2' },
+      { t: W('d1', 5) - 0.1, layer: 'lt', focus: '#dTask' },
+      { t: W('d1', 8) - 0.1, layer: 'lt', focus: '#dLink' },
+      { t: W('d1', 10) - 0.1, layer: 'lt', focus: '#dNotes' },
+      { t: L('x1').start - 0.15, layer: 'lt', focus: '#bReport' },
+      { t: W('x1', 10) - 0.1, layer: 'pdf', focus: '#pdfTable' },
+      { t: W('x1', 13) - 0.1, layer: 'pdf', focus: '#pdfWarn' },
+    ];
+    this.taps = [{ t: T.fMissing, sel: '#fMissing' }, { t: T.fDone, sel: '#fDone' }, { t: T.fRec, sel: '#fRec' }, { t: T.watch, sel: '#r2Rec' }, { t: T.open, sel: '#sum2' }, { t: T.report, sel: '#bReport' }];
+    this.taps.forEach((p) => E.ev(p.t, 'tap'));
+    E.ev(T.type0 + 0.1, 'key'); E.ev(T.type0 + 0.35, 'key');
+  },
+
+  state(t) {
+    const T = this.T;
+    show('#fwdToast', false);
+    // search: type "2" then clear
+    const typing = t >= T.type0 && t < T.clear;
+    $('#sq').textContent = typing ? (t >= T.type0 + 0.35 ? 'محاضرة 2'.slice(0) : 'محاضرة') : '';
+    $('#sph').style.display = typing ? 'none' : '';
+    $('#sCaret').style.opacity = typing ? (Math.floor(t * 2.5) % 2 ? 0 : 1) : 0;
+    // filter chip
+    let f = 'fAll';
+    if (t >= T.fMissing && t < T.fAll) f = t >= T.fRec ? 'fRec' : t >= T.fDone ? 'fDone' : 'fMissing';
+    document.querySelectorAll('#chips span').forEach((c) => c.classList.toggle('on', c.id === f));
+    let n = 0;
+    document.querySelectorAll('.lrow2').forEach((r) => {
+      let on = FILTERS[f](r.dataset.k);
+      if (typing && t >= T.type0 + 0.35) on = r.id === 'row2';
+      r.style.display = on ? '' : 'none'; if (on) n++;
+    });
+    $('#cnt').textContent = `${n} من 3 محاضرة`;
+    // details of lecture 2
+    const op = inX(t, T.open) * (1 - E.k(t, T.close, T.close + 0.3));
+    const det = $('#det2'); det.style.height = det.scrollHeight * op + 'px';
+    $('#chev2').style.transform = `rotate(${op * 180}deg)`;
+    $('#ltScroll').style.transform = `translateY(${-op * 250}px)`;
+  },
+
+  render(t, E) {
+    const T = this.T;
+    this.state(t);
+
+    let bi = 0;
+    this.beats.forEach((b, i) => { if (t >= b.t) bi = i; });
+    const beat = this.beats[bi], prevBeat = this.beats[bi - 1];
+    $('#phone').style.transform = `scale(${PHONE_K})`;
+    document.querySelectorAll('#screen > .layer').forEach((l) => { l.style.display = l.id === beat.layer ? 'block' : 'none'; l.style.opacity = 1; l.style.transform = 'none'; });
+    const lay = document.getElementById(beat.layer);
+    if (bi > 0 && prevBeat.layer !== beat.layer) {
+      const x = inX(t, beat.t);
+      lay.style.opacity = x; lay.style.transform = `translateY(${(1 - x) * 10}px)`;
+    }
+    const sr = $('#screen').getBoundingClientRect(), sk = sr.width / 390;
+    // orange ring on what the voice talks about
+    const ring = $('#ring');
+    ring.style.opacity = 0;
+    const fe = beat.ring !== false && beat.focus ? lay.querySelector(beat.focus) : null;
+    if (fe && fe.offsetParent) {
+      const r = fe.getBoundingClientRect(), pad = 5;
+      ring.style.left = (r.left - sr.left) / sk - pad + 'px'; ring.style.top = (r.top - sr.top) / sk - pad + 'px';
+      ring.style.width = r.width / sk + pad * 2 + 'px'; ring.style.height = r.height / sk + pad * 2 + 'px';
+      ring.style.opacity = inX(t, beat.t + 0.2) * 0.95;
+    }
+    // taps
+    const f = $('#finger'), rp = $('#ripple');
+    f.style.opacity = 0; rp.style.opacity = 0;
+    for (const tap of this.taps) {
+      if (t < tap.t - 0.45 || t > tap.t + 0.5) continue;
+      const el = $(tap.sel);
+      if (!el || !el.offsetParent) continue;
+      const r = el.getBoundingClientRect();
+      const x = (r.left + r.width / 2 - sr.left) / sk, y = (r.top + r.height / 2 - sr.top) / sk;
+      const a = ease(E.k(t, tap.t - 0.45, tap.t - 0.1));
+      f.style.left = x + 'px'; f.style.top = y + (1 - a) * 18 + 'px';
+      f.style.opacity = Math.min(a, 1 - E.k(t, tap.t + 0.2, tap.t + 0.45));
+      f.style.transform = `scale(${t >= tap.t - 0.05 && t < tap.t + 0.1 ? 0.86 : 1})`;
+      if (t >= tap.t) { const q = E.k(t, tap.t, tap.t + 0.5); rp.style.left = x + 'px'; rp.style.top = y + 'px'; rp.style.opacity = 1 - q; rp.style.transform = `scale(${1 + q * 1.4})`; }
+    }
+
+    // head blocks: old exits (8f), then new enters (12f, 2f stagger)
+    let cur = this.heads[0];
+    this.heads.forEach((b) => {
+      if (t >= b.t0 && t < b.t1) cur = b;
+      const first = b === this.heads[0];
+      const vis = t >= b.t0 + (first ? 0 : OUT) && t < b.t1 + OUT;
+      b.el.style.display = vis ? 'block' : 'none';
+      if (!vis) return;
+      const out = t >= b.t1 ? E.k(t, b.t1, b.t1 + OUT) : 0;
+      b.parts.forEach((p, i) => {
+        const x = first && t < 0.6 ? inX(t, 0.2 + i * STAG) : inX(t, b.t0 + (first ? 0 : OUT) + i * STAG);
+        p.style.opacity = x * (1 - out); p.style.transform = `translateY(${(1 - x) * 18}px)`;
+      });
+    });
+    $('#stepNum').textContent = cur.h.tag[0]; $('#stepLbl').textContent = cur.h.tag[1];
+
+    // captions
+    E.pages.forEach((p) => {
+      const on = t >= p.t0 && t < p.t1;
+      p.el.style.display = on ? 'flex' : 'none';
+      if (!on) return;
+      const x = inX(t, p.t0), out = E.k(t, p.t1 - OUT, p.t1);
+      p.el.style.opacity = x * (1 - out); p.el.style.transform = `translateY(${(1 - x) * 12}px)`;
+      p.words.forEach((w) => { w.el.style.opacity = 1; w.el.style.transform = 'none'; w.el.classList.toggle('now', t >= w.s && t < w.e + 0.05); });
+    });
+
+    const logoIn = ease(E.k(t, 0, 20 / FPS));
+    $('#logo').style.opacity = logoIn; $('#logo').style.transform = `translateY(${(1 - logoIn) * 14}px)`;
+    const endIn = ease(E.k(t, T.end, T.end + 20 / FPS));
+    $('#end').style.opacity = endIn; $('#end img').style.transform = `translateY(${(1 - endIn) * 14}px)`;
+  },
+};
+</script>
+</body>
+</html>

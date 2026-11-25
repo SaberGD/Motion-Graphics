@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>مشروع التخرج</title>
+<link rel="stylesheet" href="../lib/sg.css">
+<link rel="stylesheet" href="../lib/ui.css">
+<style>
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 50px; display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 32px 0; font: 700 15px -apple-system, Plex; direction: ltr; z-index: 40; }
+  .status .icons { display: flex; gap: 6px; align-items: center; }
+  .status .batt { width: 24px; height: 12px; border: 2px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
+  .status .batt::after { content: ''; position: absolute; inset: 1px 4px 1px 1px; background: currentColor; border-radius: 1px; }
+  .login .status, .portal .status { color: #fff; }
+  .ostats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+  .ostats div { background: #1b1718; border: 1px solid #2a2425; border-radius: 13px; padding: 9px 6px; display: grid; gap: 3px; font: 600 9px Plex; color: #9a908e; }
+  .ostats b { font: 800 17px Taj; color: #fff; } .ostats small { font: 500 8px Plex; color: #7d7472; }
+  #gHome .scroll { zoom: 1.18; }
+  #proj .scroll { zoom: 1.2; }
+  .gp { background: linear-gradient(135deg, #0f172a, rgba(69,10,10,.45), #0f172a); border: 2px solid rgba(239,68,68,.3); border-radius: 24px; padding: 13px 12px; }
+  .gtags { display: flex; flex-wrap: wrap; gap: 5px; } .gt { font: 800 9px Plex; border-radius: 999px; padding: 3px 9px; }
+  .gt.red { background: rgba(239,68,68,.2); color: #fca5a5; border: 1px solid rgba(239,68,68,.3); }
+  .gt.amb { background: rgba(245,158,11,.2); color: #fcd34d; border: 1px solid rgba(245,158,11,.3); }
+  .gt.grn { background: rgba(16,185,129,.2); color: #34d399; border: 1px solid rgba(16,185,129,.3); }
+  .gp h2 { font: 800 19px/1.45 Taj; color: #fff; margin: 9px 0; }
+  .gbtns { display: flex; gap: 6px; } .gbtns span { font: 800 9.5px Plex; border-radius: 10px; padding: 7px 10px; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+  .gbtns .sky { background: rgba(2,132,199,.2); color: #38bdf8; border-color: rgba(14,165,233,.3); }
+  .gdates { background: #0a0a0a; border: 1px solid #1e293b; border-radius: 16px; padding: 10px; margin: 11px 0; }
+  .gdh b { display: block; font: 800 10.5px Plex; color: #fff; } .gdh em { display: block; font: 700 9px Plex; font-style: normal; color: #fb7185; margin: 4px 0 8px; }
+  .gdr { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .gdr div { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 6px 8px; }
+  .gdr small { display: block; font: 600 8.5px Plex; color: #94a3b8; } .gdr b { font: 800 11px Plex; color: #e2e8f0; direction: ltr; display: block; text-align: right; } .gdr b.r { color: #fb7185; }
+  .gsec { background: rgba(15,23,42,.6); border: 1px solid #1e293b; border-radius: 14px; padding: 9px 10px; margin-bottom: 8px; }
+  .gsec h4 { font: 800 10.5px Plex; color: #fca5a5; margin-bottom: 4px; } .gsec.warn h4 { color: #fcd34d; } .gsec p { font: 600 10.5px/1.7 Plex; color: #e2e8f0; } .gsec p b { color: #fcd34d; }
+  .gban { border-radius: 16px; padding: 11px; margin-top: 10px; display: grid; gap: 7px; background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.35); }
+  .gban b { font: 800 11px/1.6 Plex; color: #fcd34d; } .gban p { font: 600 9.5px/1.7 Plex; color: #cbd5e1; }
+  .gban.ok { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.35); } .gban.ok b { color: #34d399; }
+  .gban.ev { background: rgba(99,102,241,.12); border-color: rgba(129,140,248,.4); } .gban.ev b { color: #a5b4fc; }
+  .gsub { justify-self: start; display: inline-flex; gap: 6px; align-items: center; background: #dc2626; color: #fff; font: 800 11px Plex; border-radius: 14px; padding: 9px 14px; }
+  .gsub svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; }
+  .lnk { color: #38bdf8; direction: ltr; unicode-bidi: isolate; } .gedit { justify-self: start; font: 800 10px Plex; color: #e2e8f0; background: #1e293b; border-radius: 12px; padding: 7px 12px; }
+  .sc { display: flex; gap: 8px; align-items: center; } .sc span { font: 800 13px Plex; color: #fff; } .sc .bon { font: 800 10px Plex; color: #fcd34d; background: rgba(245,158,11,.2); border-radius: 999px; padding: 3px 9px; }
+  .gview { justify-self: start; font: 800 10.5px Plex; color: #fff; background: #4f46e5; border-radius: 14px; padding: 9px 14px; }
+  #psub { background: rgba(0,0,0,.75); }
+  .dlg { position: absolute; left: 12px; right: 12px; top: 150px; background: #0f172a; border: 1px solid #334155; border-radius: 26px; padding: 18px 15px; zoom: 1.12; }
+  .dlgh small { font: 800 10px Plex; color: #f87171; } .dlgh h3 { font: 800 15px/1.5 Taj; color: #fff; margin: 4px 0 2px; } .dlgh p { font: 600 10px Plex; color: #fcd34d; margin-bottom: 12px; }
+  .dlg label { display: block; font: 800 10.5px Plex; color: #e2e8f0; margin-bottom: 6px; } .dlg .r { color: #f87171; }
+  .url { height: 40px; border-radius: 12px; background: #0a0a0a; border: 1px solid #334155; display: flex; align-items: center; padding: 0 10px; direction: ltr; position: relative; }
+  .url span { font: 600 11px Plex; color: #fff; } .url .uph { position: absolute; left: 10px; color: #475569; } .url .caret { width: 2px; height: 17px; background: #fb923c; display: inline-block; opacity: 0; }
+  .chk { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.3); border-radius: 14px; padding: 10px; margin: 12px 0; display: grid; gap: 8px; }
+  .chk b { font: 800 10.5px Plex; color: #fcd34d; } .chk div { display: flex; gap: 8px; align-items: flex-start; font: 600 10px/1.6 Plex; color: #e2e8f0; }
+  .chk i { width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid #64748b; flex: none; margin-top: 2px; display: grid; place-items: center; font: 900 10px Plex; font-style: normal; color: #fff; }
+  .chk i.on { background: #10b981; border-color: #10b981; } .chk i.on::after { content: '✓'; }
+  .dbtns { display: flex; gap: 8px; } .dbtns span { flex: 1; text-align: center; font: 800 11.5px Plex; border-radius: 14px; padding: 11px; }
+  .cancel { background: #1e293b; color: #cbd5e1; } .save { background: #dc2626; color: #fff; } .save.dis { opacity: .45; }
+</style>
+</head>
+<body>
+<!--#include ../lib/icons.svg.html-->
+<div id="stage" class="layoutB">
+  <svg id="corners" width="1080" height="1920" viewBox="0 0 1080 1920"><g fill="none" stroke-width="2"><path stroke="#FF8A1F" d="M86 140v-37l17-17h37"/><path stroke="#C4321F" d="M994 1780v37l-17 17h-37"/></g></svg>
+  <div id="logo"><img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP"></div>
+  <div id="stepTag"><b id="stepNum">◆</b><span id="stepLbl">PROJECT</span></div>
+  <div id="head"></div>
+
+  <div id="phone"><div id="screen">
+    <div class="notch"></div>
+<!--#include ../lib/screens.progress.html-->
+<!--#include ../lib/screens.project.html-->
+    <div id="ring"></div><div class="tapring" id="ripple"></div><div class="tapdot" id="finger"></div>
+  </div></div>
+
+  <div id="cap"></div>
+  <div id="foot"><span class="url">portal.sabergroupacademy.com</span><span class="lbl">SABER GROUP ACADEMY</span></div>
+
+  <div id="end">
+    <img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP">
+    <h2>بوابة الطالب</h2>
+    <div class="sub">مشروعك… قبل الديدلاين</div>
+    <div class="rule"></div>
+    <p>portal.sabergroupacademy.com</p>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const show = (sel, on) => { const el = $(sel); el.style.display = on ? '' : 'none'; return el; };
+const FPS = 25, IN = 12 / FPS, OUT = 8 / FPS, STAG = 2 / FPS, PHONE_K = 1.3;
+function bez(x1, y1, x2, y2) {
+  return (x) => { let t = x; for (let i = 0; i < 6; i++) { const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3 - x; const d = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t; if (Math.abs(d) < 1e-6) break; t -= cx / d; t = Math.min(1, Math.max(0, t)); } return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3; };
+}
+const ease = bez(0.16, 1, 0.3, 1);
+const inX = (t, t0) => ease(Math.min(1, Math.max(0, (t - t0) / IN)));
+
+const HEADS = {
+  h:  { tag: ['◆', 'PROJECT'], eyebrow: 'GRADUATION PROJECT', title: 'مشروع التخرج', sub: 'في تاب «المشروع»' },
+  d1: { tag: ['01', 'READ'], eyebrow: 'BRIEF & DEADLINE', title: 'اقرا كويس', sub: 'الفكرة… والمطلوب… والقواعد… والديدلاين' },
+  s1: { tag: ['02', 'SUBMIT'], eyebrow: 'DRIVE / FIGMA', title: 'سلّم مشروعك', sub: 'ارفعه… واضغط التسليم' },
+  l1: { tag: ['03', 'LINK'], eyebrow: 'SUBMISSION FORM', title: 'اللينك والشروط', sub: 'مفتوح للكل… وأكّد الشروط' },
+  e1: { tag: ['04', 'GRADE'], eyebrow: 'EVALUATION', title: 'درجتك من 20', sub: 'وملاحظات المدرب على الديزاين' },
+};
+const TYPE = 'drive.google.com/drive/folders/1aB…';
+
+window.SCENE = {
+  setup(E) {
+    const W = E.W, L = E.L, T = (this.T = {});
+    const head = $('#head');
+    this.heads = Object.entries(HEADS).map(([id, h]) => {
+      const el = document.createElement('div');
+      el.className = 'blk';
+      el.innerHTML = `<div class="eyebrow">${h.eyebrow}</div><h1>${h.title}</h1>${h.sub ? `<p>${h.sub}</p>` : ''}<div class="rule"></div>`;
+      head.appendChild(el);
+      return { id, el, h, parts: [...el.children], t0: L(id).start - 0.15 };
+    });
+    this.heads.forEach((b, i) => (b.t1 = this.heads[i + 1] ? this.heads[i + 1].t0 : E.tl.outro_start));
+    T.tabTap = W('h', 5) - 0.1; T.proj = W('h', 5) + 0.3;
+    T.submit = W('s1', 7) + 0.25; T.dlg = T.submit + 0.4;
+    T.type0 = W('l1', 0) + 0.1; T.type1 = W('l1', 1) + 0.45;
+    T.k = [W('l1', 4) + 0.05, W('l1', 6) + 0.05, W('l1', 7) + 0.05];
+    T.save = W('l1', 9) + 0.05; T.recv = T.save + 0.45;
+    T.eval = W('e1', 3);
+    // scroll keyframes for the project tab
+    this.sk = [[0, 0], [W('d1', 3) - 0.2, 0], [W('d1', 3) + 0.4, 230], [W('d1', 9) - 0.3, 230], [W('d1', 9) + 0.3, 90], [L('s1').start - 0.2, 90], [L("s1").start + 0.4, 420], [T.recv - 0.01, 420], [T.recv, 210], [9999, 210]];
+    T.end = E.tl.outro_start;
+    this.beats = [
+      { t: 0, layer: 'gHome', focus: '#navProj', ring: false },
+      { t: W('h', 4) - 0.2, layer: 'gHome', focus: '#navProj' },
+      { t: T.proj, layer: 'proj', focus: '#pjTitle', ring: false },
+      { t: W('h', 7) - 0.1, layer: 'proj', focus: '#pjTitle' },
+      { t: W('d1', 1) - 0.1, layer: 'proj', focus: '#pjIdea' },
+      { t: W('d1', 3) + 0.2, layer: 'proj', focus: '#pjReq' },
+      { t: W('d1', 5) - 0.1, layer: 'proj', focus: '#pjRules' },
+      { t: W('d1', 9) + 0.2, layer: 'proj', focus: '#pjDead' },
+      { t: W('d1', 10) - 0.1, layer: 'proj', focus: '#pjWarn' },
+      { t: L('s1').start + 0.3, layer: 'proj', focus: '#banNo' },
+      { t: W('s1', 7) - 0.3, layer: 'proj', focus: '#bSubmit' },
+      { t: T.dlg, layer: 'psub', focus: '#uBox', ring: false },
+      { t: T.type0, layer: 'psub', focus: '#uBox' },
+      { t: W('l1', 4) - 0.15, layer: 'psub', focus: '#chkBox' },
+      { t: W('l1', 9) - 0.25, layer: 'psub', focus: '#bSave' },
+      { t: T.recv, layer: 'proj', focus: '#banRecv' },
+      { t: T.eval + 0.1, layer: 'proj', focus: '#pjScore' },
+      { t: W('e1', 8) - 0.1, layer: 'proj', focus: '#bEvalView' },
+    ];
+    this.taps = [{ t: T.tabTap, sel: '#navProj' }, { t: T.submit, sel: '#bSubmit' }, { t: T.k[0], sel: '#k1 i' }, { t: T.k[1], sel: '#k2 i' }, { t: T.k[2], sel: '#k3 i' }, { t: T.save, sel: '#bSave' }];
+    this.taps.forEach((p) => E.ev(p.t, 'tap'));
+    for (let i = 0; i < 6; i++) E.ev(T.type0 + 0.1 + i * 0.12, 'key');
+    E.ev(T.recv, 'success'); E.ev(T.eval, 'ding');
+  },
+
+  state(t) {
+    const T = this.T;
+    // project tab scroll
+    let y = 0;
+    for (let i = 0; i < this.sk.length - 1; i++) {
+      const [a, ya] = this.sk[i], [b, yb] = this.sk[i + 1];
+      if (t >= a && t < b) { y = ya + (yb - ya) * ease(E.k(t, a, b)); break; }
+    }
+    $('#pjScroll').style.transform = `translateY(${-y}px)`;
+    const recv = t >= T.recv, ev = t >= T.eval;
+    show('#banNo', !recv); show('#banRecv', recv && !ev); show('#banEval', ev);
+    show('#stOpen', !recv); show('#stDone', recv);
+    // form
+    const n = Math.round(TYPE.length * E.k(t, T.type0, T.type1));
+    $('#uVal').textContent = TYPE.slice(0, n);
+    $('#uPh').style.display = n ? 'none' : '';
+    $('#uCaret').style.opacity = t >= T.type0 && t < T.k[0] ? (Math.floor(t * 2.5) % 2 ? 0 : 1) : 0;
+    ['#k1 i', '#k2 i', '#k3 i'].forEach((s, i) => $(s).classList.toggle('on', t >= T.k[i]));
+    $('#bSave').classList.toggle('dis', t < T.k[2]);
+  },
+
+  render(t, E) {
+    const T = this.T;
+    this.state(t);
+
+    let bi = 0;
+    this.beats.forEach((b, i) => { if (t >= b.t) bi = i; });
+    const beat = this.beats[bi], prevBeat = this.beats[bi - 1];
+    $('#phone').style.transform = `scale(${PHONE_K})`;
+    document.querySelectorAll('#screen > .layer').forEach((l) => { l.style.display = l.id === beat.layer ? 'block' : 'none'; l.style.opacity = 1; l.style.transform = 'none'; });
+    const lay = document.getElementById(beat.layer);
+    if (bi > 0 && prevBeat.layer !== beat.layer) {
+      const x = inX(t, beat.t);
+      lay.style.opacity = x; lay.style.transform = `translateY(${(1 - x) * 10}px)`;
+    }
+    const sr = $('#screen').getBoundingClientRect(), sk = sr.width / 390;
+    // orange ring on what the voice talks about
+    const ring = $('#ring');
+    ring.style.opacity = 0;
+    const fe = beat.ring !== false && beat.focus ? lay.querySelector(beat.focus) : null;
+    if (fe && fe.offsetParent) {
+      const r = fe.getBoundingClientRect(), pad = 5;
+      ring.style.left = (r.left - sr.left) / sk - pad + 'px'; ring.style.top = (r.top - sr.top) / sk - pad + 'px';
+      ring.style.width = r.width / sk + pad * 2 + 'px'; ring.style.height = r.height / sk + pad * 2 + 'px';
+      ring.style.opacity = inX(t, beat.t + 0.2) * 0.95;
+    }
+    // taps
+    const f = $('#finger'), rp = $('#ripple');
+    f.style.opacity = 0; rp.style.opacity = 0;
+    for (const tap of this.taps) {
+      if (t < tap.t - 0.45 || t > tap.t + 0.5) continue;
+      const el = $(tap.sel);
+      if (!el || !el.offsetParent) continue;
+      const r = el.getBoundingClientRect();
+      const x = (r.left + r.width / 2 - sr.left) / sk, y = (r.top + r.height / 2 - sr.top) / sk;
+      const a = ease(E.k(t, tap.t - 0.45, tap.t - 0.1));
+      f.style.left = x + 'px'; f.style.top = y + (1 - a) * 18 + 'px';
+      f.style.opacity = Math.min(a, 1 - E.k(t, tap.t + 0.2, tap.t + 0.45));
+      f.style.transform = `scale(${t >= tap.t - 0.05 && t < tap.t + 0.1 ? 0.86 : 1})`;
+      if (t >= tap.t) { const q = E.k(t, tap.t, tap.t + 0.5); rp.style.left = x + 'px'; rp.style.top = y + 'px'; rp.style.opacity = 1 - q; rp.style.transform = `scale(${1 + q * 1.4})`; }
+    }
+
+    // head blocks: old exits (8f), then new enters (12f, 2f stagger)
+    let cur = this.heads[0];
+    this.heads.forEach((b) => {
+      if (t >= b.t0 && t < b.t1) cur = b;
+      const first = b === this.heads[0];
+      const vis = t >= b.t0 + (first ? 0 : OUT) && t < b.t1 + OUT;
+      b.el.style.display = vis ? 'block' : 'none';
+      if (!vis) return;
+      const out = t >= b.t1 ? E.k(t, b.t1, b.t1 + OUT) : 0;
+      b.parts.forEach((p, i) => {
+        const x = first && t < 0.6 ? inX(t, 0.2 + i * STAG) : inX(t, b.t0 + (first ? 0 : OUT) + i * STAG);
+        p.style.opacity = x * (1 - out); p.style.transform = `translateY(${(1 - x) * 18}px)`;
+      });
+    });
+    $('#stepNum').textContent = cur.h.tag[0]; $('#stepLbl').textContent = cur.h.tag[1];
+
+    // captions
+    E.pages.forEach((p) => {
+      const on = t >= p.t0 && t < p.t1;
+      p.el.style.display = on ? 'flex' : 'none';
+      if (!on) return;
+      const x = inX(t, p.t0), out = E.k(t, p.t1 - OUT, p.t1);
+      p.el.style.opacity = x * (1 - out); p.el.style.transform = `translateY(${(1 - x) * 12}px)`;
+      p.words.forEach((w) => { w.el.style.opacity = 1; w.el.style.transform = 'none'; w.el.classList.toggle('now', t >= w.s && t < w.e + 0.05); });
+    });
+
+    const logoIn = ease(E.k(t, 0, 20 / FPS));
+    $('#logo').style.opacity = logoIn; $('#logo').style.transform = `translateY(${(1 - logoIn) * 14}px)`;
+    const endIn = ease(E.k(t, T.end, T.end + 20 / FPS));
+    $('#end').style.opacity = endIn; $('#end img').style.transform = `translateY(${(1 - endIn) * 14}px)`;
+  },
+};
+</script>
+</body>
+</html>

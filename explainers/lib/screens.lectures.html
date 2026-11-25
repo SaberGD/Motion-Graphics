@@ -1,0 +1,50 @@
+    <!-- portal: lectures tab (pages/StudentPortal.tsx portal-panel-lectures + components/portal/PortalLectureList.tsx) -->
+    <div class="layer portal" id="lt">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll" id="ltScroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>المحاضرات</b></div><span class="sbtn">حسابي</span></div>
+        <div class="ltbar"><p>كل محاضرة بسجل واحد: الحضور، التطبيق، التسجيل والملاحظات.</p>
+          <div class="ltbtns"><span class="ub pri">سلّم التطبيق المطلوب منك</span><span class="ub" id="bReport">تقرير التطبيقات المتأخرة</span></div></div>
+        <div class="srow"><div class="search" id="lSearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="q" id="sq"></span><i class="caret" id="sCaret"></i><span class="sph" id="sph">ابحث باسم المحاضرة أو رقمها…</span></div><div class="sort">الأحدث أولاً</div></div>
+        <div class="chips" id="chips"><span id="fAll" class="on">كل المحاضرات</span><span id="fMissing">مطلوب تسليمه</span><span id="fDone">تم التسليم</span><span id="fRec">تسجيلات متاحة</span></div>
+        <div class="cnt" id="cnt">3 من 3 محاضرة</div>
+        <div class="lrow2" id="row3" data-k="missing">
+          <div class="lid"><span class="num">03</span><div><h3>المحاضرة 3: الألوان والتكوين</h3><p>2026-12-06</p></div></div>
+          <div class="badges"><span class="bdg ok" id="b3Att">الحضور: حضرت</span><span class="bdg warn" id="b3Task">التطبيق: مطلوب تسليمه</span></div>
+          <div class="racts"><span class="pend" id="r3Rec">التسجيل غير متاح بعد</span></div>
+          <div class="sum"><span>المطلوب وملاحظات المدرب</span><i>⌄</i></div>
+        </div>
+        <div class="lrow2" id="row2" data-k="done rec">
+          <div class="lid"><span class="num">02</span><div><h3>المحاضرة 2: أساسيات الفوتوشوب</h3><p>2026-11-29</p></div></div>
+          <div class="badges"><span class="bdg ok" id="b2Att">الحضور: حضرت</span><span class="bdg ok" id="b2Task">✓ التطبيق: تم التسليم</span></div>
+          <div class="racts"><span class="watch" id="r2Rec">▶ شاهد التسجيل</span></div>
+          <div class="sum" id="sum2"><span>المطلوب وملاحظات المدرب</span><i id="chev2">⌄</i></div>
+          <div class="det" id="det2">
+            <div id="dTask"><h4>التطبيق المطلوب</h4><p>بوستر بمقاس A4 بالأدوات اللي اتشرحت في المحاضرة.</p></div>
+            <span class="lbtn2" id="dLink">افتح توبيك التسليم <svg><use href="#i-ext"/></svg></span>
+            <p class="muted">التسليم على تليجرام؛ فتح الرابط لا يغيّر حالة التسليم.</p>
+            <div id="dNotes"><h4>ملاحظات تساعدك تتطور</h4><p>شغل حلو، ظبّط المسافات بين العناصر وراجع حجم العنوان.</p></div>
+          </div>
+        </div>
+        <div class="lrow2" id="row1" data-k="done rec">
+          <div class="lid"><span class="num">01</span><div><h3>المحاضرة 1: مقدمة الكورس</h3><p>2026-11-22</p></div></div>
+          <div class="badges"><span class="bdg ok">الحضور: حضرت</span><span class="bdg ok">✓ التطبيق: تم التسليم</span></div>
+          <div class="racts"><span class="watch">▶ شاهد التسجيل</span></div>
+          <div class="sum"><span>المطلوب وملاحظات المدرب</span><i>⌄</i></div>
+        </div>
+      </div>
+      <div class="nav"><span><i></i>الرئيسية</span><span class="on" id="navLect"><i></i>المحاضرات</span><span><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- the PDF the report button downloads (StudentPortal.tsx downloadStudentReport) -->
+    <div class="layer" id="pdf">
+      <div class="status" style="color:#000"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="pdfbar"><span>Done</span><b>Late_Tasks_Report_123456.pdf</b><span>⤴</span></div>
+      <div class="pdfpage">
+        <div class="phd"><h1>SABER GROUP ACADEMY</h1><h2>تقرير المهام المتأخرة والواجبات المطلوبة (للمتدرب)</h2></div>
+        <div class="pinfo"><div><small>اسم المتدرب</small><b>أحمد محمد</b></div><div><small>كود المتدرب (ID)</small><b>123456</b></div><div><small>المجموعة / الجروب</small><b>Batch 2614</b></div><div><small>نسبة الإنجاز (المهام)</small><b>67%</b></div></div>
+        <table id="pdfTable"><thead><tr><th>المحاضرة</th><th>التاريخ</th><th>عنوان المحاضرة</th><th>المطلوب</th><th>المنجز</th><th>المتبقي</th></tr></thead>
+          <tbody><tr><td>المحاضرة 3</td><td>2026-12-06</td><td>الألوان والتكوين</td><td>1</td><td>0</td><td class="rem">1</td></tr></tbody></table>
+        <div class="pwarn" id="pdfWarn">يوجد مهام متأخرة وبحاجة للتسليم العاجل في عدد 1 محاضرات تدريبية.</div>
+      </div>
+    </div>

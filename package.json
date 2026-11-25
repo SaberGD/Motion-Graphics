@@ -1,0 +1,23 @@
+{
+  "name": "motion-graphics",
+  "version": "1.0.0",
+  "description": "`output/montaj1_reel.mp4` is the finished 1080×1920 reel (30 fps, −14 LUFS).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaberGD/Motion-Graphics.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SaberGD/Motion-Graphics/issues"
+  },
+  "homepage": "https://github.com/SaberGD/Motion-Graphics#readme",
+  "dependencies": {
+    "playwright-core": "^1.65.1"
+  }
+}

@@ -1,3 +1,5 @@
 raw/
 node_modules/
 __pycache__/
+explainers/*/build/
+explainers/*/_page.html

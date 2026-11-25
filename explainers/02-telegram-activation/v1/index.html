@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>تفعيل تليجرام</title>
+<link rel="stylesheet" href="../lib/base.css">
+<style>
+/* ---------- portal (dark) ---------- */
+.portal { background: radial-gradient(420px 300px at 85% 0%, rgba(226,54,29,.16), transparent 70%), #121011; color: #f3eeec; font-family: Plex; }
+.portal .status { color: #fff; background: #121011; }
+.scroll { position: absolute; left: 0; right: 0; top: 0; padding: 54px 16px 40px; }
+.ph { display: flex; align-items: center; justify-content: space-between; padding: 6px 2px 14px; border-bottom: 1px solid #2a2324; margin-bottom: 16px; }
+.ph .l { display: flex; align-items: center; gap: 8px; }
+.ph img { height: 14px; }
+.ph b { font: 700 13px Plex; }
+.sbtn { font: 700 11px Plex; color: #ddd; border: 1px solid #3a3132; border-radius: 10px; padding: 5px 10px; display: inline-flex; gap: 5px; align-items: center; }
+.portal h1 { font: 800 23px Taj; margin-bottom: 6px; }
+.intro { font: 600 12.5px/1.7 Plex; color: #b9afad; }
+.intro b { color: #fff; }
+.count { display: flex; gap: 6px; align-items: center; font: 700 13px Plex; color: #fbbf24; margin: 10px 0 12px; }
+.count svg { width: 15px; height: 15px; }
+.tgcard { background: linear-gradient(135deg, #1b1718, #0c0a0a); border: 1px solid rgba(59,130,246,.28); border-radius: 22px; padding: 14px; }
+.tghead { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+.tghead .ic { width: 42px; height: 42px; border-radius: 14px; background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.25); display: grid; place-items: center; color: #60a5fa; flex: none; }
+.tghead .ic svg { width: 21px; height: 21px; }
+.tghead h3 { font: 800 16.5px Taj; }
+.tghead p { font: 600 10.5px/1.5 Plex; color: #9a908e; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 11px; border-radius: 15px; border: 1px solid #2a2425; background: rgba(8,6,6,.6); margin-top: 7px; }
+.row .l { display: flex; gap: 8px; align-items: flex-start; }
+.row .chk { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #4b4243; flex: none; margin-top: 1px; display: grid; place-items: center; }
+.row .chk svg { width: 12px; height: 12px; color: #fff; opacity: 0; }
+.row .t { font: 700 14px Plex; color: #fff; }
+.row .h { font: 600 10.5px Plex; color: #847a78; margin-top: 2px; }
+.row.done { border-color: rgba(16,185,129,.35); background: rgba(16,185,129,.07); }
+.row.done .chk { background: #10b981; border-color: #10b981; }
+.row.done .chk svg { opacity: 1; }
+.bbtn { background: #2563eb; color: #fff; font: 700 12px Plex; padding: 9px 12px; border-radius: 11px; display: inline-flex; gap: 5px; align-items: center; white-space: nowrap; }
+.bbtn svg { width: 12px; height: 12px; }
+.gdone { margin-top: 10px; text-align: center; background: #059669; color: #fff; font: 800 13px Plex; padding: 11px; border-radius: 15px; display: none; }
+.expect { margin-top: 14px; border: 1px solid #2a2425; background: rgba(28,23,24,.6); border-radius: 20px; padding: 13px; }
+.expect h2 { font: 800 13.5px Taj; margin-bottom: 8px; }
+.expect li { list-style: none; display: flex; gap: 8px; font: 600 10px/1.6 Plex; color: #b0a6a4; margin-top: 6px; }
+.expect li i { flex: none; width: 19px; height: 19px; border-radius: 50%; background: rgba(226,54,29,.2); color: #fca5a5; font: 800 10px/19px Plex; text-align: center; font-style: normal; }
+.expect li b { color: #fff; }
+.help { margin-top: 14px; display: flex; gap: 7px; justify-content: center; align-items: center; font: 700 13px Plex; color: #f3eeec; border: 1px solid #3a3132; border-radius: 14px; padding: 11px; background: #1a1617; }
+.help svg { width: 16px; height: 16px; color: #25d366; }
+
+/* portal home */
+.home-hero { display: flex; justify-content: space-between; align-items: flex-end; margin: 4px 0 12px; }
+.home-hero h1 { font: 800 24px Taj; }
+.home-hero p { font: 600 10px Plex; color: #9a908e; }
+.card { background: #1b1718; border: 1px solid #2a2425; border-radius: 18px; padding: 13px; margin-top: 10px; }
+.card.next { background: linear-gradient(160deg, #2a1512, #171213); border-color: rgba(226,54,29,.35); }
+.tag { display: inline-block; font: 700 9.5px Plex; color: #fca5a5; background: rgba(226,54,29,.18); border-radius: 8px; padding: 3px 8px; }
+.card h4 { font: 800 15px/1.5 Taj; margin: 8px 0; }
+.meta { display: flex; justify-content: space-between; font: 600 9.5px Plex; color: #9a908e; }
+.meta b { display: block; color: #fdba74; font: 700 10.5px Plex; margin-top: 2px; }
+.acts { display: flex; gap: 8px; margin-top: 12px; }
+.acts span { flex: 1; text-align: center; border-radius: 12px; padding: 10px 4px; font: 700 11px Plex; }
+.acts .go { background: var(--red); color: #fff; }
+.acts .cal { background: #0f766e; color: #fff; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 10px; }
+.stats div { background: #1b1718; border: 1px solid #2a2425; border-radius: 13px; padding: 9px 4px; text-align: center; font: 600 8.5px Plex; color: #9a908e; }
+.stats b { display: block; font: 800 15px Taj; color: #fff; }
+.nav { position: absolute; bottom: 0; left: 0; right: 0; height: 74px; background: #141112; border-top: 1px solid #2a2425; display: flex; justify-content: space-around; padding: 10px 8px 0; }
+.nav span { font: 700 9px Plex; color: #847a78; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.nav span i { width: 20px; height: 20px; border-radius: 6px; background: #2a2425; }
+.nav span.on { color: #fb923c; }
+.nav span.on i { background: rgba(251,146,60,.35); }
+
+/* ---------- telegram (light) ---------- */
+.tg { background: #fff; font-family: -apple-system, Plex, sans-serif; color: #000; }
+.tg .status { color: #000; }
+.tgh { position: absolute; top: 0; left: 0; right: 0; height: 104px; padding: 50px 12px 0; background: rgba(247,247,247,.97); border-bottom: 1px solid #ddd;
+  display: flex; align-items: center; gap: 10px; direction: ltr; z-index: 20; }
+.tgh .back { color: var(--tg); font: 400 17px -apple-system, sans-serif; display: flex; align-items: center; width: 64px; }
+.tgh .back svg { width: 13px; height: 20px; margin-right: 4px; }
+.tgh .ttl { flex: 1; text-align: center; }
+.tgh .ttl b { display: block; font: 700 15px Plex; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; margin: 0 auto; }
+.tgh .ttl span { font: 500 12px Plex; color: #8e8e93; }
+.av { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; flex: none; display: grid; place-items: center; color: #fff; }
+.av img { width: 100%; height: 100%; }
+.chatbg { position: absolute; inset: 0; background:
+  radial-gradient(260px 260px at 20% 30%, rgba(255,255,255,.35), transparent 70%),
+  radial-gradient(300px 300px at 80% 70%, rgba(255,255,255,.25), transparent 70%),
+  linear-gradient(160deg, #cfe0b4, #a9c98f 55%, #c4d9a5); }
+.msgs { position: absolute; left: 0; right: 0; bottom: 92px; top: 104px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 10px 10px; }
+.b { max-width: 82%; padding: 8px 11px 9px; border-radius: 17px; font: 500 13.5px/1.6 Plex; box-shadow: 0 1px 1px rgba(0,0,0,.12); direction: rtl; position: relative; }
+.b.in { align-self: flex-start; background: #fff; border-bottom-left-radius: 5px; }
+.b.out { align-self: flex-end; background: #e1fec6; border-bottom-right-radius: 5px; direction: ltr; }
+.b .tm { font: 500 10px -apple-system, sans-serif; color: #8e8e93; float: left; margin: 8px 8px 0 0; direction: ltr; }
+.b.out .tm { color: #4fae4e; float: right; margin: 6px 0 0 8px; }
+.b.hi { box-shadow: 0 0 0 3px #ff9a3c, 0 4px 14px rgba(255,154,60,.45); }
+.intro-card { align-self: center; background: rgba(255,255,255,.92); border-radius: 16px; padding: 14px 16px; width: 82%; text-align: center; margin-bottom: 30%; }
+.intro-card b { display: block; font: 700 14px -apple-system, Plex; direction: ltr; margin-bottom: 6px; }
+.intro-card p { font: 500 12.5px/1.6 Plex; color: #333; }
+.bottombar { position: absolute; left: 0; right: 0; bottom: 0; height: 92px; background: rgba(247,247,247,.98); border-top: 1px solid #ddd; padding: 12px 14px 0; z-index: 10; }
+.startbtn { height: 46px; display: grid; place-items: center; font: 600 16px -apple-system, sans-serif; color: var(--tg); letter-spacing: .5px; }
+.kb { position: absolute; left: 0; right: 0; bottom: 0; background: #d1d3d9; padding: 8px 6px 34px; z-index: 11; }
+.kb span { display: flex; justify-content: center; align-items: center; gap: 7px; background: #fff; border-radius: 8px; height: 46px; font: 600 14.5px Plex; box-shadow: 0 1px 0 #898a8d; direction: rtl; }
+.kb svg { width: 16px; height: 16px; color: #2e7d32; }
+.inputbar { display: flex; gap: 10px; align-items: center; direction: ltr; }
+.inputbar i { flex: 1; height: 36px; border-radius: 18px; border: 1px solid #ccc; background: #fff; font: 400 15px -apple-system; color: #9b9b9b; padding: 8px 14px; font-style: normal; }
+.contact { display: flex; gap: 10px; align-items: center; direction: rtl; }
+.contact .av { background: linear-gradient(#7fc4f8, #3a8ee6); font: 700 15px Plex; width: 40px; height: 40px; }
+.contact b { display: block; font: 700 13.5px Plex; }
+.contact span { font: 500 12px -apple-system; color: #4fae4e; direction: ltr; display: block; }
+.alert { position: absolute; inset: 0; background: rgba(0,0,0,.35); display: grid; place-items: center; z-index: 60; }
+.alert .box { width: 270px; background: rgba(245,245,245,.97); border-radius: 14px; text-align: center; overflow: hidden; direction: ltr; }
+.alert .box b { display: block; font: 600 16px -apple-system; padding: 18px 16px 4px; }
+.alert .box p { font: 400 13px -apple-system; padding: 0 16px 16px; color: #222; }
+.alert .btns { display: flex; border-top: 1px solid #ccc; }
+.alert .btns span { flex: 1; padding: 11px; font: 400 16px -apple-system; color: var(--tg); }
+.alert .btns span + span { border-left: 1px solid #ccc; font-weight: 600; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 16px 16px 0 0; padding: 22px 18px 40px; text-align: center; z-index: 30; box-shadow: 0 -10px 30px rgba(0,0,0,.2); }
+.sheet .av { width: 74px; height: 74px; margin: 0 auto 10px; }
+.sheet h3 { font: 700 16.5px Plex; direction: ltr; }
+.sheet p { font: 500 13px Plex; color: #8e8e93; margin: 4px 0 18px; }
+.sheet .req { background: var(--tg); color: #fff; border-radius: 12px; height: 50px; display: grid; place-items: center; font: 600 15.5px -apple-system, sans-serif; letter-spacing: .4px; }
+.dim { position: absolute; inset: 0; background: rgba(0,0,0,.4); z-index: 25; }
+.toast { position: absolute; left: 14px; right: 14px; top: 112px; background: rgba(30,30,30,.92); color: #fff; border-radius: 14px; padding: 12px 14px; font: 700 13px Plex; z-index: 40; display: flex; gap: 8px; align-items: center; direction: rtl; }
+.toast svg { width: 18px; height: 18px; color: #4ade80; }
+.post { align-self: flex-start; width: 86%; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 1px rgba(0,0,0,.12); }
+.post .thumb { height: 150px; background: linear-gradient(135deg, #2a1512, #0d0b0b); display: grid; place-items: center; position: relative; }
+.post .thumb i { width: 52px; height: 52px; border-radius: 50%; background: rgba(0,0,0,.55); display: grid; place-items: center; }
+.post .thumb i svg { width: 20px; height: 20px; color: #fff; margin-left: 3px; }
+.post .thumb em { position: absolute; left: 10px; top: 10px; font: 600 11px -apple-system; color: #fff; background: rgba(0,0,0,.5); padding: 2px 7px; border-radius: 8px; font-style: normal; }
+.post .tx { padding: 9px 12px 10px; font: 500 12.5px/1.75 Plex; direction: rtl; }
+.post .tx b { font-weight: 700; }
+.topics { position: absolute; top: 104px; left: 0; right: 0; bottom: 0; background: #fff; }
+.topic { display: flex; gap: 11px; align-items: center; padding: 11px 14px; border-bottom: 1px solid #eee; direction: rtl; }
+.topic .ti { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; color: #fff; font: 800 18px Taj; }
+.topic .tx { flex: 1; min-width: 0; }
+.topic b { display: block; font: 700 14.5px Plex; }
+.topic span { display: block; font: 500 12px Plex; color: #8e8e93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topic .badge { background: var(--tg); color: #fff; border-radius: 11px; min-width: 22px; height: 22px; padding: 0 6px; font: 700 12px/22px -apple-system; text-align: center; }
+.topic.hi { background: #fff4e8; box-shadow: inset 0 0 0 3px #ff9a3c; }
+.mention { color: var(--tg); direction: ltr; unicode-bidi: isolate; }
+.sender { display: block; font: 700 12.5px Plex; color: #d7553d; direction: ltr; text-align: right; }
+.blk { display: block; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-plane" viewBox="0 0 24 24"><path fill="currentColor" d="M21.6 3.2 2.9 10.4c-1.3.5-1.3 1.2-.2 1.6l4.8 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.4-1.4zM9.3 13.2l9.3-5.9c.4-.3.8-.1.5.2l-7.6 6.9-.3 3.3-1.9-4.5z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.4"/><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M7.5 12.5l3 3 6-6.5"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 13 20"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M11 2 3 10l8 8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7 4.5v15l13-7.5z"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></symbol>
+</svg>
+
+<div id="stage">
+  <div class="corner tl"></div><div class="corner br"></div>
+
+  <div id="brand">
+    <div class="pill"><img src="../assets/saber-group-logo.png"></div>
+    <div id="progress"><span id="progTxt">تفعيل تليجرام</span><div class="bars"><div class="bar"><i></i></div><div class="bar"><i></i></div><div class="bar"><i></i></div><div class="bar"><i></i></div></div></div>
+  </div>
+
+  <div id="view"><div id="phoneWrap"><div id="phone"><div id="screen">
+    <div class="notch"></div>
+
+    <!-- portal: activation gate -->
+    <div class="layer portal" id="gate">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll" id="gateScroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>بوابة الطالب</b></div><span class="sbtn"><svg width="12" height="12"><use href="#i-out"/></svg>خروج</span></div>
+        <h1>أهلاً أحمد</h1>
+        <p class="intro">قبل ما تدخل المنصة لازم تخلّص <b>٤ خطوات بسيطة على تليجرام</b> (حوالي دقيقتين): تربط البوت، وتنضم للقناة والجروب، وتوثّق رقمك. أول ما تخلصهم المنصة بتفتح لوحدها.</p>
+        <div class="count"><svg><use href="#i-checkc"/></svg><span id="gCount">تم ٠ من ٤ خطوات</span></div>
+        <div class="tgcard" id="tgcard">
+          <div class="tghead"><div class="ic"><svg><use href="#i-plane"/></svg></div><div><h3>تفعيل حسابك على تليجرام</h3><p>اربط حسابك مرة واحدة، وهتتقبل في قناة المحاضرات والجروب تلقائياً.</p></div></div>
+          <div class="row" id="r1"><div class="l"><span class="chk"><svg><use href="#i-check"/></svg></span><div><div class="t">١) اربط حسابك بالبوت</div><div class="h" id="r1h">هيفتح لك البوت، اضغط Start</div></div></div><span class="bbtn" id="b1"><svg><use href="#i-plane"/></svg>افتح البوت</span></div>
+          <div class="row" id="r2"><div class="l"><span class="chk"><svg><use href="#i-check"/></svg></span><div><div class="t">٢) انضم لقناة التسجيلات</div><div class="h" id="r2h">اربط حسابك الأول</div></div></div><span class="bbtn" id="b2">انضمام<svg><use href="#i-ext"/></svg></span></div>
+          <div class="row" id="r3"><div class="l"><span class="chk"><svg><use href="#i-check"/></svg></span><div><div class="t">٣) انضم لجروب المتابعة</div><div class="h" id="r3h">اربط حسابك الأول</div></div></div><span class="bbtn" id="b3">انضمام<svg><use href="#i-ext"/></svg></span></div>
+          <div class="row" id="r4"><div class="l"><span class="chk"><svg><use href="#i-check"/></svg></span><div><div class="t">٤) وثّق رقمك (مطلوب)</div><div class="h" id="r4h">افتح البوت واضغط زرار «شارك رقمي للتوثيق»</div></div></div><span class="bbtn" id="b4">افتح البوت<svg><use href="#i-ext"/></svg></span></div>
+          <div class="gdone" id="gDone">افتح توبيك التاسكات</div>
+        </div>
+        <section class="expect">
+          <h2>المطلوب منك بعد التفعيل</h2>
+          <ol>
+            <li><i>1</i><span><b>حضور المحاضرات:</b> ادخل المحاضرة في موعدها من «الرئيسية»، وحضورك بيتسجل تلقائياً.</span></li>
+            <li><i>2</i><span><b>تسليم التطبيق:</b> بعد كل محاضرة سلّم التطبيق المطلوب منك في توبيكك الخاص على تليجرام.</span></li>
+            <li><i>3</i><span><b>متابعة تقدمك:</b> من «تقدمي» تشوف حضورك ونقاطك وملاحظات المدرب.</span></li>
+            <li><i>4</i><span><b>أي مشكلة؟:</b> قسم «المساعدة» فيه روابط القناة والجروب والتواصل مع الإدارة.</span></li>
+          </ol>
+        </section>
+        <div class="help" id="bHelp"><svg><use href="#i-wa"/></svg>واجهتك مشكلة في الخطوات؟ كلّم الإدارة</div>
+      </div>
+    </div>
+
+    <!-- telegram: bot chat -->
+    <div class="layer tg" id="bot">
+      <div class="chatbg"></div>
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="tgh"><span class="back"><svg><use href="#i-back"/></svg>Chats</span><div class="ttl"><b>Saber Group Academy</b><span>bot</span></div><div class="av"><img src="../assets/icon-512.png"></div></div>
+      <div class="msgs">
+        <div class="intro-card" id="m0"><b>What can this bot do?</b><p>بوت أكاديمية Saber Group لربط حسابك على تليجرام بالبورتال.</p></div>
+        <div class="b out" id="m1">/start<span class="tm">9:41 ✓✓</span></div>
+        <div class="b in" id="m2">تم ربط حسابك <b style="color:#16a34a">✓</b><br>ارجع للبورتال وكمّل الانضمام للقناة والجروب. طلب الانضمام بيتقبّل تلقائي.<span class="tm">9:41</span></div>
+        <div class="b in" id="m3">عشان نوثّق حسابك اضغط الزرار تحت «شارك رقمي للتوثيق».<br>الرقم بيتقارن برقمك المسجل عندنا ومش بيتخزّن.<span class="tm">9:42</span></div>
+        <div class="b out" id="m4"><div class="contact"><div class="av">أم</div><div><b>أحمد محمد</b><span>+20 10•• ••• ••45</span></div></div><span class="tm">9:42 ✓✓</span></div>
+        <div class="b in" id="m5">تم توثيق رقمك <b style="color:#16a34a">✓</b> شكراً.<span class="tm">9:42</span></div>
+      </div>
+      <div class="bottombar" id="startBar"><div class="startbtn" id="bStart">START</div></div>
+      <div class="bottombar" id="inputBar"><div class="inputbar"><i>Message</i></div></div>
+      <div class="kb" id="kb"><span id="bShare"><svg><use href="#i-phone"/></svg>شارك رقمي للتوثيق</span></div>
+      <div class="alert" id="alert"><div class="box"><b>Share Phone Number?</b><p>The bot will know your phone number. This can be useful for integration with other services.</p><div class="btns"><span>Cancel</span><span id="bOk">OK</span></div></div></div>
+    </div>
+
+    <!-- telegram: recordings channel -->
+    <div class="layer tg" id="chan">
+      <div class="chatbg" style="filter:hue-rotate(-20deg) saturate(.8)"></div>
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="tgh"><span class="back"><svg><use href="#i-back"/></svg>Chats</span><div class="ttl"><b>2614 record SG-Graphic-Beginners</b><span>قناة الريكوردات</span></div><div class="av" style="background:linear-gradient(#ff7a59,#e2361d)"><svg width="20" height="20"><use href="#i-play"/></svg></div></div>
+      <div class="msgs" style="bottom:70px">
+        <div class="post"><div class="thumb"><em>1:42:10</em><i><svg><use href="#i-play"/></svg></i></div>
+          <div class="tx"><b>Graphic Beginners • 2614</b><br>محاضرة 1 — جزء 1<br>المدرب: م. محمد</div></div>
+      </div>
+      <div class="bottombar" style="height:70px"><div class="startbtn" id="chanBar">MUTE</div></div>
+      <div class="dim" id="chDim"></div>
+      <div class="sheet" id="chSheet"><div class="av" style="background:linear-gradient(#ff7a59,#e2361d)"><svg width="30" height="30"><use href="#i-play"/></svg></div>
+        <h3>2614 record SG-Graphic-Beginners</h3><p>قناة خاصة · قناة الريكوردات</p><div class="req" id="bReq">REQUEST TO JOIN</div></div>
+      <div class="toast" id="chToast"><svg><use href="#i-checkc"/></svg>اتقبل طلبك وانضميت للقناة</div>
+    </div>
+
+    <!-- telegram: follow-up group (topics) -->
+    <div class="layer tg" id="grp">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="tgh"><span class="back"><svg><use href="#i-back"/></svg>Chats</span><div class="ttl"><b>2614 SG-Graphic-Beginners</b><span>جروب المتابعة</span></div><div class="av" style="background:linear-gradient(#ffb36b,#f07b1f);font:800 15px Taj">SG</div></div>
+      <div class="topics">
+        <div class="topic"><div class="ti" style="background:#e2361d">!</div><div class="tx"><b>القواعد العامة</b><span>تنبيهات مهمة بخصوص الكورس</span></div></div>
+        <div class="topic"><div class="ti" style="background:#8b5cf6">✎</div><div class="tx"><b>تاسكات المحاضرات</b><span>التاسكات المطلوبة بعد كل محاضرة</span></div></div>
+        <div class="topic" id="myTopic"><div class="ti" style="background:#3390ec">أ</div><div class="tx"><b>أحمد محمد - 123456</b><span>أهلاً بيك في عيلة صابر جروب…</span></div><span class="badge">2</span></div>
+      </div>
+      <div class="toast" id="grToast"><svg><use href="#i-checkc"/></svg>انضميت لجروب المتابعة</div>
+    </div>
+
+    <!-- telegram: personal topic -->
+    <div class="layer tg" id="topic">
+      <div class="chatbg"></div>
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="tgh"><span class="back"><svg><use href="#i-back"/></svg>Topics</span><div class="ttl"><b>أحمد محمد - 123456</b><span>توبيك التاسكات الخاص بيك</span></div><div class="av" style="background:#3390ec;font:800 16px Taj">أ</div></div>
+      <div class="msgs">
+        <div class="b in" id="t1"><span class="sender">Saber Group Academy</span>أهلاً بيك في عيلة صابر جروب ♥ عرفنا بنفسك ومجالك، ولو ليك أعمال سابقة يشرفنا تشاركنا بيها يا <span class="mention">@ahmed_m</span><span class="tm">9:41</span></div>
+        <div class="b in" id="t2"><span class="sender">Saber Group Academy</span>هنا هيكون المكان اللي هتسلّم فيه التاسكات الخاصة بيك، وهنتابعك من خلاله يا <span class="mention">@ahmed_m</span><span class="tm">9:41</span></div>
+      </div>
+      <div class="bottombar"><div class="inputbar"><i>Message</i></div></div>
+    </div>
+
+    <!-- portal: home after the gate opens -->
+    <div class="layer portal" id="home">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>بوابة الطالب</b></div><span class="sbtn">حسابي</span></div>
+        <div class="home-hero"><div><p>مساحة التعلم</p><h1>أهلاً أحمد</h1></div></div>
+        <div class="card next"><span class="tag">المحاضرة القادمة</span><h4>المحاضرة رقم 1: مقدمة الكورس</h4>
+          <div class="meta"><span>التاريخ:<b>2026-11-29</b></span><span>الوقت:<b>09:00 PM</b></span><span>المدرب:<b>م. محمد</b></span></div>
+          <div class="acts"><span class="go">دخول المحاضرة</span><span class="cal">أضف للتقويم</span></div></div>
+        <div class="stats"><div><b>—</b>الحضور</div><div><b>0</b>نقاطك</div><div><b>0/16</b>رحلتك</div><div><b>0/0</b>التطبيقات</div></div>
+        <div class="card"><span class="tag" style="color:#86efac;background:rgba(16,185,129,.15)">تليجرام مفعّل</span><h4 style="font-size:13px;margin:6px 0 0">القناة والجروب والتوبيك الخاص بك جاهزين</h4></div>
+      </div>
+      <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <div id="ripple"></div><div id="finger"></div>
+  </div></div></div></div>
+
+  <div id="chip"><span class="dot"></span><span id="chipTxt">بوابة الطالب</span></div>
+  <div id="cap"></div>
+
+  <div id="end">
+    <img class="icon" src="../assets/icon-512.png">
+    <h1>بوابة <b>الطالب</b></h1>
+    <div class="sub">فعّل تليجرام في دقيقتين… والمنصة تفتحلك</div>
+    <div class="url">portal.sabergroupacademy.com</div>
+    <div class="pill"><img src="../assets/saber-group-logo.png"></div>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const AR = (n) => String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+const show = (id, on, x = 1) => { const el = document.getElementById(id); el.style.display = on ? '' : 'none'; if (on) el.style.opacity = x; return el; };
+
+window.SCENE = {
+  setup(E) {
+    const W = E.W, L = E.L;
+    const T = (this.T = {});
+    T.tapBot = W('s2', 3);
+    T.bot = T.tapBot + 0.38;
+    T.tapStart = W('s2', 8) + 0.05;
+    T.userStart = T.tapStart + 0.3;
+    T.linked = L('s3').start + 0.1;
+    T.gate2 = L('s4').start - 0.05;
+    T.done1 = T.gate2 + 0.45;
+    T.tapCh = W('s4', 3);
+    T.chan = T.tapCh + 0.38;
+    T.tapReq = W('s4', 6) - 0.1;
+    T.accepted = W('s4', 8);
+    T.gate3 = L('s5').start - 0.3;
+    T.done2 = T.gate3 + 0.4;
+    T.tapGr = Math.max(W('s5', 1) + 0.1, T.done2 + 0.45);
+    T.grp = T.tapGr + 0.38;
+    T.hiTopic = W('s5', 5);
+    T.tapTopic = W('s5', 7) - 0.15;
+    T.topic = T.tapTopic + 0.38;
+    T.gate4 = L('s6').start - 0.05;
+    T.done3 = T.gate4 + 0.4;
+    T.tapPh = W('s6', 2);
+    T.bot2 = T.tapPh + 0.38;
+    T.prompt = T.bot2 + 0.3;
+    T.tapShare = W('s6', 6) + 0.05;
+    T.alert = T.tapShare + 0.25;
+    T.tapOk = L('s7').start + 0.15;
+    T.contact = T.tapOk + 0.3;
+    T.hiPrompt = W('s7', 1);
+    T.verified = W('s7', 5);
+    T.gate5 = L('s8').start - 0.05;
+    T.done4 = T.gate5 + 0.4;
+    T.home = W('s8', 4) - 0.05;
+    T.gate6 = L('s9').start - 0.05;
+    T.tapHelp = W('s9', 6) + 0.1;
+    T.end = E.tl.outro_start;
+
+    this.sched = [
+      { t: 0, id: 'gate', tr: 'cut' },
+      { t: T.bot, id: 'bot', tr: 'app' },
+      { t: T.gate2, id: 'gate', tr: 'app' },
+      { t: T.chan, id: 'chan', tr: 'app' },
+      { t: T.gate3, id: 'gate', tr: 'app' },
+      { t: T.grp, id: 'grp', tr: 'app' },
+      { t: T.topic, id: 'topic', tr: 'push' },
+      { t: T.gate4, id: 'gate', tr: 'app' },
+      { t: T.bot2, id: 'bot', tr: 'app' },
+      { t: T.gate5, id: 'gate', tr: 'app' },
+      { t: T.home, id: 'home', tr: 'app' },
+      { t: T.gate6, id: 'gate', tr: 'fade' },
+    ];
+    this.taps = [
+      { t: T.tapBot, sel: '#b1' }, { t: T.tapStart, sel: '#bStart' },
+      { t: T.tapCh, sel: '#b2' }, { t: T.tapReq, sel: '#bReq' },
+      { t: T.tapGr, sel: '#b3' }, { t: T.tapTopic, sel: '#myTopic' },
+      { t: T.tapPh, sel: '#b4' }, { t: T.tapShare, sel: '#bShare' }, { t: T.tapOk, sel: '#bOk' },
+      { t: T.tapHelp, sel: '#bHelp' },
+    ];
+    this.cam = [
+      { t0: T.tapBot - 1.0, t1: T.bot, sel: '#r1', s: 1.5, out: 0.3 },
+      { t0: T.done1 - 0.3, t1: T.chan, sel: '#r2', s: 1.5, out: 0.3 },
+      { t0: T.chan + 0.25, t1: T.gate3, sel: '#chSheet', s: 1.3, out: 0.3 },
+      { t0: T.done2 - 0.3, t1: T.grp, sel: '#r3', s: 1.5, out: 0.3 },
+      { t0: T.hiTopic - 0.4, t1: T.topic, sel: '#myTopic', s: 1.4, out: 0.3 },
+      { t0: T.topic + 0.5, t1: T.gate4, sel: '#t1', s: 1.4, out: 0.3 },
+      { t0: T.done3 - 0.3, t1: T.bot2, sel: '#r4', s: 1.5, out: 0.3 },
+      { t0: T.prompt + 0.2, t1: T.verified + 0.3, sel: '#m3', s: 1.35, out: 0.4 },
+      { t0: T.done4 - 0.1, t1: T.home, sel: '#tgcard', s: 1.3, out: 0.3 },
+      { t0: T.tapHelp - 1.0, t1: T.end, sel: '#bHelp', s: 1.5 },
+    ];
+    // sound cues
+    this.taps.forEach((p) => E.ev(p.t, 'tap'));
+    this.sched.slice(1).forEach((s) => E.ev(s.t - 0.05, s.tr === 'push' ? 'swipe' : 'whoosh'));
+    [T.done1, T.done2, T.done3, T.done4].forEach((t) => E.ev(t, 'ding'));
+    [T.userStart, T.linked, T.prompt, T.contact, T.verified, T.topic + 0.3, T.topic + 0.9].forEach((t) => E.ev(t, 'pop'));
+    E.ev(T.accepted, 'ding'); E.ev(T.home + 0.1, 'success');
+    E.ev(T.end, 'whoosh'); E.ev(T.end + 0.35, 'logo');
+    E.ev(0.15, 'logo');
+  },
+
+  render(t, E) {
+    const T = this.T;
+    E.captions(t);
+    const scr = E.layers(t, this.sched);
+
+    // ---------- gate state
+    const d1 = t >= T.done1, d2 = t >= T.done2, d3 = t >= T.done3, d4 = t >= T.done4;
+    const late = t >= T.gate6; // help scene: show a half-done gate (2 of 4)
+    const dn = late ? [true, true, false, false] : [d1, d2, d3, d4];
+    ['r1', 'r2', 'r3', 'r4'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.classList.toggle('done', dn[i]);
+      document.getElementById('b' + (i + 1)).style.display = dn[i] ? 'none' : '';
+    });
+    const linked = dn[0];
+    document.getElementById('r1h').textContent = linked ? '@ahmed_m' : 'هيفتح لك البوت، اضغط Start';
+    document.getElementById('r2h').textContent = linked ? 'اضغط انضمام وهيتقبل طلبك تلقائياً' : 'اربط حسابك الأول';
+    document.getElementById('r3h').textContent = linked ? 'هيتفتح لك توبيك باسمك' : 'اربط حسابك الأول';
+    document.getElementById('r4h').textContent = dn[3] ? 'تم توثيق رقمك' : 'افتح البوت واضغط زرار «شارك رقمي للتوثيق»';
+    show('r4', linked);
+    const n = dn.filter(Boolean).length;
+    document.getElementById('gCount').textContent = `تم ${AR(n)} من ٤ خطوات`;
+    show('gDone', dn.every(Boolean));
+    // pulse the four rows while the VO says "أربع خطوات"
+    const four = E.W('s1', 9);
+    ['r1', 'r2', 'r3'].forEach((id, i) => {
+      const x = E.k(t, four + i * 0.18, four + i * 0.18 + 0.5);
+      document.getElementById(id).style.boxShadow = x > 0 && x < 1 ? `0 0 0 ${3 * Math.sin(x * Math.PI)}px #ff9a3c` : 'none';
+    });
+    // help scene scrolls the gate down to the help button
+    const sc = E.easeInOut(E.k(t, T.gate6 + 0.1, T.gate6 + 0.8));
+    document.getElementById('gateScroll').style.transform = `translateY(${-230 * sc}px)`;
+
+    // ---------- bot chat state
+    const phase2 = t >= T.bot2;
+    show('m0', t < T.userStart);
+    show('m1', t >= T.userStart, E.k(t, T.userStart, T.userStart + 0.15));
+    show('m2', t >= T.linked, E.k(t, T.linked, T.linked + 0.15));
+    document.getElementById('m2').classList.toggle('hi', t >= E.W('s3', 4) && t < T.gate2);
+    show('m3', t >= T.prompt, E.k(t, T.prompt, T.prompt + 0.15));
+    document.getElementById('m3').classList.toggle('hi', t >= T.hiPrompt && t < T.verified + 0.6);
+    show('m4', t >= T.contact, E.k(t, T.contact, T.contact + 0.15));
+    show('m5', t >= T.verified, E.k(t, T.verified, T.verified + 0.15));
+    show('startBar', t < T.userStart);
+    show('inputBar', t >= T.userStart);
+    show('kb', t >= T.linked && t < T.contact, 1);
+    const al = t >= T.alert && t < T.tapOk + 0.15;
+    show('alert', al, Math.min(E.k(t, T.alert, T.alert + 0.15), 1 - E.k(t, T.tapOk + 0.05, T.tapOk + 0.15)));
+    document.querySelector('#alert .box').style.transform = `scale(${E.lerp(1.15, 1, E.easeOut(E.k(t, T.alert, T.alert + 0.2)))})`;
+    // older messages scroll out as new ones arrive: hide m0..m2 history in phase 2 to keep the chat readable
+    if (phase2) { show('m1', false); }
+
+    // ---------- channel
+    const sheetOut = E.easeInOut(E.k(t, T.accepted - 0.1, T.accepted + 0.25));
+    const sheetIn = E.easeOut(E.k(t, T.chan + 0.1, T.chan + 0.45));
+    const sheet = document.getElementById('chSheet');
+    sheet.style.transform = `translateY(${(1 - sheetIn + sheetOut) * 110}%)`;
+    document.getElementById('chDim').style.opacity = sheetIn * (1 - sheetOut);
+    const req = document.getElementById('bReq');
+    req.textContent = t >= T.tapReq + 0.15 ? 'REQUEST SENT' : 'REQUEST TO JOIN';
+    req.style.background = t >= T.tapReq + 0.15 ? '#8fbdf0' : '';
+    show('chToast', t >= T.accepted, E.k(t, T.accepted, T.accepted + 0.2) * (1 - E.k(t, T.gate3 - 0.2, T.gate3)));
+
+    // ---------- group
+    show('grToast', t >= T.grp, E.k(t, T.grp + 0.15, T.grp + 0.35) * (1 - E.k(t, T.hiTopic - 0.3, T.hiTopic)));
+    document.getElementById('myTopic').classList.toggle('hi', t >= T.hiTopic);
+    show('t1', t >= T.topic + 0.3, E.k(t, T.topic + 0.3, T.topic + 0.45));
+    show('t2', t >= T.topic + 0.9, E.k(t, T.topic + 0.9, T.topic + 1.05));
+
+    // ---------- taps + camera
+    const outro = E.easeInOut(E.k(t, T.end, T.end + 0.6));
+    E.camera(t, this.cam, { scale: 1.36 });
+    E.taps(t, this.taps);
+    const wrap = document.getElementById('phoneWrap');
+    if (outro > 0) {
+      wrap.style.opacity = 1 - outro;
+      wrap.style.transform += ` translateY(${outro * 120}px) scale(${1 - 0.1 * outro})`;
+    } else wrap.style.opacity = 1;
+
+    // ---------- chip, progress
+    const chips = { gate: 'بوابة الطالب', bot: 'بوت الأكاديمية', chan: 'قناة التسجيلات', grp: 'جروب المتابعة', topic: 'توبيكك الخاص', home: 'المنصة اتفتحت' };
+    let chip = chips[scr.id];
+    if (t >= T.gate6) chip = 'كلّم الإدارة';
+    document.getElementById('chipTxt').textContent = chip;
+    const chipEl = document.getElementById('chip');
+    chipEl.style.opacity = 1 - outro;
+    const step = t < E.L('s2').start ? 0 : t < T.gate2 ? 1 : t < T.gate3 ? 2 : t < T.gate4 ? 3 : t < T.gate5 ? 4 : 5;
+    const fill = [0, 0, 0, 0];
+    for (let i = 0; i < 4; i++) {
+      if (step > i + 1) fill[i] = 1;
+      else if (step === i + 1) fill[i] = 0.5 + 0.5 * E.k(t, [E.L('s2').start, T.gate2, T.gate3, T.gate4][i], [T.gate2, T.gate3, T.gate4, T.gate5][i]);
+    }
+    document.querySelectorAll('#progress .bar i').forEach((el, i) => (el.style.transform = `scaleX(${step >= 5 ? 1 : fill[i]})`));
+    document.getElementById('progTxt').textContent = step === 0 ? 'تفعيل تليجرام · ٤ خطوات' : step >= 5 ? 'تفعيل تليجرام · تم' : `الخطوة ${AR(step)} من ٤`;
+    document.getElementById('brand').style.opacity = 1 - outro;
+
+    // ---------- end card
+    const endEl = document.getElementById('end');
+    const ein = E.easeOut(E.k(t, T.end + 0.25, T.end + 0.85));
+    endEl.style.opacity = ein;
+    endEl.style.transform = `translateY(${(1 - ein) * 40}px)`;
+    document.querySelector('#end img.icon').style.transform = `scale(${E.lerp(0.7, 1, E.back(E.k(t, T.end + 0.25, T.end + 0.8)))})`;
+    document.querySelectorAll('.corner').forEach((c) => (c.style.opacity = 1 - outro));
+    document.getElementById('progress').style.opacity = 1 - outro;
+    document.getElementById('cap').style.opacity = 1 - outro;
+  },
+};
+</script>
+</body>
+</html>

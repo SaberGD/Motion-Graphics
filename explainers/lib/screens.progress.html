@@ -1,0 +1,40 @@
+    <!-- portal: overview, points tile (pages/StudentPortal.tsx .ostats) -->
+    <div class="layer portal" id="gHome">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>بوابة الطالب</b></div><span class="sbtn">حسابي</span></div>
+        <div class="home-hero"><div><p>مساحة التعلم</p><h1>أهلاً أحمد</h1></div></div>
+        <div class="card next"><span class="tag">المحاضرة القادمة</span><h4>المحاضرة رقم 3: الألوان والتكوين</h4>
+          <div class="meta"><span>التاريخ:<b>2026-12-06</b></span><span>الوقت:<b>09:00 PM</b></span><span>المدرب:<b>م. محمد</b></span></div></div>
+        <div class="ostats"><div><span>الحضور</span><b>100%</b><small>2 من 2 محاضرة</small></div><div id="stPts"><span>نقاطك</span><b>9</b><small>تفاصيل التقييم في «تقدمي»</small></div><div><span>رحلتك</span><b>2<small> / 16</small></b><small>محاضرة مكتملة</small></div></div>
+      </div>
+      <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span id="navProg"><i></i>تقدمي</span><span id="navProj"><i></i>المشروع</span><span id="navHelp"><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- portal: progress tab (StudentPortal.tsx portal-panel-progress) -->
+    <div class="layer portal" id="prog">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll" id="pgScroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>تقدمي</b></div><span class="sbtn">حسابي</span></div>
+        <h3 class="psec">نظرة عامة على تقييم أداء المتدرب</h3>
+        <div class="pgrid">
+          <div class="pc" id="cPts"><i class="pic red">★</i><h4>مجموع النقاط المحرزة</h4><b>9 <span class="red">نقطة</span></b><small>من التقييم المستمر للواجبات والتفاعل</small></div>
+          <div class="pc" id="cAtt"><i class="pic grn">✓</i><h4>نسبة حضور المحاضرات</h4><b>100%</b><small>تم حضور 2 من أصل 2 سيشن مأخوذة</small></div>
+          <div class="pc" id="cAbs"><i class="pic red">▦</i><h4>عدد مرات الغياب</h4><b>0 <span class="red">محاضرات</span></b><small>حاول تجنّب الغياب للحفاظ على نقاطك</small></div>
+          <div class="pc" id="cPen"><i class="pic amb">!</i><h4>إجمالي الخصومات</h4><b>0 <span class="amb">نقاط خصم</span></b><small>بسبب تسليم تاسكات متأخرة أو غياب بدون اعتذار</small></div>
+        </div>
+        <div class="wkhead" id="wkHead"><h3 class="psec">نقاط الضعف ومواضع التطوير الموجهة لك</h3>
+          <span class="wkb amb" id="wkCount">! 1 نقطة تتطلب التركيز</span><span class="wkb grn" id="wkAll">✓ تم معالجة جميع النقاط!</span></div>
+        <div class="wk done"><div class="wkt"><i>✓</i><div><em>تم المعالجة والتغلب عليها</em><small>ملاحظة محاضرة رقم #1</small></div></div>
+          <p>استخدم الـ Layers وسمّيها بدل ما تشتغل على طبقة واحدة.</p><div class="wkf"><span>المدرب: م. محمد</span><span class="g">تم المعالجة بواسطة م. محمد ✓</span></div></div>
+        <div class="wk" id="wk2"><div class="wkt"><i id="wk2i">!</i><div><em id="wk2l">نقطة ضعف محتاجة تطوير</em><small>ملاحظة محاضرة رقم #2</small></div></div>
+          <p id="wk2p">راجع المسافات بين العناصر وخلّي العنوان أوضح.</p><div class="wkf"><span>المدرب: م. محمد</span><span class="g" id="wk2by">تم المعالجة بواسطة م. محمد ✓</span></div></div>
+        <div class="plan" id="plan">
+          <h3>الخطة الجدولية للمجموعة ومعدل الإنجاز</h3>
+          <p>المجموعة مسجلة في كورس <span class="red">Graphic Beginners</span> مع بداية الكورس تم إسناد الخطة بـ <b>16 محاضرة</b>.</p>
+          <div class="plbl" id="planLbl"><span>المحاضرات المنقولة مسبقاً (2 سيشن)</span><span>باقي للمجموعة (14 سيشن)</span></div>
+          <div class="pbar" id="planBar"><i id="planFill"></i></div>
+        </div>
+      </div>
+      <div class="nav"><span><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span class="on"><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>

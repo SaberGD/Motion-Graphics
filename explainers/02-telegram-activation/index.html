@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>تفعيل تليجرام</title>
+<link rel="stylesheet" href="../lib/sg.css">
+<link rel="stylesheet" href="../lib/ui.css">
+<style>
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 50px; display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 32px 0; font: 700 15px -apple-system, Plex; direction: ltr; z-index: 40; }
+  .status .icons { display: flex; gap: 6px; align-items: center; }
+  .status .batt { width: 24px; height: 12px; border: 2px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
+  .status .batt::after { content: ''; position: absolute; inset: 1px 4px 1px 1px; background: currentColor; border-radius: 1px; }
+</style>
+</head>
+<body>
+<!--#include ../lib/icons.svg.html-->
+<div id="stage" class="layoutB">
+  <svg id="corners" width="1080" height="1920" viewBox="0 0 1080 1920"><g fill="none" stroke-width="2"><path stroke="#FF8A1F" d="M86 140v-37l17-17h37"/><path stroke="#C4321F" d="M994 1780v37l-17 17h-37"/></g></svg>
+
+  <div id="logo"><img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP"></div>
+  <div id="stepTag"><b id="stepNum">04</b><span id="stepLbl">STEPS</span></div>
+
+  <div id="head"></div>
+
+  <div id="phone"><div id="screen">
+    <div class="notch"></div>
+<!--#include ../lib/screens.telegram.html-->
+    <div id="ring"></div><div class="tapring" id="ripple"></div><div class="tapdot" id="finger"></div>
+  </div></div>
+
+  <div id="cap"></div>
+  <div id="foot"><span class="url">portal.sabergroupacademy.com</span><span class="lbl">SABER GROUP ACADEMY</span></div>
+
+  <div id="end">
+    <img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP">
+    <h2>بوابة الطالب</h2>
+    <div class="sub">فعّل تليجرام، ونشوفك في أول محاضرة</div>
+    <div class="rule"></div>
+    <p>portal.sabergroupacademy.com</p>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const show = (sel, on, x = 1) => { const el = typeof sel === 'string' ? document.querySelector(sel) : sel; el.style.display = on ? '' : 'none'; if (on) el.style.opacity = x; return el; };
+// kit motion grammar: 25fps, cubic-bezier(0.16,1,0.3,1), 12f in / 8f out / 2f stagger
+const FPS = 25, IN = 12 / FPS, OUT = 8 / FPS, STAG = 2 / FPS;
+function bez(x1, y1, x2, y2) {
+  return (x) => { let t = x; for (let i = 0; i < 6; i++) { const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3 - x; const d = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t; if (Math.abs(d) < 1e-6) break; t -= cx / d; t = Math.min(1, Math.max(0, t)); } return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3; };
+}
+const ease = bez(0.16, 1, 0.3, 1);
+const PHONE_K = 1.3;
+const inX = (t, t0) => ease(Math.min(1, Math.max(0, (t - t0) / IN)));
+
+const HEADS = {
+  h1: { tag: ['04', 'STEPS'], eyebrow: 'TELEGRAM SETUP', title: 'فعّل حسابك على تليجرام', sub: 'أربع خطوات… ودقيقتين بس.' },
+  a1: { tag: ['01', '/ 04'], eyebrow: 'STEP 01 · BOT', title: 'اربط حسابك بالبوت', sub: 'افتح البوت، وبعدين <span class="ltr">Start</span>' },
+  a2: { tag: ['02', '/ 04'], eyebrow: 'STEP 02 · RECORDINGS', title: 'انضم لقناة التسجيلات', sub: 'تسجيل كل محاضرة في مكان واحد' },
+  a3: { tag: ['03', '/ 04'], eyebrow: 'STEP 03 · FOLLOW-UP GROUP', title: 'انضم لجروب المتابعة', sub: 'وتوبيك باسمك لتسليم التاسكات' },
+  a4: { tag: ['04', '/ 04'], eyebrow: 'STEP 04 · PHONE CHECK', title: 'وثّق رقمك', sub: 'عشان نتأكد إن الحساب بتاعك' },
+  d1: { tag: ['04', '/ 04'], eyebrow: 'ALL SET', title: 'المنصة اتفتحت', sub: 'وجاهز لأول محاضرة' },
+  m1: { tag: ['1', 'ACCOUNT'], eyebrow: 'MORE THAN ONE COURSE?', title: 'حساب واحد لكل كورساتك', sub: 'بتربط مرة واحدة بس' },
+  x1: { tag: ['?', 'HELP'], eyebrow: 'NEED HELP?', title: 'وقفت في خطوة؟', sub: 'كلّم الإدارة من نفس الصفحة' },
+};
+
+window.SCENE = {
+  setup(E) {
+    const W = E.W, L = E.L;
+    const T = (this.T = {});
+    // ---- head blocks
+    const head = $('#head');
+    this.heads = Object.entries(HEADS).map(([id, h]) => {
+      const el = document.createElement('div');
+      el.className = 'blk';
+      el.innerHTML = `<div class="eyebrow">${h.eyebrow}</div><h1>${h.title}</h1><p>${h.sub}</p><div class="rule"></div>`;
+      head.appendChild(el);
+      return { id, el, h, parts: [...el.children], t0: L(id).start - 0.15 };
+    });
+    this.heads.forEach((b, i) => (b.t1 = this.heads[i + 1] ? this.heads[i + 1].t0 : E.tl.outro_start));
+
+    // ---- story timings (all keyed to the voice-over words)
+    T.tapBot = W('a1', 4);
+    T.tapStart = W('a1', 9);
+    T.userStart = T.tapStart + 0.25;
+    T.linked = W('a1', 10) - 0.1;
+    T.done1 = L('a2').start + 0.35;
+    T.tapCh = W('a2', 1) + 0.15;
+    T.tapReq = W('a2', 3);
+    T.accepted = W('a2', 4) - 0.05;
+    T.done2 = L('a3').start + 0.35;
+    T.tapGr = W('a3', 1);
+    T.hiTopic = W('a3', 7);
+    T.done3 = L('a4').start + 0.35;
+    T.tapPh = W('a4', 2) + 0.1;
+    T.prompt = W('a4', 3) + 0.35;
+    T.tapShare = W('a4', 5);
+    T.alert = T.tapShare + 0.25;
+    T.tapOk = W('a4', 8) - 0.15;
+    T.contact = T.tapOk + 0.3;
+    T.verified = W('a4', 11);
+    T.done4 = L('d1').start + 0.35;
+    T.end = E.tl.outro_start;
+
+    // ---- what the panel shows: [time, layer, focus, zoom]
+    this.beats = [
+      { t: 0, layer: 'gate', focus: '#tgcard', ring: false },
+      { t: L('a1').start - 0.15, layer: 'gate', focus: '#r1', k: 2.33 },
+      { t: T.tapBot + 0.35, layer: 'bot', focus: '#bStart' },
+      { t: T.linked, layer: 'bot', focus: '#m2' },
+      { t: L('a2').start - 0.15, layer: 'gate', focus: '#r2', k: 2.33 },
+      { t: T.tapCh + 0.35, layer: 'chan', focus: '#chSheet', k: 2.33 },
+      { t: T.accepted, layer: 'chan', focus: '.post', k: 2.33 },
+      { t: L('a3').start - 0.15, layer: 'gate', focus: '#r3', k: 2.33 },
+      { t: T.tapGr + 0.35, layer: 'grp', focus: '#myTopic', k: 2.33 },
+      { t: W('a3', 9) - 0.1, layer: 'topic', focus: '#t2', k: 2.33 },
+      { t: L('a4').start - 0.15, layer: 'gate', focus: '#r4', k: 2.33 },
+      { t: T.tapPh + 0.35, layer: 'bot', focus: '#kb' },
+      { t: T.verified, layer: 'bot', focus: '#m5' },
+      { t: L('d1').start - 0.15, layer: 'gate', focus: '#gCount' },
+      { t: W('d1', 5) - 0.1, layer: 'home', focus: '.card.next', k: 2.1 },
+      { t: L('m1').start - 0.15, layer: 'gate', focus: '#r1', k: 2.33 },
+      { t: L('x1').start - 0.15, layer: 'gate', focus: '#bHelp', k: 2.33 },
+    ];
+    this.taps = [
+      { t: T.tapBot, sel: '#b1' }, { t: T.tapStart, sel: '#bStart' },
+      { t: T.tapCh, sel: '#b2' }, { t: T.tapReq, sel: '#bReq' },
+      { t: T.tapGr, sel: '#b3' }, { t: T.tapPh, sel: '#b4' },
+      { t: T.tapShare, sel: '#bShare' }, { t: T.tapOk, sel: '#bOk' },
+      { t: W('x1', 6), sel: '#bHelp' },
+    ];
+    // ---- sound cues (subtle)
+    this.taps.forEach((p) => E.ev(p.t, 'tap'));
+    [T.done1, T.done2, T.done3, T.done4].forEach((t) => E.ev(t, 'ding'));
+    [T.linked + 0.1, T.prompt, T.contact, T.verified].forEach((t) => E.ev(t, 'pop'));
+  },
+
+  // ---------------------------------------------------------------- app state
+  state(t) {
+    const T = this.T;
+    const late = t >= E.L('x1').start - 0.15;
+    const dn = late ? [true, true, false, false] : [t >= T.done1, t >= T.done2, t >= T.done3, t >= T.done4];
+    ['r1', 'r2', 'r3', 'r4'].forEach((id, i) => {
+      $('#' + id).classList.toggle('done', dn[i]);
+      $('#b' + (i + 1)).style.display = dn[i] ? 'none' : '';
+    });
+    const linked = dn[0];
+    $('#r1h').innerHTML = (t >= E.L('m1').start - 0.15 && !late) ? 'مربوط بنفس حسابك في كورسك التاني <bdi dir="ltr">@ahmed_m</bdi>' : linked ? '@ahmed_m' : 'هيفتح لك البوت، اضغط Start';
+    $('#r2h').textContent = linked ? 'اضغط انضمام وهيتقبل طلبك تلقائياً' : 'اربط حسابك الأول';
+    $('#r3h').textContent = linked ? 'هيتفتح لك توبيك باسمك' : 'اربط حسابك الأول';
+    $('#r4h').textContent = dn[3] ? 'تم توثيق رقمك' : 'افتح البوت واضغط زرار «شارك رقمي للتوثيق»';
+    show('#r4', linked);
+    $('#gCount').textContent = `تم ${'٠١٢٣٤'[dn.filter(Boolean).length]} من ٤ خطوات`;
+    show('#gDone', dn.every(Boolean));
+    // bot
+    show('#m0', t < T.userStart);
+    show('#m1', t >= T.userStart && t < T.tapPh);
+    show('#m2', t >= T.linked);
+    show('#m3', t >= T.prompt);
+    show('#m4', t >= T.contact);
+    show('#m5', t >= T.verified);
+    show('#startBar', t < T.userStart);
+    show('#inputBar', t >= T.userStart);
+    show('#kb', t >= T.linked && t < T.contact);
+    show('#alert', t >= T.alert && t < T.tapOk + 0.12);
+    // channel
+    show('#chSheet', t < T.accepted); show('#chDim', t < T.accepted);
+    $('#bReq').textContent = t >= T.tapReq + 0.15 ? 'REQUEST SENT' : 'REQUEST TO JOIN';
+    $('#bReq').style.background = t >= T.tapReq + 0.15 ? '#8fbdf0' : '';
+    show('#chToast', t >= T.accepted);
+    // group
+    show('#grToast', t < T.hiTopic);
+    $('#myTopic').classList.toggle('hi', t >= T.hiTopic);
+    show('#t1', true); show('#t2', true);
+  },
+
+  render(t, E) {
+    const T = this.T;
+    this.state(t);
+
+    // ---- phone: whole screen, current beat; cut + 12f fade between screens, orange ring on what the voice talks about
+    let bi = 0;
+    this.beats.forEach((b, i) => { if (t >= b.t) bi = i; });
+    const beat = this.beats[bi];
+    const prevBeat = this.beats[bi - 1];
+    $('#phone').style.transform = `scale(${PHONE_K})`;
+    document.querySelectorAll('#screen > .layer').forEach((l) => { l.style.display = l.id === beat.layer ? 'block' : 'none'; l.style.opacity = 1; });
+    const layerChanged = !prevBeat || prevBeat.layer !== beat.layer;
+    const lay = document.getElementById(beat.layer);
+    if (layerChanged && bi > 0) {
+      const x = inX(t, beat.t);
+      lay.style.opacity = x;
+      lay.style.transform = `translateY(${(1 - x) * 10}px)`;
+    } else lay.style.transform = 'none';
+    // gate: scroll so the focused element is on screen
+    const gs = $('#gateScroll');
+    if (beat.layer === 'gate') {
+      this.scrollT = this.scrollT || {};
+      if (this.scrollT[bi] === undefined) {
+        gs.style.transform = 'none';
+        const fe = beat.focus ? lay.querySelector(beat.focus) : null;
+        const sr = $('#screen').getBoundingClientRect(), k = sr.width / 390;
+        const bottom = fe ? (fe.getBoundingClientRect().bottom - sr.top) / k : 0;
+        this.scrollT[bi] = Math.max(0, bottom - 800);
+      }
+      let pi = bi - 1; while (pi >= 0 && this.beats[pi].layer !== 'gate') pi--;
+      const from = pi >= 0 && this.scrollT[pi] !== undefined && !layerChanged ? this.scrollT[pi] : this.scrollT[bi];
+      const sc = E.lerp(from, this.scrollT[bi], ease(E.k(t, beat.t, beat.t + 0.6)));
+      gs.style.transform = `translateY(${-sc}px)`;
+    }
+    // ring around the focus element
+    const ring = $('#ring');
+    ring.style.opacity = 0;
+    const fe = beat.ring !== false && beat.focus ? lay.querySelector(beat.focus) : null;
+    if (fe && fe.offsetParent) {
+      const sr = $('#screen').getBoundingClientRect(), k = sr.width / 390, r = fe.getBoundingClientRect();
+      const pad = 5;
+      ring.style.left = (r.left - sr.left) / k - pad + 'px'; ring.style.top = (r.top - sr.top) / k - pad + 'px';
+      ring.style.width = r.width / k + pad * 2 + 'px'; ring.style.height = r.height / k + pad * 2 + 'px';
+      ring.style.opacity = inX(t, beat.t + 0.2) * 0.95;
+    }
+
+    // ---- taps (screen coordinates)
+    const f = $('#finger'), rp = $('#ripple');
+    f.style.opacity = 0; rp.style.opacity = 0;
+    const sr = $('#screen').getBoundingClientRect(), sk = sr.width / 390;
+    for (const tap of this.taps) {
+      if (t < tap.t - 0.45 || t > tap.t + 0.5) continue;
+      const el = document.querySelector(tap.sel);
+      if (!el || !el.offsetParent) continue;
+      const r = el.getBoundingClientRect();
+      const x = (r.left + r.width / 2 - sr.left) / sk, y = (r.top + r.height / 2 - sr.top) / sk;
+      const a = ease(E.k(t, tap.t - 0.45, tap.t - 0.1));
+      f.style.left = x + 'px'; f.style.top = y + (1 - a) * 18 + 'px';
+      f.style.opacity = Math.min(a, 1 - E.k(t, tap.t + 0.2, tap.t + 0.45));
+      f.style.transform = `scale(${t >= tap.t - 0.05 && t < tap.t + 0.1 ? 0.86 : 1})`;
+      if (t >= tap.t) {
+        const q = E.k(t, tap.t, tap.t + 0.5);
+        rp.style.left = x + 'px'; rp.style.top = y + 'px';
+        rp.style.opacity = 1 - q; rp.style.transform = `scale(${1 + q * 1.4})`;
+      }
+    }
+
+    // ---- head blocks: 8f exit, 12f entrance with 2f stagger, 18px rise
+    let cur = this.heads[0];
+    this.heads.forEach((b) => {
+      const on = t >= b.t0 - 0.001 && t < b.t1;
+      if (on) cur = b;
+      const vis = t >= b.t0 + (b === this.heads[0] ? 0 : OUT) && t < b.t1 + OUT;
+      b.el.style.display = vis ? 'block' : 'none';
+      if (!vis) return;
+      const out = t >= b.t1 ? E.k(t, b.t1, b.t1 + OUT) : 0;
+      b.parts.forEach((p, i) => {
+        const x = b === this.heads[0] && t < 0.6 ? inX(t, 0.2 + i * STAG) : inX(t, b.t0 + OUT + i * STAG);
+        p.style.opacity = x * (1 - out);
+        p.style.transform = `translateY(${(1 - x) * 18}px)`;
+      });
+    });
+    $('#stepNum').textContent = cur.h.tag[0];
+    $('#stepLbl').textContent = cur.h.tag[1];
+
+    // ---- captions: whole line fades in, the spoken word warms to orange
+    E.pages.forEach((p) => {
+      const on = t >= p.t0 && t < p.t1;
+      p.el.style.display = on ? 'flex' : 'none';
+      if (!on) return;
+      const x = inX(t, p.t0), out = E.k(t, p.t1 - OUT, p.t1);
+      p.el.style.opacity = x * (1 - out);
+      p.el.style.transform = `translateY(${(1 - x) * 12}px)`;
+      p.words.forEach((w) => { w.el.style.opacity = 1; w.el.style.transform = 'none'; w.el.classList.toggle('now', t >= w.s && t < w.e + 0.05); });
+    });
+
+    // ---- intro logo reveal (20f) and end card
+    const logoIn = ease(E.k(t, 0, 20 / FPS));
+    $('#logo').style.opacity = logoIn;
+    $('#logo').style.transform = `translateY(${(1 - logoIn) * 14}px)`;
+    const endIn = ease(E.k(t, T.end, T.end + 20 / FPS));
+    $('#end').style.opacity = endIn;
+    $('#end img').style.transform = `translateY(${(1 - endIn) * 14}px)`;
+  },
+};
+</script>
+</body>
+</html>

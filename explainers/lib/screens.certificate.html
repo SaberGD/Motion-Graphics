@@ -1,0 +1,50 @@
+    <!-- portal: progress tab, scrolled to the certificate card (StudentPortal.tsx, certificatesVisibleToStudents) -->
+    <div class="layer portal" id="cert">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll" id="ctScroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>تقدمي</b></div><span class="sbtn">حسابي</span></div>
+        <div class="plan">
+          <h3>الخطة الجدولية للمجموعة ومعدل الإنجاز</h3>
+          <div class="plbl"><span>المحاضرات المنقولة مسبقاً (16 سيشن)</span><span>باقي للمجموعة (0 سيشن)</span></div>
+          <div class="pbar"><i style="width:100%"></i></div>
+        </div>
+        <div class="cc" id="certCard">
+          <div class="cch"><span class="cic">✦</span><div><h2>شهادة تخرج الكورس - SABER GROUP</h2><p>حالة الأهلية ورابط شهادة إتمام الدورة التدريبية</p></div></div>
+          <!-- not eligible yet -->
+          <div class="cno" id="cNo">
+            <div class="cnt1"><span class="x">✕</span>عذراً، أنت غير مؤهل للحصول على شهادة الكورس حالياً</div>
+            <p class="cond" id="cCond">الشروط المطلوبة للشهادة: (80% حضور، 80% أداء تاسكات، و 50% مشاريع تخرج).</p>
+            <div class="reasons" id="cWhy"><b>أسباب عدم استيفاء الشروط:</b>
+              <div id="why1"><i></i>نسبة الحضور: 75% (المطلوب 80% على الأقل)</div>
+              <div id="why2"><i></i>نسبة أداء التاسكات: 67% (المطلوب 80% على الأقل)</div></div>
+          </div>
+          <!-- eligible -->
+          <div class="cyes" id="cYes">
+            <div class="ok"><div class="okt" id="cCongrats"><span>✦</span>ألف مبروك يا مبدع! أنت مؤهل للحصول على شهادة تخرج الكورس</div>
+              <p>تسر إدارة SABER GROUP توجيه التهنئة لك على التزامك وأدائك المتميز طوال فترة الكورس.</p></div>
+            <div class="wait" id="cWait">تم توثيق أهليتك للشهادة وجاري رفع ورصد رابط الشهادة من قِبل فريق الأكاديمية. يرجى إعادة التحقق قريباً!</div>
+            <div class="dl" id="cDl"><div><b>رابط شهادة التخرج الرسمية جاهز للتحميل:</b><small>يمكنك استعراض وتحميل شهادتك بدقة عالية عبر الرابط التالي</small></div>
+              <span class="dlb" id="cDlBtn"><svg><use href="#i-ext"/></svg>تحميل / عرض شهادة التخرج</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav"><span><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span class="on"><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- telegram: rules topic, message 3 (telegram-worker/content/group_topics_ar.json) -->
+    <div class="layer tg" id="rules3">
+      <div class="chatbg"></div>
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="tgh"><span class="back"><svg><use href="#i-back"/></svg>Topics</span><div class="ttl"><b>القواعد العامة</b><span>2614 SG-Graphic-Beginners</span></div><div class="av" style="background:#e2361d;font:800 18px Taj">!</div></div>
+      <div class="pinbar"><i></i><div><b>Pinned Message</b><span>الشهادات والتميز في الكورس</span></div></div>
+      <div class="msgs" style="top:150px">
+        <div class="b in rule-msg" id="rule3"><span class="sender">Saber Group Academy</span>
+          <b>الشهادات والتميز في الكورس</b>
+          <div class="rl" id="ruleCert">✓ الالتزام بمتطلبات الكورس والحضور وتنفيذ التاسكات يؤهلك للحصول على <b>شهادة معتمدة</b>.</div>
+          <div class="rl" id="ruleRec">★ التميز في المستوى والأداء يؤهلك للحصول على <b>شهادة توصية للشركات</b> بناءً على تقييمنا لكفاءتك.</div>
+          <div class="rsec">رسالة ليكم من Saber Group</div>
+          <div class="rl">إحنا مش هنبخل عليكم بأي معلومة أو مساعدة، وهنفضل نتابع معاكم خطوة بخطوة علشان نوصل بيكم لأفضل مستوى ممكن.</div>
+          <span class="tm">9:00</span></div>
+      </div>
+      <div class="bottombar"><div class="inputbar"><i>Message</i></div></div>
+    </div>
