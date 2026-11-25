@@ -12,6 +12,24 @@
   .status .batt { width: 24px; height: 12px; border: 2px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
   .status .batt::after { content: ''; position: absolute; inset: 1px 4px 1px 1px; background: currentColor; border-radius: 1px; }
   .login .status, .portal .status { color: #fff; }
+  .wa { background: #0b141a; font-family: -apple-system, Plex, sans-serif; color: #e9edef; }
+  .wa .status { color: #fff; background: #1f2c34; }
+  .wah { position: absolute; top: 50px; left: 0; right: 0; height: 62px; background: #1f2c34; display: flex; align-items: center; gap: 10px; padding: 0 12px; }
+  .wback { font: 400 30px -apple-system; color: #00a884; } .wav { width: 38px; height: 38px; border-radius: 50%; background: #e2361d; display: grid; place-items: center; font: 800 12px Plex; color: #fff; }
+  .wah b { display: block; font: 700 13.5px Plex; direction: ltr; text-align: right; } .wah small { font: 500 10px Plex; color: #8696a0; }
+  .wamsgs { position: absolute; top: 120px; left: 0; right: 0; bottom: 64px; padding: 8px 12px; display: flex; flex-direction: column; gap: 7px; zoom: 1.12; }
+  .wday { align-self: center; font: 600 10px Plex; color: #8696a0; background: #182229; border-radius: 8px; padding: 4px 10px; }
+  .wb { max-width: 78%; border-radius: 10px; padding: 6px 9px 4px; display: grid; gap: 2px; }
+  .wb.out { align-self: flex-start; background: #005c4b; } .wb.in { align-self: flex-end; background: #202c33; }
+  .wb p { font: 500 12px/1.55 Plex; } .wn { font: 700 10.5px Plex; } .wn.c1 { color: #53bdeb; } .wn.c2 { color: #ffbc38; } .wn.c3 { color: #fc9775; }
+  .wt { justify-self: start; font: 500 9px Plex; color: rgba(233,237,239,.6); direction: rtl; }
+  .wshot { width: 210px; height: 120px; border-radius: 8px; background: #2b2b2b; position: relative; overflow: hidden; margin-bottom: 4px; }
+  .wsbar { height: 14px; background: #3c3c3c; } .wsdlg { position: absolute; left: 40px; right: 40px; top: 34px; background: #ececec; border-radius: 6px; padding: 7px; display: grid; gap: 4px; direction: ltr; }
+  .wsdlg b { font: 700 9px -apple-system; color: #c00; } .wsdlg i { height: 4px; background: #bbb; border-radius: 2px; } .wsdlg span { justify-self: end; font: 700 8px -apple-system; color: #fff; background: #0a64d8; border-radius: 3px; padding: 1px 8px; }
+  .wain { position: absolute; left: 10px; right: 10px; bottom: 14px; height: 40px; border-radius: 20px; background: #1f2c34; display: flex; align-items: center; padding: 0 16px; } .wain i { font: 500 12px Plex; color: #8696a0; font-style: normal; }
+  #hours { position: absolute; top: 960px; right: 86px; width: 340px; direction: rtl; z-index: 5; display: grid; gap: 14px; }
+  #hours .hr { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09); border-radius: 18px; padding: 14px 20px; display: grid; gap: 4px; }
+  #hours .hr small { font: 600 22px Cairo; color: #b8afad; } #hours .hr b { font: 700 34px Cairo; color: var(--orange); }
 </style>
 </head>
 <body>
@@ -26,12 +44,14 @@
     <div class="notch"></div>
 <!--#include ../lib/screens.telegram.html-->
 <!--#include ../lib/screens.groups.html-->
+<!--#include ../lib/screens.whatsapp.html-->
     <div id="ring"></div><div class="tapring" id="ripple"></div><div class="tapdot" id="finger"></div>
   </div></div>
 
   <div id="cap"></div>
   <div id="foot"><span class="url">portal.sabergroupacademy.com</span><span class="lbl">SABER GROUP ACADEMY</span></div>
 
+  <div id="hours"><div class="hr" id="hr1"><small>المتابعة كل يوم</small><b>من 4 لـ 10 مساءً</b></div><div class="hr" id="hr2"><small>برّه المواعيد دي؟</small><b>أي حد متاح بيرد</b></div></div>
   <div id="end">
     <img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP">
     <h2>بوابة الطالب</h2>
@@ -60,7 +80,8 @@ const HEADS = {
   g2: { tag: ['02', 'GROUP'], eyebrow: 'TOPIC · RULES', title: 'القواعد العامة', sub: 'اقراها أول ما تدخل' },
   g3: { tag: ['02', 'GROUP'], eyebrow: 'TOPIC · TASKS', title: 'تاسكات المحاضرات', sub: 'المطلوب بعد كل محاضرة' },
   g4: { tag: ['02', 'GROUP'], eyebrow: 'TOPIC · YOURS', title: 'التوبيك اللي باسمك', sub: 'تسلّم فيه… والمدرب يتابعك' },
-  r1: { tag: ['!', 'TIP'], eyebrow: 'TECH ISSUE?', title: 'مشكلة تقنية؟', sub: 'في الجروب… مع سكرين شوت كاملة' },
+  r1: { tag: ['!', 'HELP'], eyebrow: 'GOT A PROBLEM?', title: 'جروب الواتس', sub: 'ابعتها… مع سكرين شوت كاملة' },
+  r2: { tag: ['!', 'HELP'], eyebrow: 'DAILY FOLLOW-UP', title: 'مدربين بيتابعوا كل يوم', sub: '' },
 };
 
 window.SCENE = {
@@ -70,7 +91,7 @@ window.SCENE = {
     this.heads = Object.entries(HEADS).map(([id, h]) => {
       const el = document.createElement('div');
       el.className = 'blk';
-      el.innerHTML = `<div class="eyebrow">${h.eyebrow}</div><h1>${h.title}</h1><p>${h.sub}</p><div class="rule"></div>`;
+      el.innerHTML = `<div class="eyebrow">${h.eyebrow}</div><h1>${h.title}</h1>${h.sub ? `<p>${h.sub}</p>` : ''}<div class="rule"></div>`;
       head.appendChild(el);
       return { id, el, h, parts: [...el.children], t0: L(id).start - 0.15 };
     });
@@ -94,17 +115,26 @@ window.SCENE = {
       { t: L('g3').start - 0.15, layer: 'grp', focus: '#tTasks' },
       { t: L('g4').start - 0.15, layer: 'grp', focus: '#myTopic' },
       { t: T.tapMine + 0.35, layer: 'topic', focus: '#t2' },
-      { t: L('r1').start - 0.15, layer: 'rules', focus: '#ruleTech', mark: '#ruleTech' },
-      { t: W('r1', 11) - 0.1, layer: 'rules', focus: '#rulePriv', mark: '#rulePriv' },
+      { t: L('r1').start - 0.15, layer: 'wa', focus: '.wah', ring: false },
+      { t: W('r1', 10) - 0.1, layer: 'wa', focus: '#w1' },
+      { t: W('r1', 15) - 0.1, layer: 'wa', focus: '#w2' },
+      { t: W('r1', 20) - 0.1, layer: 'wa', focus: '#w3' },
+      { t: W('r2', 1) - 0.1, layer: 'wa', focus: '#w4' },
     ];
     this.taps = [{ t: T.tapRules, sel: '#tRules' }, { t: T.tapMine, sel: '#myTopic' }];
     this.taps.forEach((p) => E.ev(p.t, 'tap'));
     E.ev(T.fwd, 'pop');
+    T.w = [W('r1', 10), W('r1', 15), W('r1', 20), W('r2', 1)];
+    T.w.forEach((x) => E.ev(x, 'pop'));
+    T.hr = [W('r2', 6), W('r2', 11)];
   },
 
   state(t) {
     const T = this.T;
     show('#fwdToast', t >= T.fwd && t < E.L('g1').start);
+    ['#w1', '#w2', '#w3', '#w4'].forEach((id, i) => { const x = inX(t, T.w[i] - 0.1); const el = $(id); el.style.opacity = x; el.style.transform = `translateY(${(1 - x) * 12}px)`; });
+    const ho = 1 - E.k(t, T.end, T.end + OUT);
+    ['#hr1', '#hr2'].forEach((id, i) => { const x = inX(t, T.hr[i]); const el = $(id); el.style.opacity = x * ho; el.style.transform = `translateX(${(1 - x) * -24}px)`; });
     show('#grToast', false);
     $('#myTopic').classList.toggle('hi', false);
     show('#t1', true); show('#t2', true);
