@@ -1,0 +1,75 @@
+    <!-- portal: overview with the "next lecture" card (pages/StudentPortal.tsx, sg-portal-session-card is-upcoming) -->
+    <div class="layer portal" id="aHome">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>بوابة الطالب</b></div><span class="sbtn">حسابي</span></div>
+        <div class="home-hero"><div><p>مساحة التعلم</p><h1>أهلاً أحمد</h1></div></div>
+        <div class="scard up" id="nextCard"><span class="pill">المحاضرة القادمة</span>
+          <h3>المحاضرة رقم 3: الألوان والتكوين</h3>
+          <div class="mgrid" id="nextMeta"><div><small>التاريخ:</small><b class="ltr">2026-12-06</b></div><div><small>الوقت:</small><b class="red">09:00 PM</b></div><div><small>المدرب:</small><b class="red2">م. محمد</b></div></div>
+          <div class="sbtns"><span class="sb red">دخول المحاضرة</span><span class="sb green">أضف للتقويم</span></div>
+        </div>
+        <div class="ostats"><div id="stAtt"><span>الحضور</span><b>100%</b><small>2 من 2 محاضرة</small></div><div><span>نقاطك</span><b>35</b><small>تفاصيل التقييم في «تقدمي»</small></div><div><span>رحلتك</span><b>2<small> / 16</small></b><small>محاضرة مكتملة</small></div></div>
+      </div>
+      <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- portal: the lecture is live (sg-portal-session-card is-live) -->
+    <div class="layer portal" id="aLive">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>بوابة الطالب</b></div><span class="sbtn">حسابي</span></div>
+        <div class="home-hero"><div><p>مساحة التعلم</p><h1>أهلاً أحمد</h1></div></div>
+        <div class="scard live">
+          <div class="livetag" id="liveTag"><i></i>بث مباشر جاري الآن</div>
+          <h3>المحاضرة رقم 3: <span class="red2">الألوان والتكوين</span></h3>
+          <p>المحاضرة بدأت حالياً على الهواء مباشرة. انقر على الزر للمشاركة والإنصات لشرح المدرب والتطبيقات العملية.</p>
+          <div class="joinbtn" id="bJoin"><i></i>ادخل المحاضرة الآن <svg><use href="#i-ext"/></svg></div>
+        </div>
+        <div class="ostats"><div id="stAtt2"><span>الحضور</span><b id="attPct">100%</b><small id="attCnt">2 من 2 محاضرة</small></div><div><span>نقاطك</span><b id="attPts">35</b><small>تفاصيل التقييم في «تقدمي»</small></div><div><span>رحلتك</span><b>2<small> / 16</small></b><small>محاضرة مكتملة</small></div></div>
+      </div>
+      <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- the online meeting the button opens (generic video call) -->
+    <div class="layer" id="meet">
+      <div class="status" style="color:#fff"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="mtop"><b>المحاضرة رقم 3</b><span>meet · 24 participants</span></div>
+      <div class="share"><div class="slide"><i></i><i></i><i></i><em>الألوان والتكوين</em></div><span class="who"><bdi>م. محمد</bdi> is presenting</span></div>
+      <div class="tiles"><div><b>م</b><span>م. محمد</span></div><div><b>أ</b><span>أحمد محمد (You)</span></div><div><b>س</b><span>سارة</span></div><div><b>+21</b><span>others</span></div></div>
+      <div class="mbar"><i></i><i></i><i></i><i class="end"></i></div>
+    </div>
+
+    <!-- phone camera pointed at the trainer's QR (GroupDetails.tsx shows it, white on #0f172a) -->
+    <div class="layer" id="cam">
+      <div class="status" style="color:#fff"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="viewfinder">
+        <div class="laptop"><div class="lscreen"><p>رابط وبوابة حضور الطلاب</p><div class="qrbox" id="qrBox"><canvas id="qr" width="150" height="150"></canvas><div class="brk" id="qrBrk"></div></div><span class="active">الكود نشط حالياً وينتهي خلال <b>15</b> دقيقة</span></div><div class="lbase"></div></div>
+      </div>
+      <div class="qchip" id="qChip"><b>QR</b><span>portal.sabergroupacademy.com</span></div>
+      <div class="cambar"><span>PHOTO</span><i></i><span>VIDEO</span></div>
+    </div>
+
+    <!-- attendance success (StudentPortal.tsx, attendanceSuccess) -->
+    <div class="layer portal entry" id="qrOk">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="ecard">
+        <div class="eic ok">✓</div>
+        <span class="ebadge ok" id="okBadge">تم تسجيل حضورك تلقائياً</span>
+        <h2>أهلاً يا أحمد محمد!</h2>
+        <p>تم تسجيل حضورك بنجاح في المحاضرة رقم <b class="red2">#3</b>.</p>
+        <div class="etable"><div><span>أكاديمية التدريب:</span><b>بوابة SABER GROUP</b></div><div><span>المجموعة الحالية:</span><b class="red2">Batch 2614</b></div><div><span>الكورس الحالي:</span><b>Graphic Beginners</b></div></div>
+      </div>
+    </div>
+
+    <!-- attendance code expired (StudentPortal.tsx, qrCheckError) -->
+    <div class="layer portal entry" id="qrErr">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="ecard bad">
+        <div class="eic bad">!</div>
+        <span class="ebadge bad" id="errBadge">انتهت صلاحية رابط تسجيل الحضور</span>
+        <h2>عذراً، كود الحضور غير صالح أو منتهي الصلاحية</h2>
+        <div class="etips"><p>تسجيل الحضور في Saber Group مغلق بوقت محدد لحماية التزام الطلاب وضمان العدالة.</p>
+          <p id="errTip">إذا كنت متأخراً وتستحق تسجيل الحضور، يرجى طلب <b>كود حضور جديد مؤقت</b> من المحاضر مباشرة لتتمكن من تسجيل الحضور بالـ QR الجديد.</p></div>
+      </div>
+    </div>

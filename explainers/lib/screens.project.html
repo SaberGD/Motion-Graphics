@@ -1,0 +1,41 @@
+    <!-- portal: project tab (StudentPortal.tsx portal-panel-project) -->
+    <div class="layer portal" id="proj">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll" id="pjScroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>المشروع</b></div><span class="sbtn">حسابي</span></div>
+        <div class="gp">
+          <div class="gtags"><span class="gt red">مشروع التخرج النهائي (Final Graduation Project)</span><span class="gt amb">البراند المستهدف: Bean House</span>
+            <span class="gt amb" id="stOpen">! بانتظار التسليم (مفتوح حالياً)</span><span class="gt grn" id="stDone">✓ تم التسليم</span></div>
+          <h2 id="pjTitle">حملة سوشيال ميديا لبراند قهوة</h2>
+          <div class="gbtns"><span>تفاصيل وقواعد المشروع</span><span class="sky">قناة التليجرام</span></div>
+          <div class="gdates" id="pjDates"><div class="gdh"><b>مواعيد ومسار تسليم مشروع التخرج:</b><em id="pjWarn">تنبيه: التسليم مغلق تماماً بعد انتهاء الموعد المحدد (الديدلاين)!</em></div>
+            <div class="gdr"><div><small>تاريخ ووقت بدء التسليم:</small><b>2026-12-20 10:00</b></div><div id="pjDead"><small>موعد نهاية التسليم (الديدلاين):</small><b class="r">2026-12-27 23:59</b></div></div></div>
+          <div class="gsec" id="pjIdea"><h4>فكرة ومفهوم المشروع:</h4><p>صمّم حملة سوشيال ميديا كاملة لبراند قهوة جديد بهوية واحدة متناسقة.</p></div>
+          <div class="gsec" id="pjReq"><h4>المطلوب تسليمه من المتدرب (تسليمات المشروع):</h4><p>3 بوستات + ستوري + غلاف للصفحة، بالملفات المفتوحة.</p></div>
+          <div class="gsec warn" id="pjRules"><h4>القواعد والتعليمات الأساسية التي لا يجب الخروج عنها:</h4><p><b>1.</b> الالتزام بالمقاسات المطلوبة وبدون صور مشوشة.</p><p><b>2.</b> رابط الملفات مفتوح للجميع.</p></div>
+          <!-- status banner: three states -->
+          <div class="gban" id="banNo"><b>! لم تقم بتسليم مشروع التخرج بعد!</b><p>يرجى قراءة القواعد والمطلوب بعناية ثم تسليم رابط مجلد Google Drive / Figma الخاص بمشروعك قبل انتهاء المهلة.</p>
+            <span class="gsub" id="bSubmit"><svg><use href="#i-plane"/></svg>تسليم مشروع التخرج الآن</span></div>
+          <div class="gban ok" id="banRecv"><b>✓ تم استلام رابط المشروع بنجاح، وفي انتظار التقييم من قِبل المحاضر.</b><p>الرابط المُسلم: <span class="lnk">drive.google.com/drive/folders/1aB…</span></p><span class="gedit">تعديل بيانات التسليم</span></div>
+          <div class="gban ev" id="banEval"><b>تم تقييم مشروع التخرج الخاص بك من قِبل المحاضر!</b>
+            <div class="sc"><span id="pjScore">الدرجة الأساسية: <bdi dir="ltr">17 / 20</bdi></span><span class="bon">+1 بونص</span></div>
+            <span class="gview" id="bEvalView">عرض تفاصيل التقييم وملاحظات الديزاين</span></div>
+        </div>
+      </div>
+      <div class="nav"><span><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span><i></i>تقدمي</span><span class="on"><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- portal: submission dialog (StudentPortal.tsx, "تسليم مشروع التخرج") -->
+    <div class="layer portal" id="psub">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="dlg">
+        <div class="dlgh"><small>استمارة تسليم مشروع التخرج</small><h3>تسليم: حملة سوشيال ميديا لبراند قهوة</h3><p>براند: Bean House</p></div>
+        <label>رابط ملف مشروع التخرج (Google Drive / Figma / Behance) <span class="r">*</span></label>
+        <div class="url" id="uBox"><span id="uVal"></span><i class="caret" id="uCaret"></i><span class="uph" id="uPh">https://drive.google.com/drive/folders/...</span></div>
+        <div class="chk" id="chkBox"><b>تأكيد الشروط الأساسية للتسليم (إجباري):</b>
+          <div id="k1"><i></i><span>1. أتأكد أن رابط جوجل درايف / فيجما مفتوح للجميع (Anyone with link can view).</span></div>
+          <div id="k2"><i></i><span>2. قمت برفع كافة الملفات القابلة للتعديل والملحقات المطلوبة.</span></div>
+          <div id="k3"><i></i><span>3. قرأت كافة قواعد وتعليمات مشروع التخرج والتزمت بها بالكامل.</span></div></div>
+        <div class="dbtns"><span class="cancel">إلغاء</span><span class="save" id="bSave">حفظ وتأكيد التسليم</span></div>
+      </div>
+    </div>

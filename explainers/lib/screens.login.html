@@ -1,0 +1,43 @@
+    <!-- mail app: the welcome email (template: functions/index.js 'welcome') -->
+    <div class="layer mail" id="email">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="mailh"><span class="back"><svg><use href="#i-back"/></svg>Inbox</span></div>
+      <div class="mailscroll" id="mailScroll">
+        <div class="subj">مرحباً بك في <bdi>2614 - Graphic Beginners</bdi> | <bdi>SABER GROUP COURSES ACADEMY</bdi></div>
+        <div class="from"><div class="av">SG</div><div><b>SABER GROUP Academy</b><span>to me · 9:30 AM</span></div></div>
+        <div class="tpl">
+          <div class="tc"><h2>مرحباً بك في أسرّتنا التدريبية</h2><p class="brand">SABER GROUP COURSES ACADEMY</p></div>
+          <p>عزيزي الطالب <b>أحمد محمد</b>،</p>
+          <p>يسعدنا انضمامك إلى كورس <b>Graphic Beginners</b> - جروب <b>2614</b>.</p>
+          <div class="cred" id="mCred">
+            <h3>بيانات تسجيل الدخول إلى بوابة الطالب:</h3>
+            <p><b>الـ ID الخاص بك:</b> <code id="mId">123456</code></p>
+            <p><b>كلمة السر:</b> <code id="mPw">48213</code></p>
+          </div>
+          <div class="warn">تنبيه أمني هام: برجاء عدم مشاركة الـ ID أو كلمة السر الخاصة بك مع أي شخص إطلاقاً لضمان أمان حسابك وسجلك التدريبي.</div>
+          <p class="small">يمكنك متابعة المحاضرات، تسجيل الحضور، وتحميل الملفات من خلال بوابة الطالب الرسمية.</p>
+          <div class="tc"><span class="go" id="mGo">الانتقال لبوابة الطالب</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- portal: login (pages/StudentPortal.tsx, "STUDENT ENTERING LOGIN SCREEN") -->
+    <div class="layer portal login" id="login">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="lwrap" id="loginWrap">
+        <img class="lw" src="../assets/saber-group-logo.png">
+        <div class="lcard">
+          <h2>دخول بوابة الطالب</h2>
+          <div class="lerr" id="lErr">ده إيميل! اكتب الـ ID (6 أرقام) المسجل في إيميل الترحيب.</div>
+          <label>الـ ID أو رقم الموبايل</label>
+          <div class="inp" id="fId"><span class="ic"><svg><use href="#i-user"/></svg></span><span class="val" id="vId"></span><span class="ph" id="phId">123456</span><i class="caret" id="cId"></i></div>
+          <p class="help1">الـ ID من 6 أرقام (مش الإيميل)</p>
+          <div class="emailwarn" id="lWarn"><svg><use href="#i-alert"/></svg>ده إيميل! اكتب الـ ID (6 أرقام) المسجل في إيميل الترحيب.</div>
+          <label>كلمة المرور</label>
+          <div class="inp" id="fPw"><span class="ic"><svg><use href="#i-lock"/></svg></span><span class="val" id="vPw"></span><span class="ph" id="phPw">5 أرقام من بداية الكورس</span><i class="caret" id="cPw"></i></div>
+          <div class="lbtn" id="bLogin">تسجيل الدخول</div>
+          <div class="forgot" id="lForgot">نسيت بياناتك؟ كلّم المدرب المنسق.</div>
+          <div class="lnote" id="lNote"><svg><use href="#i-lock"/></svg><p>الحساب شخصي: جلسة واحدة وأجهزة محدودة، وكل دخول بيتسجل. <span>مشاركة الحساب = إيقافه</span>. <a>الشروط</a></p></div>
+        </div>
+      </div>
+    </div>

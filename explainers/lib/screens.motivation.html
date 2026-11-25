@@ -1,0 +1,62 @@
+    <!-- portal: overview with the motivation cards (pages/StudentPortal.tsx + components/portal/PortalMotivation.tsx) -->
+    <div class="layer portal" id="mot">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="scroll" id="mtScroll">
+        <div class="ph"><div class="l"><img src="../assets/saber-group-logo.png"><b>بوابة الطالب</b></div><span class="sbtn" id="mAcct">حسابي</span></div>
+        <div class="home-hero"><div><p>مساحة التعلم</p><h1>أهلاً أحمد</h1></div></div>
+        <div class="ostats o4"><div><span>الحضور</span><b>100%</b><small>5 من 5 محاضرة</small></div><div><span>نقاطك</span><b>22</b><small>تفاصيل التقييم في «تقدمي»</small></div>
+          <div><span>رحلتك في الكورس</span><b>5<small> / 16</small></b><small>محاضرة مكتملة</small></div><div><span>التطبيقات</span><b id="oTasks">4<small> / 5</small></b><small>تطبيق متسلّم</small></div></div>
+
+        <section class="mc" id="mTodo"><header><i>◎</i><h3>المطلوب منك دلوقتي</h3><span class="cnt" id="mTodoCnt">4 من 5 تطبيق</span></header>
+          <ul class="todo" id="mTodoList"><li><span><strong>المحاضرة 5: الإضاءة والظلال</strong><small>لسه ماتسلّمش</small></span><em id="mSend">سلّم ↗</em></li></ul>
+          <p class="good" id="mTodoGood">✓ كل التطبيقات متسلّمة. عاش! 👏</p></section>
+
+        <section class="mc" id="mCert"><header><i>✦</i><h3>طريقك للشهادة</h3><span class="cnt ok" id="mReady">على الطريق الصح ✅</span></header>
+          <div class="bars"><div class="ok"><span>الحضور</span><div class="bar"><i style="width:100%"></i><b></b></div><strong>100%</strong></div>
+            <div id="mTaskBar"><span>التطبيقات</span><div class="bar"><i id="mTaskFill" style="width:80%"></i><b></b></div><strong id="mTaskPct">80%</strong></div></div></section>
+
+        <section class="mc pod" id="mPod"><header class="podh"><div><h3>المتصدرين</h3><p>أول تلاتة في الجروب دلوقتي</p></div><i>🏆</i></header>
+          <ol class="podium">
+            <li class="c1"><span class="medal"><i></i><b>1</b></span><span class="av" style="background:#7c3aed">سم</span><strong>سارة م.</strong><span class="sc"><b>25</b> نقطة</span><small>المركز 1</small></li>
+            <li class="c2 me" id="mMe"><span class="medal"><i></i><b>2</b></span><span class="av photo" id="mMyAv">أم</span><strong>أحمد م. (أنت)</strong><span class="sc"><b>22</b> نقطة</span><small>المركز 2</small></li>
+            <li class="c3"><span class="medal"><i></i><b>3</b></span><span class="av" style="background:#0e7490">يع</span><strong>يوسف ع.</strong><span class="sc"><b>20</b> نقطة</span><small>المركز 3</small></li>
+          </ol></section>
+
+        <section class="mc" id="mLvl"><header><i>★</i><h3>مستواك</h3><span class="cnt">Level 2</span></header>
+          <div class="lvl"><span class="lic" id="mLvlIc">🥉</span><div><strong>برونزي</strong><div class="bar"><i id="mLvlFill" style="width:35%"></i></div>
+            <small><bdi>22 نقطة</bdi> · فاضلك 13 للمستوى فضي 🥈</small></div></div>
+          <div class="ladder" id="mLadder"><span>🌱<small>مبتدئ</small></span><span class="on">🥉<small>برونزي</small></span><span>🥈<small>فضي</small></span><span>🥇<small>ذهبي</small></span><span>💠<small>بلاتيني</small></span><span>💎<small>ماسي</small></span></div></section>
+
+        <section class="mc" id="mWeek"><header><i>🏆</i><h3>منافسة Week 3</h3><span class="cnt">نقاطك الأسبوع ده: 5</span></header>
+          <p class="muted">أعلى 3 الأسبوع ده لحد دلوقتي (بتتحدّث كل نص ساعة)</p>
+          <ol class="wtop" id="mWeekTop"><li class="me"><span>🥇</span><span class="av photo s">أم</span><strong>أحمد م. (أنت)</strong><em><b>5</b> نقطة</em></li>
+            <li><span>🥈</span><span class="av s" style="background:#7c3aed">سم</span><strong>سارة م.</strong><em><b>4</b> نقطة</em></li>
+            <li><span>🥈</span><span class="av s" style="background:#be185d">مح</span><strong>منة ح.</strong><em><b>4</b> نقطة</em></li></ol>
+          <div class="wlast" id="mStar"><h4>⭐ نجم Week 2: سارة م.</h4>
+            <ol class="wtop"><li><span>🥇</span><span class="av s" style="background:#7c3aed">سم</span><strong>سارة م.</strong><em><b>9</b> نقطة</em></li>
+              <li class="me"><span>🥈</span><span class="av photo s">أم</span><strong>أحمد م. (أنت)</strong><em><b>8</b> نقطة</em></li>
+              <li><span>🥉</span><span class="av s" style="background:#0e7490">يع</span><strong>يوسف ع.</strong><em><b>7</b> نقطة</em></li></ol></div>
+          <div class="whist">نجوم الأسابيع اللي فاتت ⌄</div></section>
+
+        <section class="mc" id="mAch"><header><i>🏅</i><h3>إنجازاتك</h3></header>
+          <div class="stats"><div id="mRank"><span>ترتيبك</span><strong>2 <small>من 24</small></strong><small>متوسط الجروب 13.6 · نقاطك 22</small></div>
+            <div id="mStreak"><span>سلسلة التسليم في الميعاد</span><strong>5 🔥</strong><small>كمّل عشان ماتتكسرش</small></div>
+            <div><span>نجوم الأسابيع</span><strong>2 ⭐</strong><small>في التوب 3 2 أسابيع ورا بعض</small></div>
+            <div><span>تسليم كامل</span><strong>3 أسابيع</strong><small>أسابيع ورا بعض كل تطبيقاتها متسلّمة</small></div></div>
+          <h4 class="bt">شاراتك</h4>
+          <ul class="badges" id="mBadges"><li><i>0/1</i>نجم الأسبوع</li><li class="on"><i>✓</i>في التوب 3</li><li class="on"><i>✓</i>نجم مستمر</li><li class="on"><i>✓</i>تسليم مستمر</li>
+            <li class="on" id="bAtt"><i>✓</i>حضور كامل</li><li class="on"><i>✓</i>ملتزم بالمواعيد</li><li id="bQual"><i>2/3</i>جودة عالية</li><li class="on"><i>✓</i>من أول مرة</li></ul></section>
+      </div>
+      <div class="nav"><span class="on"><i></i>الرئيسية</span><span><i></i>المحاضرات</span><span id="navProg2"><i></i>تقدمي</span><span><i></i>المشروع</span><span><i></i>المساعدة</span></div>
+    </div>
+
+    <!-- portal: account dialog, profile photo (components/portal/PortalPhotoPicker.tsx) -->
+    <div class="layer portal" id="acct">
+      <div class="status"><span>9:41</span><span class="icons">5G <i class="batt"></i></span></div>
+      <div class="adlg">
+        <h3>حسابي</h3>
+        <div class="pp" id="mPhoto"><span class="av big" id="mPhAv">أم</span><div><strong>صورتك الشخصية</strong><small>بتظهر لزمايلك لو كنت من أوائل الجروب. اختار صورة واضحة ومناسبة.</small>
+          <div class="ppb"><span id="mChange">📷 غيّر الصورة</span><span>🗑 شيل الصورة</span></div><p class="okmsg" id="mPhOk">صورتك اتحدّثت ✅</p></div></div>
+        <div class="af"><div><small>الاسم</small><b>أحمد محمد</b></div><div><small>الـ ID</small><b>123456</b></div></div>
+      </div>
+    </div>

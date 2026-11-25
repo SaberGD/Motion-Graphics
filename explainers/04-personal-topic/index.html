@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>التوبيك الخاص والتاسكات</title>
+<link rel="stylesheet" href="../lib/sg.css">
+<link rel="stylesheet" href="../lib/ui.css">
+<style>
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 50px; display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 32px 0; font: 700 15px -apple-system, Plex; direction: ltr; z-index: 40; }
+  .status .icons { display: flex; gap: 6px; align-items: center; }
+  .status .batt { width: 24px; height: 12px; border: 2px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
+  .status .batt::after { content: ''; position: absolute; inset: 1px 4px 1px 1px; background: currentColor; border-radius: 1px; }
+  .login .status, .portal .status { color: #fff; }
+  .deliver { display: flex; align-items: center; gap: 11px; padding: 13px 14px; margin-top: 12px; border-radius: 14px; background: linear-gradient(135deg, #c4321f, #ee4e2b); color: #fff; box-shadow: 0 8px 22px rgba(196,50,31,.28); }
+  .deliver svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2; flex: none; }
+  .deliver svg.ext { width: 15px; height: 15px; }
+  .deliver span { flex: 1; display: grid; gap: 2px; }
+  .deliver strong { font: 800 13px Plex; } .deliver small { font: 500 10px Plex; color: rgba(255,255,255,.85); }
+  .ostats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+  .ostats div { background: #1b1718; border: 1px solid #2a2425; border-radius: 13px; padding: 9px 6px; display: grid; gap: 3px; font: 600 9px Plex; color: #9a908e; }
+  .ostats b { font: 800 17px Taj; color: #fff; } .ostats small { font: 500 8px Plex; color: #7d7472; }
+  .b.photo { padding: 4px; width: 230px; }
+  .b.photo .art { height: 170px; border-radius: 13px; background: linear-gradient(150deg, #1d2b53, #7e2553 55%, #ff8a1f); position: relative; overflow: hidden; }
+  .b.photo .art i { position: absolute; border-radius: 50%; background: rgba(255,255,255,.18); }
+  .b.photo .art i:nth-child(1) { width: 120px; height: 120px; left: -20px; top: -30px; }
+  .b.photo .art i:nth-child(2) { width: 70px; height: 70px; right: 20px; bottom: 18px; background: rgba(255,255,255,.3); }
+  .b.photo .art i:nth-child(3) { width: 140px; height: 10px; border-radius: 5px; left: 20px; bottom: 30px; background: #fff; opacity: .7; }
+  .b.photo .cap { display: block; direction: rtl; padding: 5px 7px 0; font: 500 13px Plex; }
+  .b.file { display: flex; align-items: center; gap: 10px; width: 250px; }
+  .b.file .fic { width: 44px; height: 44px; border-radius: 50%; background: #4fae4e; color: #fff; display: grid; place-items: center; font: 700 11px -apple-system, sans-serif; flex: none; }
+  .b.file .fn { display: grid; flex: 1; } .b.file .fn b { font: 600 13px -apple-system, sans-serif; } .b.file .fn small { font: 400 11px -apple-system; color: #4fae4e; }
+  .b.file .tm { white-space: nowrap; align-self: flex-end; }
+  .lrow h3 { font-size: 15.5px !important; } .bdg { font-size: 11.5px !important; } .ldet p { font-size: 12px !important; } .ldet h4 { font-size: 14px !important; }
+  .inputbar .clip { font-size: 20px; opacity: .6; }
+  .ltool { font: 500 11px/1.6 Plex; color: #9a908e; margin-bottom: 12px; }
+  .lrow { background: #1b1718; border: 1px solid #2a2425; border-radius: 16px; padding: 13px; }
+  .lid { display: flex; gap: 10px; align-items: center; } .lid .num { font: 800 20px Taj; color: #fb923c; }
+  .lid h3 { font: 800 14px Taj; } .lid p { font: 500 10px Plex; color: #9a908e; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 11px 0; }
+  .bdg { font: 700 10.5px Plex; border-radius: 999px; padding: 4px 10px; }
+  .bdg.ok { color: #86efac; background: rgba(16,185,129,.15); } .bdg.warn { color: #fcd34d; background: rgba(245,158,11,.15); }
+  .ldet { border-top: 1px solid #2a2425; padding-top: 10px; }
+  .ldet h4 { font: 800 12.5px Taj; margin: 6px 0 4px; } .ldet p { font: 500 11px/1.7 Plex; color: #c9c0be; }
+  .lbtn2 { display: inline-flex; gap: 6px; align-items: center; margin: 9px 0 6px; background: #c4321f; color: #fff; font: 700 11px Plex; border-radius: 10px; padding: 7px 11px; }
+  .lbtn2 svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2; }
+  .ldet p.muted { font-size: 10px; color: #8d8482; }
+  #lNotes { margin-top: 8px; }
+</style>
+</head>
+<body>
+<!--#include ../lib/icons.svg.html-->
+<div id="stage" class="layoutB">
+  <svg id="corners" width="1080" height="1920" viewBox="0 0 1080 1920"><g fill="none" stroke-width="2"><path stroke="#FF8A1F" d="M86 140v-37l17-17h37"/><path stroke="#C4321F" d="M994 1780v37l-17 17h-37"/></g></svg>
+  <div id="logo"><img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP"></div>
+  <div id="stepTag"><b id="stepNum">04</b><span id="stepLbl">TASKS</span></div>
+  <div id="head"></div>
+
+  <div id="phone"><div id="screen">
+    <div class="notch"></div>
+<!--#include ../lib/screens.telegram.html-->
+<!--#include ../lib/screens.tasks.html-->
+    <div id="ring"></div><div class="tapring" id="ripple"></div><div class="tapdot" id="finger"></div>
+  </div></div>
+
+  <div id="cap"></div>
+  <div id="foot"><span class="url">portal.sabergroupacademy.com</span><span class="lbl">SABER GROUP ACADEMY</span></div>
+
+  <div id="end">
+    <img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP">
+    <h2>بوابة الطالب</h2>
+    <div class="sub">سلّم تاسكاتك في التوبيك اللي باسمك</div>
+    <div class="rule"></div>
+    <p>portal.sabergroupacademy.com</p>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const show = (sel, on) => { const el = $(sel); el.style.display = on ? '' : 'none'; return el; };
+const FPS = 25, IN = 12 / FPS, OUT = 8 / FPS, STAG = 2 / FPS, PHONE_K = 1.3;
+function bez(x1, y1, x2, y2) {
+  return (x) => { let t = x; for (let i = 0; i < 6; i++) { const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3 - x; const d = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t; if (Math.abs(d) < 1e-6) break; t -= cx / d; t = Math.min(1, Math.max(0, t)); } return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3; };
+}
+const ease = bez(0.16, 1, 0.3, 1);
+const inX = (t, t0) => ease(Math.min(1, Math.max(0, (t - t0) / IN)));
+
+const HEADS = {
+  h:  { tag: ['?', 'WHERE'], eyebrow: 'YOUR TOPIC', title: 'التوبيك اللي باسمك', sub: 'هنا بتسلّم تاسكاتك' },
+  p1: { tag: ['01', 'OPEN'], eyebrow: 'STUDENT PORTAL', title: 'افتحه من البوابة', sub: '«سلّم التطبيق المطلوب منك»' },
+  s1: { tag: ['02', 'SEND'], eyebrow: 'SEND YOUR WORK', title: 'ابعت شغلك', sub: 'صور أو ملفات' },
+  d1: { tag: ['03', 'DEADLINE'], eyebrow: 'DEADLINE', title: 'آخر ميعاد', sub: 'قبل المحاضرة التالية بيوم… الساعة <span class="ltr">8</span> مساءً' },
+  n1: { tag: ['!', 'NOTE'], eyebrow: 'HEADS UP', title: 'فتح الرابط مش تسليم', sub: 'التسليم إنك تبعت شغلك' },
+  f1: { tag: ['04', 'STATUS'], eyebrow: 'LECTURES TAB', title: 'تم التسليم', sub: 'وملاحظات المدرب كمان' },
+};
+
+window.SCENE = {
+  setup(E) {
+    const W = E.W, L = E.L, T = (this.T = {});
+    const head = $('#head');
+    this.heads = Object.entries(HEADS).map(([id, h]) => {
+      const el = document.createElement('div');
+      el.className = 'blk';
+      el.innerHTML = `<div class="eyebrow">${h.eyebrow}</div><h1>${h.title}</h1><p>${h.sub}</p><div class="rule"></div>`;
+      head.appendChild(el);
+      return { id, el, h, parts: [...el.children], t0: L(id).start - 0.15 };
+    });
+    this.heads.forEach((b, i) => (b.t1 = this.heads[i + 1] ? this.heads[i + 1].t0 : E.tl.outro_start));
+    T.tapDeliver = W('p1', 5) + 0.1;
+    T.img = W('s1', 3) - 0.05;
+    T.file = W('s1', 5) - 0.05;
+    T.done = W('f1', 8) - 0.05;
+    T.note = W('f1', 10) - 0.05;
+    T.end = E.tl.outro_start;
+    this.beats = [
+      { t: 0, layer: 'myT', focus: '.tgh', ring: false },
+      { t: W('h', 4) - 0.1, layer: 'myT', focus: '.tgh' },
+      { t: L('p1').start - 0.15, layer: 'pHome', focus: '#bDeliver', ring: false },
+      { t: T.tapDeliver - 0.5, layer: 'pHome', focus: '#bDeliver' },
+      { t: W('p1', 10) - 0.1, layer: 'myT', focus: '.tgh' },
+      { t: T.img, layer: 'myT', focus: '#sImg' },
+      { t: T.file, layer: 'myT', focus: '#sFile' },
+      { t: L('d1').start - 0.15, layer: 'rules2', focus: '#ruleDead', mark: '#ruleDead' },
+      { t: W('d1', 11) - 0.1, layer: 'rules2', focus: '#ruleOther', mark: '#ruleOther' },
+      { t: L('n1').start - 0.15, layer: 'lect', focus: '.lbtn2' },
+      { t: W('n1', 4) - 0.1, layer: 'lect', focus: '#lMuted' },
+      { t: W('n1', 7) - 0.1, layer: 'myT', focus: '#sImg' },
+      { t: L('f1').start - 0.15, layer: 'lect', focus: '#bdgTask' },
+      { t: T.done, layer: 'lect', focus: '#bdgDone' },
+      { t: T.note, layer: 'lect', focus: '#lNotes' },
+    ];
+    this.taps = [{ t: T.tapDeliver, sel: '#bDeliver' }];
+    this.taps.forEach((p) => E.ev(p.t, 'tap'));
+    E.ev(T.img, 'swipe'); E.ev(T.file, 'swipe'); E.ev(T.done, 'success');
+  },
+
+  state(t) {
+    const T = this.T;
+    show('#sImg', t >= T.img); show('#sFile', t >= T.file);
+    show('#bdgTask', t < T.done); show('#bdgDone', t >= T.done);
+    $('#noteTxt').textContent = t >= T.note ? 'شغل حلو 👏 ظبّط المسافات بين العناصر وراجع حجم العنوان.' : 'مفيش ملاحظات من المدرب على المحاضرة دي حتى الآن.';
+    let bi = 0; this.beats.forEach((b, i) => { if (t >= b.t) bi = i; });
+    document.querySelectorAll('.rl').forEach((r) => r.classList.toggle('mark', !!this.beats[bi].mark && r.matches(this.beats[bi].mark)));
+    // sent bubbles slide in
+    [['#sImg', T.img], ['#sFile', T.file]].forEach(([s, t0]) => { const x = inX(t, t0); $(s).style.opacity = x; $(s).style.transform = `translateY(${(1 - x) * 14}px)`; });
+  },
+
+  render(t, E) {
+    const T = this.T;
+    this.state(t);
+
+    let bi = 0;
+    this.beats.forEach((b, i) => { if (t >= b.t) bi = i; });
+    const beat = this.beats[bi], prevBeat = this.beats[bi - 1];
+    $('#phone').style.transform = `scale(${PHONE_K})`;
+    document.querySelectorAll('#screen > .layer').forEach((l) => { l.style.display = l.id === beat.layer ? 'block' : 'none'; l.style.opacity = 1; l.style.transform = 'none'; });
+    const lay = document.getElementById(beat.layer);
+    if (bi > 0 && prevBeat.layer !== beat.layer) {
+      const x = inX(t, beat.t);
+      lay.style.opacity = x; lay.style.transform = `translateY(${(1 - x) * 10}px)`;
+    }
+    const sr = $('#screen').getBoundingClientRect(), sk = sr.width / 390;
+    // orange ring on what the voice talks about
+    const ring = $('#ring');
+    ring.style.opacity = 0;
+    const fe = beat.ring !== false && beat.focus ? lay.querySelector(beat.focus) : null;
+    if (fe && fe.offsetParent) {
+      const r = fe.getBoundingClientRect(), pad = 5;
+      ring.style.left = (r.left - sr.left) / sk - pad + 'px'; ring.style.top = (r.top - sr.top) / sk - pad + 'px';
+      ring.style.width = r.width / sk + pad * 2 + 'px'; ring.style.height = r.height / sk + pad * 2 + 'px';
+      ring.style.opacity = inX(t, beat.t + 0.2) * 0.95;
+    }
+    // taps
+    const f = $('#finger'), rp = $('#ripple');
+    f.style.opacity = 0; rp.style.opacity = 0;
+    for (const tap of this.taps) {
+      if (t < tap.t - 0.45 || t > tap.t + 0.5) continue;
+      const el = $(tap.sel);
+      if (!el || !el.offsetParent) continue;
+      const r = el.getBoundingClientRect();
+      const x = (r.left + r.width / 2 - sr.left) / sk, y = (r.top + r.height / 2 - sr.top) / sk;
+      const a = ease(E.k(t, tap.t - 0.45, tap.t - 0.1));
+      f.style.left = x + 'px'; f.style.top = y + (1 - a) * 18 + 'px';
+      f.style.opacity = Math.min(a, 1 - E.k(t, tap.t + 0.2, tap.t + 0.45));
+      f.style.transform = `scale(${t >= tap.t - 0.05 && t < tap.t + 0.1 ? 0.86 : 1})`;
+      if (t >= tap.t) { const q = E.k(t, tap.t, tap.t + 0.5); rp.style.left = x + 'px'; rp.style.top = y + 'px'; rp.style.opacity = 1 - q; rp.style.transform = `scale(${1 + q * 1.4})`; }
+    }
+
+    // head blocks: old exits (8f), then new enters (12f, 2f stagger)
+    let cur = this.heads[0];
+    this.heads.forEach((b) => {
+      if (t >= b.t0 && t < b.t1) cur = b;
+      const first = b === this.heads[0];
+      const vis = t >= b.t0 + (first ? 0 : OUT) && t < b.t1 + OUT;
+      b.el.style.display = vis ? 'block' : 'none';
+      if (!vis) return;
+      const out = t >= b.t1 ? E.k(t, b.t1, b.t1 + OUT) : 0;
+      b.parts.forEach((p, i) => {
+        const x = first && t < 0.6 ? inX(t, 0.2 + i * STAG) : inX(t, b.t0 + (first ? 0 : OUT) + i * STAG);
+        p.style.opacity = x * (1 - out); p.style.transform = `translateY(${(1 - x) * 18}px)`;
+      });
+    });
+    $('#stepNum').textContent = cur.h.tag[0]; $('#stepLbl').textContent = cur.h.tag[1];
+
+    // captions
+    E.pages.forEach((p) => {
+      const on = t >= p.t0 && t < p.t1;
+      p.el.style.display = on ? 'flex' : 'none';
+      if (!on) return;
+      const x = inX(t, p.t0), out = E.k(t, p.t1 - OUT, p.t1);
+      p.el.style.opacity = x * (1 - out); p.el.style.transform = `translateY(${(1 - x) * 12}px)`;
+      p.words.forEach((w) => { w.el.style.opacity = 1; w.el.style.transform = 'none'; w.el.classList.toggle('now', t >= w.s && t < w.e + 0.05); });
+    });
+
+    const logoIn = ease(E.k(t, 0, 20 / FPS));
+    $('#logo').style.opacity = logoIn; $('#logo').style.transform = `translateY(${(1 - logoIn) * 14}px)`;
+    const endIn = ease(E.k(t, T.end, T.end + 20 / FPS));
+    $('#end').style.opacity = endIn; $('#end img').style.transform = `translateY(${(1 - endIn) * 14}px)`;
+  },
+};
+</script>
+</body>
+</html>

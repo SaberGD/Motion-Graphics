@@ -1,0 +1,94 @@
+/* Saber Group motion profile (from the Saber Group Claude Motion Kit, brand-tokens.json v1.0). 1080x1920. */
+@font-face { font-family: Cairo; src: url(../assets/kit/fonts/Cairo-Medium.ttf); font-weight: 500; font-display: block; }
+@font-face { font-family: Cairo; src: url(../assets/kit/fonts/Cairo-Bold.ttf); font-weight: 700; font-display: block; }
+@font-face { font-family: Cairo; src: url(../assets/kit/fonts/Cairo-Regular.ttf); font-weight: 400; font-display: block; }
+@font-face { font-family: Bebas; src: url(../assets/kit/fonts/BebasNeue-Regular.ttf); font-display: block; }
+/* fonts used inside the recreated app screens */
+@font-face { font-family: Plex; src: url(../../project/fonts/IBMPlexSansArabic-Bold.ttf); font-weight: 700; }
+@font-face { font-family: Plex; src: url(../../project/fonts/IBMPlexSansArabic-SemiBold.ttf); font-weight: 500 600; }
+@font-face { font-family: Taj; src: url(../../project/fonts/Tajawal-Bold.ttf); font-weight: 700; }
+@font-face { font-family: Taj; src: url(../../project/fonts/Tajawal-ExtraBold.ttf); font-weight: 800; }
+
+:root {
+  --bg: #0A0A0A; --surface: #151515; --surface2: #1C1C1C;
+  --red: #C4321F; --deep: #7A1B12; --orange: #FF8A1F; --text: #F6F3F2; --text2: #C7C9CD; --hl: #E85C3B; --ok: #2BC98F;
+  --tg: #3390ec;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; letter-spacing: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+body { font-family: Cairo, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+
+#stage { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+#stage::before { content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(246,243,242,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(246,243,242,.025) 1px, transparent 1px);
+  background-size: 72px 72px; }
+#stage::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(900px 700px at 100% 0%, rgba(122,27,18,.22), transparent 70%), radial-gradient(800px 600px at 0% 100%, rgba(122,27,18,.14), transparent 70%); }
+#corners { position: absolute; inset: 0; z-index: 1; }
+
+/* header */
+#logo { position: absolute; top: 176px; right: 86px; width: 320px; z-index: 5; }
+#logo img { width: 100%; display: block; }
+#stepTag { position: absolute; top: 184px; left: 86px; z-index: 5; direction: ltr; display: flex; align-items: baseline; gap: 12px; }
+#stepTag b { font: 400 52px/1 Bebas; color: var(--orange); }
+#stepTag span { font: 400 28px/1 Bebas; color: var(--text2); }
+
+/* headline block */
+#head { position: absolute; top: 330px; right: 86px; left: 86px; direction: rtl; text-align: right; z-index: 5; height: 330px; }
+#head .blk { position: absolute; inset: 0; }
+#head .eyebrow { font: 400 28px/1.4 Bebas; color: var(--text2); direction: ltr; text-align: right; margin-bottom: 14px; }
+#head h1 { font: 700 66px/1.5 Cairo; color: var(--text); }
+#head p { font: 500 36px/1.7 Cairo; color: var(--text2); margin-top: 6px; }
+#head .rule { width: 92px; height: 4px; background: var(--red); margin: 24px 0 0 auto; }
+#head .ltr { direction: ltr; unicode-bidi: isolate; }
+
+/* content panel (cropped, enlarged app screen) */
+#panel { position: absolute; left: 86px; top: 700px; width: 908px; height: 600px; overflow: hidden; z-index: 4;
+  border-radius: 7px; background: var(--surface); box-shadow: 0 0 0 1px rgba(246,243,242,.08), 0 30px 60px rgba(0,0,0,.45); }
+#panel .vis { position: absolute; inset: 0; overflow: hidden; }
+#panel .cut { position: absolute; top: 0; left: 0; width: 390px; height: 844px; transform-origin: 0 0; direction: rtl; overflow: hidden; }
+#panel .cut > .layer { position: absolute; inset: 0; overflow: hidden; }
+#panel::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: 7px;
+  box-shadow: inset 0 0 0 1px rgba(246,243,242,.06); }
+.tapdot { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; z-index: 20; pointer-events: none;
+  background: rgba(246,243,242,.35); border: 3px solid rgba(246,243,242,.9); box-shadow: 0 6px 18px rgba(0,0,0,.4); opacity: 0; }
+.tapring { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; z-index: 19; border: 4px solid var(--orange); opacity: 0; }
+
+/* captions */
+#cap { position: absolute; top: 1338px; left: 86px; right: 86px; height: 130px; z-index: 5; }
+#cap .page { position: absolute; inset: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; direction: rtl;
+  gap: 0 12px; font: 500 40px/1.6 Cairo; color: var(--text); text-align: center; }
+#cap .w { display: inline-block; white-space: nowrap; transition: none; }
+#cap .w.now { color: var(--orange); }
+
+/* footer */
+#foot { position: absolute; left: 86px; right: 86px; top: 1508px; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+#foot .url { font: 500 26px Cairo; color: var(--text2); direction: ltr; }
+#foot .lbl { font: 400 30px Bebas; color: var(--orange); }
+
+/* end card */
+#end { position: absolute; inset: 0; z-index: 8; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); opacity: 0; direction: rtl; }
+#end img { width: 560px; margin-bottom: 56px; }
+#end h2 { font: 700 64px/1.6 Cairo; }
+#end .rule { width: 92px; height: 4px; background: var(--red); margin: 28px 0; }
+#end p { font: 500 34px Cairo; color: var(--text2); direction: ltr; }
+#end .sub { font: 500 34px Cairo; color: var(--text2); direction: rtl; margin-bottom: 10px; }
+
+/* ---- layout B: whole phone on the left, step text in a column on the right ---- */
+.layoutB #head { top: 400px; left: auto; right: 86px; width: 340px; height: 520px; }
+.layoutB #head h1 { font: 700 58px/1.45 Cairo; }
+.layoutB #head p { font: 500 32px/1.6 Cairo; margin-top: 14px; }
+.layoutB #head .eyebrow { font-size: 26px; }
+#phone { position: absolute; left: 86px; top: 322px; width: 414px; height: 868px; transform-origin: 0 0; z-index: 4;
+  border-radius: 64px; background: #121010; padding: 12px;
+  box-shadow: 0 0 0 2px #2a2524, 0 40px 80px rgba(0,0,0,.55); }
+#phone #screen { position: relative; width: 390px; height: 844px; border-radius: 52px; overflow: hidden; background: #000; direction: rtl; }
+#phone #screen > .layer { position: absolute; inset: 0; overflow: hidden; }
+#phone .notch { position: absolute; top: 11px; left: 50%; width: 112px; height: 32px; margin-left: -56px; border-radius: 20px; background: #000; z-index: 50; }
+#phone .tapdot { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+#phone .tapring { width: 44px; height: 44px; margin: -22px 0 0 -22px; border-width: 3px; }
+#ring { position: absolute; z-index: 30; border: 3px solid var(--orange); border-radius: 14px; pointer-events: none; opacity: 0;
+  box-shadow: 0 0 0 4px rgba(255,138,31,.18); }
+.layoutB #cap { top: 1478px; height: 84px; }
+.layoutB #cap .page { font-size: 40px; line-height: 1.5; }
+.layoutB #foot { display: none; }

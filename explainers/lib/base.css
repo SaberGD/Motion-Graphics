@@ -1,0 +1,81 @@
+/* Shared look for the student explainer series (1080x1920, light stage, phone in the middle). */
+@font-face { font-family: Plex; src: url(../../project/fonts/IBMPlexSansArabic-Bold.ttf); font-weight: 700; }
+@font-face { font-family: Plex; src: url(../../project/fonts/IBMPlexSansArabic-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: Taj; src: url(../../project/fonts/Tajawal-Medium.ttf); font-weight: 500; }
+@font-face { font-family: Taj; src: url(../../project/fonts/Tajawal-Bold.ttf); font-weight: 700; }
+@font-face { font-family: Taj; src: url(../../project/fonts/Tajawal-ExtraBold.ttf); font-weight: 800; }
+
+:root {
+  --red: #e2361d;
+  --ink: #1b1716;
+  --muted: #8a807c;
+  --tg: #3390ec;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #f4eeeb; }
+body { font-family: Plex, Taj, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+#stage { position: absolute; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(1200px 900px at 50% 40%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%),
+    repeating-linear-gradient(0deg, rgba(60,30,20,.045) 0 2px, transparent 2px 72px),
+    repeating-linear-gradient(90deg, rgba(60,30,20,.045) 0 2px, transparent 2px 72px),
+    linear-gradient(180deg, #f7f2ef, #efe6e2);
+}
+.corner { position: absolute; width: 46px; height: 46px; border-color: var(--red); border-style: solid; border-width: 0; }
+.corner.tl { left: 84px; top: 188px; border-left-width: 5px; border-top-width: 5px; }
+.corner.br { right: 84px; bottom: 300px; border-right-width: 5px; border-bottom-width: 5px; }
+
+/* header */
+#brand { position: absolute; top: 118px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+#brand .pill { background: #151211; border-radius: 16px; padding: 14px 22px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+#brand .pill img { height: 40px; display: block; }
+#progress { display: flex; align-items: center; gap: 14px; direction: rtl; font: 700 27px Plex; color: var(--muted); }
+#progress .bars { display: flex; gap: 8px; direction: rtl; }
+#progress .bar { width: 46px; height: 9px; border-radius: 6px; background: rgba(0,0,0,.1); overflow: hidden; position: relative; }
+#progress .bar i { position: absolute; inset: 0; background: var(--red); transform-origin: right; transform: scaleX(0); }
+
+/* phone */
+#view { position: absolute; left: 0; right: 0; top: 238px; height: 1234px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 22px, #000 calc(100% - 40px), transparent); }
+#phoneWrap { position: absolute; left: 50%; top: 24px; width: 414px; height: 868px; margin-left: -207px; transform-origin: 50% 0; }
+#phone { position: absolute; inset: 0; border-radius: 64px; background: #121010; padding: 12px;
+  box-shadow: 0 0 0 2px #2a2524, 0 40px 80px rgba(40,10,0,.28), 0 12px 24px rgba(0,0,0,.18); }
+#screen { position: relative; width: 390px; height: 844px; border-radius: 52px; overflow: hidden; background: #000; direction: rtl; }
+#screen .layer { position: absolute; inset: 0; overflow: hidden; }
+.notch { position: absolute; top: 11px; left: 50%; width: 112px; height: 32px; margin-left: -56px; border-radius: 20px; background: #000; z-index: 50; }
+.status { position: absolute; top: 0; left: 0; right: 0; height: 50px; display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 32px 0; font: 700 15px -apple-system, Plex; direction: ltr; z-index: 40; }
+.status .icons { display: flex; gap: 6px; align-items: center; }
+.status .batt { width: 24px; height: 12px; border: 2px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
+.status .batt::after { content: ''; position: absolute; inset: 1px 4px 1px 1px; background: currentColor; border-radius: 1px; }
+
+/* finger + ripple (inside #screen so they follow the camera) */
+#finger { position: absolute; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; z-index: 90;
+  background: rgba(255,255,255,.55); border: 3px solid rgba(255,255,255,.95); box-shadow: 0 6px 18px rgba(0,0,0,.35); pointer-events: none; opacity: 0; }
+#ripple { position: absolute; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; z-index: 89;
+  border: 4px solid #ff9a3c; opacity: 0; }
+.focus-ring { outline: 3px solid #ff9a3c; outline-offset: 3px; }
+
+/* chip under the phone */
+#chip { position: absolute; top: 1404px; left: 50%; transform: translateX(-50%); background: #151211; color: #fff; border-radius: 40px;
+  padding: 14px 30px; font: 700 30px Plex; display: flex; align-items: center; gap: 14px; direction: rtl; white-space: nowrap;
+  box-shadow: 0 10px 26px rgba(0,0,0,.25); }
+#chip .dot { width: 13px; height: 13px; border-radius: 50%; background: var(--red); }
+
+/* captions */
+#cap { position: absolute; top: 1474px; left: 100px; right: 100px; height: 156px; display: flex; align-items: center; justify-content: center; }
+#cap .page { position: absolute; inset: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; direction: rtl;
+  gap: 6px 14px; font: 700 58px/1.35 Plex; color: var(--ink); text-align: center; }
+#cap .w { display: inline-block; white-space: nowrap; }
+#cap .w.hl { background: var(--red); color: #fff; padding: 0 14px; border-radius: 10px; }
+
+/* end card */
+#end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; opacity: 0; direction: rtl; }
+#end img.icon { width: 230px; height: 230px; border-radius: 52px; box-shadow: 0 30px 60px rgba(60,10,0,.3); }
+#end h1 { font: 800 96px Taj; color: var(--ink); }
+#end h1 b { color: var(--red); }
+#end .sub { font: 600 40px Plex; color: #5d5350; }
+#end .url { font: 700 36px Plex; color: var(--ink); direction: ltr; margin-top: 6px; }
+#end .pill { background: #151211; border-radius: 16px; padding: 14px 24px; margin-top: 18px; }
+#end .pill img { height: 40px; display: block; }

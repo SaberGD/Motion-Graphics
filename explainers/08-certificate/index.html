@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>شهادة الكورس</title>
+<link rel="stylesheet" href="../lib/sg.css">
+<link rel="stylesheet" href="../lib/ui.css">
+<style>
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 50px; display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 32px 0; font: 700 15px -apple-system, Plex; direction: ltr; z-index: 40; }
+  .status .icons { display: flex; gap: 6px; align-items: center; }
+  .status .batt { width: 24px; height: 12px; border: 2px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
+  .status .batt::after { content: ''; position: absolute; inset: 1px 4px 1px 1px; background: currentColor; border-radius: 1px; }
+  .login .status, .portal .status { color: #fff; }
+  .ostats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+  .ostats div { background: #1b1718; border: 1px solid #2a2425; border-radius: 13px; padding: 9px 6px; display: grid; gap: 3px; font: 600 9px Plex; color: #9a908e; }
+  .ostats b { font: 800 17px Taj; color: #fff; } .ostats small { font: 500 8px Plex; color: #7d7472; }
+  #gHome .scroll { zoom: 1.18; }
+  #prog .scroll { zoom: 1.16; }
+  .red { color: #f87171; } .amb { color: #fbbf24; } .grn { color: #34d399; }
+  .psec { font: 800 14px Taj; color: #fff; margin: 2px 2px 10px; }
+  .pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .pc { background: #0f172a; border: 1px solid #1e293b; border-radius: 18px; padding: 11px 8px; text-align: center; display: grid; gap: 5px; justify-items: center; }
+  .pc .pic { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font: 800 14px Plex; font-style: normal; }
+  .pic.red { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.25); }
+  .pic.grn { background: rgba(16,185,129,.12); color: #34d399; border: 1px solid rgba(16,185,129,.25); }
+  .pic.amb { background: rgba(245,158,11,.12); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
+  .pc h4 { font: 800 9.5px Plex; color: #94a3b8; } .pc b { font: 800 24px Taj; color: #fff; } .pc b span { font: 700 10px Plex; }
+  .pc small { font: 600 8px/1.5 Plex; color: #64748b; }
+  .wkhead { position: relative; } .wkhead .psec { margin-bottom: 7px; }
+  .wkb { display: inline-block; font: 800 10px Plex; border-radius: 999px; padding: 4px 10px; margin-bottom: 9px; }
+  .wkb.amb { background: rgba(245,158,11,.18); border: 1px solid rgba(245,158,11,.35); }
+  .wkb.grn { background: rgba(16,185,129,.18); border: 1px solid rgba(16,185,129,.35); }
+  .wk { background: #0f172a; border: 1px solid rgba(245,158,11,.35); border-radius: 18px; padding: 11px 12px; margin-bottom: 8px; }
+  .wk.done { background: rgba(2,44,34,.35); border-color: rgba(16,185,129,.35); }
+  .wkt { display: flex; gap: 8px; align-items: center; } .wkt i { width: 26px; height: 26px; border-radius: 9px; display: grid; place-items: center; font: 800 13px Plex; font-style: normal; background: rgba(245,158,11,.2); color: #fbbf24; }
+  .wk.done .wkt i { background: rgba(16,185,129,.2); color: #34d399; }
+  .wkt em { display: block; font: 800 10px Plex; font-style: normal; color: #fbbf24; } .wk.done .wkt em { color: #34d399; }
+  .wkt small { font: 600 9px Plex; color: #64748b; }
+  .wk p { font: 800 11.5px/1.7 Plex; color: #f1f5f9; margin: 8px 0; } .wk.done p { text-decoration: line-through; color: #94a3b8; font-weight: 700; }
+  .wkf { display: flex; justify-content: space-between; border-top: 1px solid #1e293b; padding-top: 7px; font: 700 9px Plex; color: #64748b; }
+  .wkf .g { color: #34d399; } .wk:not(.done) .wkf .g { display: none; }
+  .plan { background: rgba(15,23,42,.4); border: 1px solid #1e293b; border-radius: 22px; padding: 14px 13px; margin-top: 14px; }
+  .plan h3 { font: 800 13.5px Taj; } .plan p { font: 700 10.5px/1.8 Plex; color: #94a3b8; margin: 6px 0 10px; } .plan p b { color: #e2e8f0; }
+  .plbl { display: flex; justify-content: space-between; font: 700 9.5px Plex; color: #94a3b8; margin-bottom: 6px; }
+  .pbar { height: 12px; border-radius: 99px; background: #0a0a0a; border: 1px solid #1e293b; overflow: hidden; } .pbar i { display: block; height: 100%; border-radius: 99px; background: #ef4444; width: 2%; margin-right: 0; }
+  #calc { position: absolute; top: 900px; right: 86px; width: 340px; direction: rtl; z-index: 5; display: grid; gap: 14px; }
+  #calc .cr { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09); border-radius: 18px; padding: 12px 20px; font: 600 30px/1.3 Cairo; color: var(--text); }
+  #calc .cr b { font: 700 30px Cairo; color: var(--orange); direction: ltr; }
+  #calc .cr.neg { border-color: rgba(226,54,29,.6); background: rgba(226,54,29,.12); } #calc .cr.neg b { color: #ff6b57; }
+  #calc .cr.off span { text-decoration: line-through; } 
+  #cert .scroll { zoom: 1.4; } #cert .plan { display: none; }
+  .cc { margin-top: 14px; background: linear-gradient(135deg, #0f172a, rgba(69,10,10,.55), #0f172a); border: 2px solid rgba(239,68,68,.4); border-radius: 24px; padding: 14px 13px; }
+  .cch { display: flex; gap: 9px; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 11px; }
+  .cic { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: rgba(239,68,68,.2); border: 1px solid rgba(239,68,68,.3); color: #f87171; font: 800 16px Plex; flex: none; }
+  .cch h2 { font: 800 13.5px/1.4 Taj; color: #fff; } .cch p { font: 500 9.5px Plex; color: #94a3b8; }
+  .cno { background: rgba(244,63,94,.15); border: 1px solid rgba(244,63,94,.4); border-radius: 18px; padding: 11px; }
+  .cnt1 { font: 800 11.5px/1.6 Plex; color: #fb7185; display: flex; gap: 6px; align-items: center; } .cnt1 .x { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #fb7185; display: grid; place-items: center; font-size: 9px; flex: none; }
+  .cond { font: 700 10.5px/1.7 Plex; color: #fecdd3; margin: 7px 0; }
+  .reasons { background: rgba(10,10,10,.8); border: 1px solid rgba(30,41,59,.8); border-radius: 12px; padding: 9px; display: grid; gap: 6px; }
+  .reasons b { font: 800 10.5px Plex; color: #fb7185; } .reasons div { font: 600 10px Plex; color: #fecdd3; display: flex; gap: 6px; align-items: center; }
+  .reasons i { width: 6px; height: 6px; border-radius: 50%; background: #f43f5e; flex: none; }
+  .cyes { display: grid; gap: 10px; }
+  .ok { background: rgba(16,185,129,.15); border: 1px solid rgba(16,185,129,.4); border-radius: 18px; padding: 11px; }
+  .okt { font: 800 12.5px/1.6 Plex; color: #34d399; display: flex; gap: 6px; } .ok p { font: 500 10px/1.7 Plex; color: #e2e8f0; margin-top: 4px; }
+  .wait { background: #0a0a0a; border: 1px solid #1e293b; border-radius: 14px; padding: 10px; font: 700 10px/1.7 Plex; color: #94a3b8; text-align: center; }
+  .dl { background: #0a0a0a; border: 1px solid #1e293b; border-radius: 14px; padding: 11px; display: grid; gap: 9px; justify-items: center; text-align: center; }
+  .dl b { font: 800 10.5px Plex; color: #fff; display: block; } .dl small { font: 500 9.5px Plex; color: #94a3b8; }
+  .dlb { display: inline-flex; gap: 6px; align-items: center; background: #059669; color: #fff; font: 800 11px Plex; border-radius: 14px; padding: 9px 16px; }
+  .dlb svg { width: 13px; height: 13px; fill: none; stroke: #fff; stroke-width: 2; }
+  #calc .cr b { font-size: 34px; }
+</style>
+</head>
+<body>
+<!--#include ../lib/icons.svg.html-->
+<div id="stage" class="layoutB">
+  <svg id="corners" width="1080" height="1920" viewBox="0 0 1080 1920"><g fill="none" stroke-width="2"><path stroke="#FF8A1F" d="M86 140v-37l17-17h37"/><path stroke="#C4321F" d="M994 1780v37l-17 17h-37"/></g></svg>
+  <div id="logo"><img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP"></div>
+  <div id="stepTag"><b id="stepNum">✦</b><span id="stepLbl">CERTIFICATE</span></div>
+  <div id="head"></div>
+
+  <div id="phone"><div id="screen">
+    <div class="notch"></div>
+<!--#include ../lib/screens.progress.html-->
+<!--#include ../lib/screens.certificate.html-->
+    <div id="ring"></div><div class="tapring" id="ripple"></div><div class="tapdot" id="finger"></div>
+  </div></div>
+
+  <div id="calc">
+    <div class="cr" id="c1"><span>الحضور</span><b>80%</b></div>
+    <div class="cr" id="c2"><span>التاسكات</span><b>80%</b></div>
+    <div class="cr" id="c3"><span>مشاريع التخرج</span><b>50%</b></div>
+  </div>
+  <div id="cap"></div>
+  <div id="foot"><span class="url">portal.sabergroupacademy.com</span><span class="lbl">SABER GROUP ACADEMY</span></div>
+
+  <div id="end">
+    <img src="../assets/kit/logos/saber-group-wordmark.png" alt="SABER GROUP">
+    <h2>بوابة الطالب</h2>
+    <div class="sub">التزامك… هو شهادتك</div>
+    <div class="rule"></div>
+    <p>portal.sabergroupacademy.com</p>
+  </div>
+</div>
+
+<script src="../lib/engine.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const show = (sel, on) => { const el = $(sel); el.style.display = on ? '' : 'none'; return el; };
+const FPS = 25, IN = 12 / FPS, OUT = 8 / FPS, STAG = 2 / FPS, PHONE_K = 1.3;
+function bez(x1, y1, x2, y2) {
+  return (x) => { let t = x; for (let i = 0; i < 6; i++) { const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3 - x; const d = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t; if (Math.abs(d) < 1e-6) break; t -= cx / d; t = Math.min(1, Math.max(0, t)); } return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3; };
+}
+const ease = bez(0.16, 1, 0.3, 1);
+const inX = (t, t0) => ease(Math.min(1, Math.max(0, (t - t0) / IN)));
+
+const HEADS = {
+  h:  { tag: ['✦', 'CERTIFICATE'], eyebrow: 'CERTIFICATE', title: 'شهادة الكورس', sub: 'في تاب «تقدمي»' },
+  c1: { tag: ['01', 'RULES'], eyebrow: 'REQUIREMENTS', title: 'تلات شروط', sub: '' },
+  x1: { tag: ['02', 'MISSING'], eyebrow: 'NOT YET', title: 'ناقص إيه؟', sub: 'السبب… ونسبتك قصاد المطلوب' },
+  o1: { tag: ['03', 'DONE'], eyebrow: 'ELIGIBLE', title: 'ألف مبروك', sub: 'ولينك التحميل أول ما يترفع' },
+  r1: { tag: ['04', 'BONUS'], eyebrow: 'RECOMMENDATION', title: 'شهادة توصية', sub: 'للمتميزين… للشركات' },
+};
+
+window.SCENE = {
+  setup(E) {
+    const W = E.W, L = E.L, T = (this.T = {});
+    const head = $('#head');
+    this.heads = Object.entries(HEADS).map(([id, h]) => {
+      const el = document.createElement('div');
+      el.className = 'blk';
+      el.innerHTML = `<div class="eyebrow">${h.eyebrow}</div><h1>${h.title}</h1>${h.sub ? `<p>${h.sub}</p>` : ''}<div class="rule"></div>`;
+      head.appendChild(el);
+      return { id, el, h, parts: [...el.children], t0: L(id).start - 0.15 };
+    });
+    this.heads.forEach((b, i) => (b.t1 = this.heads[i + 1] ? this.heads[i + 1].t0 : E.tl.outro_start));
+    T.tabTap = W('h', 4) + 0.05; T.cert = W('h', 5) + 0.15;
+    T.c = [W('c1', 2), W('c1', 6), W('c1', 10)].map((x) => x - 0.05);
+    T.calcEnd = L('x1').start - 0.15;
+    T.yes = W('o1', 3) - 0.05; T.dl = W('o1', 9);
+    T.end = E.tl.outro_start;
+    this.beats = [
+      { t: 0, layer: 'gHome', focus: '#navProg', ring: false },
+      { t: W('h', 3) - 0.1, layer: 'gHome', focus: '#navProg' },
+      { t: T.cert, layer: 'cert', focus: '#certCard', ring: false },
+      { t: W('h', 6) - 0.1, layer: 'cert', focus: '#certCard' },
+      { t: L('c1').start - 0.15, layer: 'cert', focus: '#cCond' },
+      { t: L('x1').start - 0.15, layer: 'cert', focus: '#cWhy' },
+      { t: W('x1', 7) - 0.1, layer: 'cert', focus: '#why1' },
+      { t: W('x1', 8) + 0.1, layer: 'cert', focus: '#why2' },
+      { t: T.yes, layer: 'cert', focus: '#cCongrats' },
+      { t: W('o1', 6) - 0.1, layer: 'cert', focus: '#cWait' },
+      { t: T.dl + 0.15, layer: 'cert', focus: '#cDlBtn' },
+      { t: L('r1').start - 0.15, layer: 'rules3', focus: '#ruleCert' },
+      { t: W('r1', 3) - 0.1, layer: 'rules3', focus: '#ruleRec' },
+    ];
+    this.taps = [{ t: T.tabTap, sel: '#navProg' }];
+    this.taps.forEach((p) => E.ev(p.t, 'tap'));
+    T.c.forEach((x) => E.ev(x, 'pop'));
+    E.ev(T.yes, 'success'); E.ev(T.dl, 'ding');
+  },
+
+  state(t) {
+    const T = this.T;
+    const yes = t >= T.yes;
+    show('#cNo', !yes); show('#cYes', yes);
+    show('#cWait', t < T.dl); show('#cDl', t >= T.dl);
+    const out = 1 - E.k(t, T.calcEnd, T.calcEnd + OUT);
+    ['#c1', '#c2', '#c3'].forEach((s, i) => {
+      const x = inX(t, T.c[i]), el = $(s);
+      el.style.opacity = x * out; el.style.transform = `translateX(${(1 - x) * -24}px)`;
+    });
+  },
+
+  render(t, E) {
+    const T = this.T;
+    this.state(t);
+
+    let bi = 0;
+    this.beats.forEach((b, i) => { if (t >= b.t) bi = i; });
+    const beat = this.beats[bi], prevBeat = this.beats[bi - 1];
+    $('#phone').style.transform = `scale(${PHONE_K})`;
+    document.querySelectorAll('#screen > .layer').forEach((l) => { l.style.display = l.id === beat.layer ? 'block' : 'none'; l.style.opacity = 1; l.style.transform = 'none'; });
+    const lay = document.getElementById(beat.layer);
+    if (bi > 0 && prevBeat.layer !== beat.layer) {
+      const x = inX(t, beat.t);
+      lay.style.opacity = x; lay.style.transform = `translateY(${(1 - x) * 10}px)`;
+    }
+    const sr = $('#screen').getBoundingClientRect(), sk = sr.width / 390;
+    // orange ring on what the voice talks about
+    const ring = $('#ring');
+    ring.style.opacity = 0;
+    const fe = beat.ring !== false && beat.focus ? lay.querySelector(beat.focus) : null;
+    if (fe && fe.offsetParent) {
+      const r = fe.getBoundingClientRect(), pad = 5;
+      ring.style.left = (r.left - sr.left) / sk - pad + 'px'; ring.style.top = (r.top - sr.top) / sk - pad + 'px';
+      ring.style.width = r.width / sk + pad * 2 + 'px'; ring.style.height = r.height / sk + pad * 2 + 'px';
+      ring.style.opacity = inX(t, beat.t + 0.2) * 0.95;
+    }
+    // taps
+    const f = $('#finger'), rp = $('#ripple');
+    f.style.opacity = 0; rp.style.opacity = 0;
+    for (const tap of this.taps) {
+      if (t < tap.t - 0.45 || t > tap.t + 0.5) continue;
+      const el = $(tap.sel);
+      if (!el || !el.offsetParent) continue;
+      const r = el.getBoundingClientRect();
+      const x = (r.left + r.width / 2 - sr.left) / sk, y = (r.top + r.height / 2 - sr.top) / sk;
+      const a = ease(E.k(t, tap.t - 0.45, tap.t - 0.1));
+      f.style.left = x + 'px'; f.style.top = y + (1 - a) * 18 + 'px';
+      f.style.opacity = Math.min(a, 1 - E.k(t, tap.t + 0.2, tap.t + 0.45));
+      f.style.transform = `scale(${t >= tap.t - 0.05 && t < tap.t + 0.1 ? 0.86 : 1})`;
+      if (t >= tap.t) { const q = E.k(t, tap.t, tap.t + 0.5); rp.style.left = x + 'px'; rp.style.top = y + 'px'; rp.style.opacity = 1 - q; rp.style.transform = `scale(${1 + q * 1.4})`; }
+    }
+
+    // head blocks: old exits (8f), then new enters (12f, 2f stagger)
+    let cur = this.heads[0];
+    this.heads.forEach((b) => {
+      if (t >= b.t0 && t < b.t1) cur = b;
+      const first = b === this.heads[0];
+      const vis = t >= b.t0 + (first ? 0 : OUT) && t < b.t1 + OUT;
+      b.el.style.display = vis ? 'block' : 'none';
+      if (!vis) return;
+      const out = t >= b.t1 ? E.k(t, b.t1, b.t1 + OUT) : 0;
+      b.parts.forEach((p, i) => {
+        const x = first && t < 0.6 ? inX(t, 0.2 + i * STAG) : inX(t, b.t0 + (first ? 0 : OUT) + i * STAG);
+        p.style.opacity = x * (1 - out); p.style.transform = `translateY(${(1 - x) * 18}px)`;
+      });
+    });
+    $('#stepNum').textContent = cur.h.tag[0]; $('#stepLbl').textContent = cur.h.tag[1];
+
+    // captions
+    E.pages.forEach((p) => {
+      const on = t >= p.t0 && t < p.t1;
+      p.el.style.display = on ? 'flex' : 'none';
+      if (!on) return;
+      const x = inX(t, p.t0), out = E.k(t, p.t1 - OUT, p.t1);
+      p.el.style.opacity = x * (1 - out); p.el.style.transform = `translateY(${(1 - x) * 12}px)`;
+      p.words.forEach((w) => { w.el.style.opacity = 1; w.el.style.transform = 'none'; w.el.classList.toggle('now', t >= w.s && t < w.e + 0.05); });
+    });
+
+    const logoIn = ease(E.k(t, 0, 20 / FPS));
+    $('#logo').style.opacity = logoIn; $('#logo').style.transform = `translateY(${(1 - logoIn) * 14}px)`;
+    const endIn = ease(E.k(t, T.end, T.end + 20 / FPS));
+    $('#end').style.opacity = endIn; $('#end img').style.transform = `translateY(${(1 - endIn) * 14}px)`;
+  },
+};
+</script>
+</body>
+</html>
