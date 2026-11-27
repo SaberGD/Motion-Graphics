@@ -15,7 +15,7 @@ try { ({chromium} = require('playwright')); } catch { ({chromium} = require('/op
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');   // ai-video-maker/ (page reads lip-filler frames too)
 const PAGE = 'breakdown-ad/project/index.html';
 const [pass = 'yellow', workers = '4', only] = process.argv.slice(2);
-const N = Math.round(17.4 * 30);
+const N = 826;
 const isCaps = false;
 const qs = '';
 const outDir = join(ROOT, 'breakdown-ad/project/frames', pass);

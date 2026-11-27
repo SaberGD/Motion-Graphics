@@ -42,7 +42,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#021A1F}
 #stepper .n{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:900 26px Mont;color:#fff;background:rgba(4,33,39,.7);
   border:3px solid rgba(255,255,255,.55)}
 #stepper .n.on{background:var(--teal);border-color:#fff;box-shadow:0 0 24px rgba(141,243,243,.9);color:var(--ink)}
-#stepper .bar{width:110px;height:6px;background:rgba(255,255,255,.35);position:relative;overflow:hidden}
+#stepper .bar{width:84px;height:6px;background:rgba(255,255,255,.35);position:relative;overflow:hidden}
 #stepper .bar i{position:absolute;inset:0;background:var(--cyan);transform-origin:0 50%;scale:0 1}
 #stepLbl{position:absolute;left:540px;top:330px;translate:-50% -50%;text-align:center;white-space:nowrap}
 #stepLbl .a{display:inline-block;direction:rtl;font:900 72px/1.2 Cairo;color:#fff;padding:2px 40px 10px;border-radius:50px;background:rgba(4,33,39,.72);
@@ -99,12 +99,12 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#021A1F}
     <div id="tagB" class="tag hide">BEFORE</div><div id="tagA" class="tag hide">AFTER</div>
     <div id="stepper">
       <div class="n">1</div><div class="bar"><i></i></div><div class="n">2</div><div class="bar"><i></i></div>
-      <div class="n">3</div><div class="bar"><i></i></div><div class="n">4</div></div>
+      <div class="n">3</div><div class="bar"><i></i></div><div class="n">4</div><div class="bar"><i></i></div><div class="n">5</div></div>
     <div id="stepLbl"><div class="a"></div><div class="e"></div></div>
   </div>
 
   <div id="B" class="hide">
-    <div id="gHead"><div class="a">تصوير واحد <b>←</b> 5 نسخ</div><div class="e">1 SHOOT · 5 VERSIONS</div></div>
+    <div id="gHead"><div class="a">تصوير واحد <b>←</b> 6 نسخ</div><div class="e">1 SHOOT · 6 VERSIONS</div></div>
   </div>
 
   <div id="C" class="hide"><img id="cImg" class="full" alt=""><div id="cbar"></div><div id="word"></div></div>
@@ -121,31 +121,33 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#021A1F}
   <div id="flash"></div>
 </div>
 <script>
-const FPS = 30, DUR = 17.4;
+const FPS = 30, DUR = 826 / 30;
 const LF = '../../lip-filler/project/';
 const SRC = {   // version -> [frame folder, frame count, display name]
   orig: ['cache/original/', 826], aiY: [LF + 'cache/doctor_yellow/', 826], aiG: [LF + 'cache/doctor_green/', 826],
-  motY: [LF + 'frames/yellow/', 826], motG: [LF + 'frames/green/', 826],
+  motY: [LF + 'frames/yellow/', 826], motG: [LF + 'frames/green/', 826], marble: ['cache/marble/', 826],
 };
 const src = (v, s) => { const [d, n] = SRC[v]; return `${d}f${String(Math.min(n, Math.max(1, Math.round(s * FPS) + 1))).padStart(4, '0')}.jpg`; };
 
 /* ---------------- timing ---------------- */
+// Every picture is shown at its source time == ad time, so the speech runs once, start to finish, under all comparisons.
 const S = {
-  A: [0, 9.1],
+  A: [0, 11.45],
   wipes: [  // [start, end, from, to, direction(+1 = new comes from the right)]
-    [1.45, 2.35, 'orig', 'aiY', 1], [3.35, 4.25, 'aiY', 'aiG', -1], [5.85, 6.75, 'aiG', 'motG', 1]],
+    [1.45, 2.35, 'orig', 'aiY', 1], [3.35, 4.25, 'aiY', 'aiG', -1], [5.25, 6.15, 'aiG', 'marble', 1], [8.55, 9.45, 'marble', 'motG', -1]],
   steps: [[0, 'التصوير الأصلي', 'ORIGINAL SHOOT'], [1.45, 'لوكيشن جديد بالـ AI', 'AI LOCATION'],
-          [3.35, 'طقم جديد بالـ AI', 'AI OUTFIT'], [5.85, 'موشن جرافيكس + B-roll', 'MOTION GRAPHICS']],
-  B: [9.1, 13.2],
-  C: [13.2, 17.4], cutLen: .4,
-  cuts: [ // [version, source time, word]
-    ['aiY', 12.4, 'LOCATION'], ['aiG', 12.9, 'OUTFIT'], ['motY', 2.7, 'MOTION'], ['motG', 7.4, 'B-ROLL'],
-    ['motY', 15.0, ''], ['motG', 17.6, ''], ['orig', 19.5, ''], ['motG', 23.1, ''], ['motY', 25.95, '']],
-  D: [99, 99],   // end card removed: the ad ends on the last flash shot
+          [3.35, 'طقم جديد بالـ AI', 'AI OUTFIT'], [5.25, 'مكان تاني + B-roll', 'NEW SCENE + B-ROLL'], [8.55, 'موشن جرافيكس', 'MOTION GRAPHICS']],
+  B: [11.45, 16.3],
+  C: [16.3, 99], cutLen: .8,
+  cuts: [ // [version, word]  — each cut shows that version at the current moment of the speech; the last one holds to the end
+    ['motG', ''], ['marble', 'B-ROLL'], ['aiY', 'LOCATION'], ['aiG', 'OUTFIT'], ['orig', ''], ['motY', 'MOTION'],
+    ['marble', ''], ['aiG', ''], ['orig', ''], ['motG', ''], ['aiY', ''], ['marble', ''], ['motY', '']],
+  D: [99, 99],   // no end card: the ad ends on the CTA shot
 };
 const TILES = [ // version, x, y, label, pink?
   ['orig', 190, 600, 'ORIGINAL', 0], ['aiY', 540, 600, 'AI LOCATION', 0], ['aiG', 890, 600, 'AI OUTFIT', 0],
-  ['motY', 365, 1250, 'MOTION · Y', 1], ['motG', 715, 1250, 'MOTION · G', 1]];
+  ['marble', 190, 1250, 'NEW SCENE', 1], ['motY', 540, 1250, 'MOTION · Y', 1], ['motG', 890, 1250, 'MOTION · G', 1]];
+const LAST = TILES.length - 1;   // the breakdown frame flies into this tile
 
 /* ---------------- helpers ---------------- */
 const $ = id => document.getElementById(id);
@@ -179,7 +181,7 @@ function segA(t) {
   }
   // after A ends, the A frame flies into its grid tile; its picture follows the grid clock
   const sGrid = t - S.B[0];
-  setSrc($('aBot'), sGrid >= 0 ? src('motG', sGrid) : src(bot, sA));
+  setSrc($('aBot'), sGrid >= 0 ? src('motG', t) : src(bot, sA));
   show($('aTop'), !!top && sGrid < 0);
   if (top) { setSrc($('aTop'), src(top, sA)); $('aTop').style.clipPath = dir > 0 ? `inset(0 0 0 ${x}px)` : `inset(0 ${1080 - x}px 0 0)`; }
   const wiping = !!top && sGrid < 0;
@@ -197,11 +199,11 @@ function segA(t) {
   [...$('stepper').querySelectorAll('.bar i')].forEach((b, i) => b.style.scale = `${E.out3(prog(sA, S.steps[i + 1][0], .9))} 1`);
   const lbl = $('stepLbl'), st = S.steps[k], i = prog(sA, st[0] + (k ? .3 : .15), .35);
   if (lbl.dataset.k != k) { lbl.querySelector('.a').textContent = st[1]; lbl.querySelector('.e').textContent = st[2]; lbl.dataset.k = k; }
-  const out = prog(t, S.A[1] - .25, .25), out4 = prog(t, 6.75, .3);
+  const out = prog(t, S.A[1] - .25, .25), out4 = prog(t, 9.95, .3);   // step-5 label clears before the B-roll card
   css(lbl, {opacity: cl(i * 1.5) * (1 - out) * (1 - out4), transform: `translateY(${lerp(24, 0, E.out3(i))}px) scale(${lerp(.94, 1, E.out3(i))})`});
   $('stepper').style.opacity = (1 - out) * cl(prog(t, .05, .3));
-  // fly into tile 5
-  const f = E.io(prog(t, S.A[1], .55)), T5 = TILES[4], sc = lerp(1, 330 / 1080, f);
+  // fly into the last tile
+  const f = E.io(prog(t, S.A[1], .55)), T5 = TILES[LAST], sc = lerp(1, 330 / 1080, f);
   css($('A'), {transform: `translate(${lerp(0, T5[1] - 165, f)}px,${lerp(0, T5[2] - 293.5, f)}px) scale(${sc})`,
     borderRadius: `${lerp(0, 92, f)}px`, boxShadow: f > 0 ? `0 0 0 ${lerp(0, 16, f)}px rgba(255,255,255,.9)` : 'none'});
 }
@@ -211,9 +213,9 @@ function segB(t) {
   if (!show($('B'), on)) return;
   const s = t - S.B[0];
   TILES.forEach(([v, x, y], k) => {
-    setSrc(TILES[k].el.querySelector('img'), src(v, s));
-    const i = k === 4 ? (t >= S.A[1] + .55 ? 1 : 0) : E.back(prog(t, S.B[0] + .15 + k * .09, .45));
-    const vis = k === 4 ? t >= S.A[1] + .55 : true;
+    setSrc(TILES[k].el.querySelector('img'), src(v, t));
+    const i = k === LAST ? (t >= S.A[1] + .55 ? 1 : 0) : E.back(prog(t, S.B[0] + .15 + k * .09, .45));
+    const vis = k === LAST ? t >= S.A[1] + .55 : true;
     css(TILES[k].el, {opacity: vis ? cl(i * 2) : 0, transform: `scale(${lerp(.6, 1, i)})`});
     // a highlight sweeps across the tiles
     const hl = Math.max(0, Math.sin((s * 1.6 - k * .45) * Math.PI)) ** 6;
@@ -231,12 +233,12 @@ function segB(t) {
 function segC(t) {
   if (!show($('C'), t >= S.C[0])) return 0;
   const d = S.cutLen, k = Math.min(S.cuts.length - 1, Math.floor((t - S.C[0]) / d)), lt = t - S.C[0] - k * d;   // last cut holds to the end
-  const [v, s0, w] = S.cuts[k];
-  setSrc($('cImg'), src(v, s0 + lt));
+  const [v, w] = S.cuts[k];
+  setSrc($('cImg'), src(v, t));
   css($('cImg'), {transform: `scale(${lerp(1.12, 1.02, E.out3(cl(lt / (k === S.cuts.length - 1 ? 1.2 : d))))}) rotate(${(k % 2 ? 1 : -1) * lerp(1.2, 0, E.out3(cl(lt / .2)))}deg)`});
   const wd = $('word'); wd.textContent = w; const wi = E.out3(cl(lt / .14));
   css(wd, {opacity: w ? cl(wi * 2) : 0, transform: `scale(${lerp(1.35, 1, wi)})`, letterSpacing: lerp(10, -3, wi) + 'px'});
-  return cl(1 - lt / .1) * .55;   // flash strength at each cut
+  return cl(1 - lt / .12) * .5;   // flash strength at each cut
 }
 
 function segD(t) {
