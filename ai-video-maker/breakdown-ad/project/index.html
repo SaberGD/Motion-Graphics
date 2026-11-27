@@ -127,16 +127,19 @@ const SRC = {   // version -> [frame folder, frame count, display name]
   orig: ['cache/original/', 826], aiY: [LF + 'cache/doctor_yellow/', 826], aiG: [LF + 'cache/doctor_green/', 826],
   motY: [LF + 'frames/yellow/', 826], motG: [LF + 'frames/green/', 826], marble: ['cache/marble/', 826],
 };
-const src = (v, s) => { const [d, n] = SRC[v]; return `${d}f${String(Math.min(n, Math.max(1, Math.round(s * FPS) + 1))).padStart(4, '0')}.jpg`; };
+const HOLD = {marble: [[189, 192, 188]]};   // [from, to, use] frame substitutions
+const src = (v, s) => { const [d, n] = SRC[v]; let f = Math.min(n, Math.max(1, Math.round(s * FPS) + 1));
+  for (const [a, b, u] of HOLD[v] || []) if (f >= a && f <= b) f = u;
+  return `${d}f${String(f).padStart(4, '0')}.jpg`; };
 
 /* ---------------- timing ---------------- */
 // Every picture is shown at its source time == ad time, so the speech runs once, start to finish, under all comparisons.
 const S = {
   A: [0, 11.45],
   wipes: [  // [start, end, from, to, direction(+1 = new comes from the right)]
-    [1.45, 2.35, 'orig', 'aiY', 1], [3.35, 4.25, 'aiY', 'aiG', -1], [5.25, 6.15, 'aiG', 'marble', 1], [8.55, 9.45, 'marble', 'motG', -1]],
-  steps: [[0, 'التصوير الأصلي', 'ORIGINAL SHOOT'], [1.45, 'لوكيشن جديد بالـ AI', 'AI LOCATION'],
-          [3.35, 'طقم جديد بالـ AI', 'AI OUTFIT'], [5.25, 'مكان تاني + B-roll', 'NEW SCENE + B-ROLL'], [8.55, 'موشن جرافيكس', 'MOTION GRAPHICS']],
+    [1.20, 2.05, 'orig', 'aiY', 1], [2.75, 3.60, 'aiY', 'aiG', -1], [4.07, 4.95, 'aiG', 'marble', 1], [8.55, 9.45, 'marble', 'motG', -1]],
+  steps: [[0, 'التصوير الأصلي', 'ORIGINAL SHOOT'], [1.20, 'لوكيشن جديد بالـ AI', 'AI LOCATION'],
+          [2.75, 'طقم جديد بالـ AI', 'AI OUTFIT'], [4.07, 'مكان تاني + B-roll', 'NEW SCENE + B-ROLL'], [8.55, 'موشن جرافيكس', 'MOTION GRAPHICS']],
   B: [11.45, 16.3],
   C: [16.3, 99], cutLen: .8,
   cuts: [ // [version, word]  — each cut shows that version at the current moment of the speech; the last one holds to the end
