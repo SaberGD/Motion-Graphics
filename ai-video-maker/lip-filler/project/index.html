@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>Lip Filler Motion</title>
+<!--
+  Lip Filler — motion graphics composition (1080x1920 @30fps, 27.53s).
+  Every visual is a function of time t: window.renderFrame(t) draws one frame.
+  Query params:  v=yellow|green (doctor plate)  bg=0|1 (plates+graphics)  caps=0|1 (Arabic captions)
+  Open in a browser with ?play=1 to preview in real time (needs cache/ from scripts/prep.sh).
+  Timing for every graphic lives in the T object below — edit there.
+-->
+<style>
+@font-face{font-family:Cairo;src:url(fonts/cairo-arabic.woff2) format('woff2');font-weight:200 1000;font-display:block;
+  unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FEFC;}
+@font-face{font-family:Cairo;src:url(fonts/cairo-latin.woff2) format('woff2');font-weight:200 1000;font-display:block;
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD;}
+@font-face{font-family:Mont;src:url(fonts/montserrat.woff2) format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:Mont;src:url(fonts/montserrat-italic.woff2) format('woff2');font-weight:100 900;font-style:italic;font-display:block}
+
+:root{
+  --teal:#19C3C9; --teal2:#0E8E99; --deep:#06303A; --ink:#042127;
+  --cyan:#8DF3F3; --pink:#F9AFCB; --pink2:#EE7FA8; --white:#FFFFFF;
+  --glass:rgba(5,40,48,.62);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+body.nobg{background:transparent}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,Mont,sans-serif;color:#fff}
+.abs{position:absolute}
+.ctr{position:absolute;left:540px;translate:-50% -50%;text-align:center;white-space:nowrap}
+.hide{visibility:hidden}
+
+/* plates */
+#cam{position:absolute;inset:0;will-change:transform}
+#cam img{width:1080px;height:1920px;display:block}
+#tint{position:absolute;inset:0;opacity:0;
+  background:radial-gradient(120% 70% at 50% 45%,rgba(25,195,201,.25),rgba(4,33,39,.78) 70%),linear-gradient(180deg,rgba(6,48,58,.5),rgba(4,33,39,.75))}
+#vig{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(4,30,36,.55) 0,rgba(4,30,36,0) 560px),
+             linear-gradient(0deg,rgba(4,30,36,.6) 0,rgba(4,30,36,0) 720px)}
+#flash{position:absolute;inset:0;background:#fff;opacity:0}
+#bokeh{position:absolute;inset:0;opacity:0}
+#bokeh i{position:absolute;border-radius:50%;filter:blur(2px)}
+#bar{position:absolute;left:0;top:0;height:7px;width:0;background:linear-gradient(90deg,var(--teal),var(--cyan),var(--pink));
+  box-shadow:0 0 14px rgba(141,243,243,.8)}
+
+/* B-roll frames */
+.card{position:absolute;left:540px;top:860px;width:840px;height:820px;translate:-50% -50%;border-radius:58px;overflow:hidden;
+  box-shadow:0 0 0 9px rgba(255,255,255,.95),0 0 0 15px rgba(25,195,201,.55),0 40px 90px rgba(0,0,0,.5),0 0 120px rgba(25,195,201,.45)}
+.card img{width:100%;height:100%;object-fit:cover;object-position:50% 43%;display:block}
+#lens{position:absolute;left:540px;top:860px;width:800px;height:800px;translate:-50% -50%}
+#lens .disc{position:absolute;inset:40px;border-radius:50%;overflow:hidden;
+  box-shadow:0 0 0 9px rgba(255,255,255,.95),0 40px 90px rgba(0,0,0,.5),0 0 120px rgba(249,175,203,.5)}
+#lens .disc img{width:100%;height:100%;object-fit:cover;object-position:40% 40%}
+#lens svg{position:absolute;inset:0}
+
+/* titles */
+.title .en{font:900 94px/1.02 Mont;letter-spacing:-1.5px;color:#fff;text-shadow:0 6px 26px rgba(2,30,36,.65)}
+.title .ar{display:inline-block;margin-top:14px;font:800 54px/1.25 Cairo;color:var(--ink);padding:4px 34px 10px;border-radius:44px;
+  background:linear-gradient(90deg,var(--pink),#FFD3E3);box-shadow:0 10px 30px rgba(238,127,168,.35)}
+.title .ar.teal{background:linear-gradient(90deg,var(--cyan),#D6FFFF);box-shadow:0 10px 30px rgba(25,195,201,.35)}
+.title .ln{display:block}
+.title .bigar{font:900 104px/1.15 Cairo;color:#fff;text-shadow:0 8px 30px rgba(2,30,36,.6)}
+.hl{color:var(--pink)} .hlc{color:var(--cyan)}
+
+/* hook */
+#hookK .bigar{font-size:118px}
+#qmark{position:absolute;left:880px;top:640px;font:900 330px/1 Mont;color:var(--pink);translate:-50% -50%;
+  text-shadow:0 0 50px rgba(238,127,168,.6),0 14px 30px rgba(0,0,0,.35)}
+#hookLF .en{font-size:150px;letter-spacing:-3px}
+#hookLF .en span{color:#fff;text-shadow:0 0 34px rgba(141,243,243,.75),0 8px 26px rgba(2,30,36,.7)}
+#hookNE{display:flex;align-items:center;gap:22px;direction:rtl}
+#hookNE .neq{width:118px;height:118px;border-radius:50%;background:var(--pink2);display:grid;place-items:center;
+  box-shadow:0 0 0 7px rgba(255,255,255,.9),0 12px 30px rgba(0,0,0,.35)}
+#hookNE .txt{font:900 104px/1.2 Cairo;color:#fff;text-shadow:0 8px 30px rgba(2,30,36,.65);position:relative}
+#hookNE .txt .k{color:var(--pink);position:relative}
+#hookNE .txt .k i{position:absolute;left:-6%;right:-6%;top:56%;height:12px;border-radius:6px;background:#fff;transform-origin:100% 50%;scale:0 1;
+  box-shadow:0 0 16px rgba(255,255,255,.8)}
+
+/* chips */
+#listH .bigar{font-size:84px}
+.chip{position:absolute;translate:-50% -50%;display:flex;align-items:center;gap:16px;padding:14px 30px 16px 22px;border-radius:50px;
+  background:var(--glass);border:3px solid rgba(141,243,243,.65);backdrop-filter:blur(10px);font:800 44px/1 Mont;color:#fff;white-space:nowrap;
+  box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.chip b{width:26px;height:26px;border-radius:50%;background:var(--pink);box-shadow:0 0 14px var(--pink)}
+.chip.c2 b{background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
+
+/* tag pill (lens labels etc.) */
+.pill{display:inline-flex;align-items:center;gap:18px;direction:rtl;padding:12px 36px 16px;border-radius:60px;background:var(--glass);
+  border:3px solid rgba(249,175,203,.75);backdrop-filter:blur(10px);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.pill .a{font:900 62px/1.15 Cairo;color:#fff}
+.pill .e{font:800 40px/1 Mont;color:var(--pink);direction:ltr}
+
+/* focus brackets */
+#focus{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#lipTag{position:absolute;left:820px;top:760px;translate:-50% -50%;font:800 40px/1 Mont;color:var(--ink);background:var(--cyan);
+  padding:12px 24px 14px;border-radius:30px;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+
+/* meter on B3 */
+#meter{position:absolute;left:880px;top:860px;translate:-50% -50%;width:110px;height:600px;border-radius:55px;background:var(--glass);
+  border:3px solid rgba(255,255,255,.85);backdrop-filter:blur(8px);overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+#meter .fill{position:absolute;left:12px;right:12px;bottom:12px;border-radius:44px;background:linear-gradient(0deg,var(--pink2),var(--pink),#FFE2EC)}
+#meter .lbl{position:absolute;left:0;right:0;top:20px;text-align:center;font:900 30px Mont;color:#fff;z-index:2}
+#meterPct{position:absolute;left:0;right:0;bottom:26px;text-align:center;font:900 30px Mont;color:var(--ink);z-index:2}
+.spark{position:absolute;translate:-50% -50%}
+
+/* icon cards */
+.icard{position:absolute;translate:-50% -50%;width:420px;height:250px;border-radius:44px;background:var(--glass);border:3px solid rgba(141,243,243,.7);
+  backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.icard .ic{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--teal),var(--teal2));
+  box-shadow:0 0 0 5px rgba(255,255,255,.85)}
+.icard.pk .ic{background:linear-gradient(135deg,var(--pink),var(--pink2))}
+.icard .a{font:900 50px/1.15 Cairo;color:#fff}
+.icard .e{font:800 30px/1 Mont;color:var(--cyan);letter-spacing:1px;text-transform:uppercase}
+#docBadge{display:flex;align-items:center;gap:26px;direction:rtl;padding:22px 40px 22px 30px;border-radius:70px;background:var(--glass);
+  border:3px solid rgba(141,243,243,.75);backdrop-filter:blur(12px);box-shadow:0 16px 40px rgba(0,0,0,.35)}
+#docBadge .ic{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--teal),var(--teal2));
+  box-shadow:0 0 0 6px rgba(255,255,255,.9)}
+#docBadge .a{font:900 70px/1.1 Cairo;color:#fff;text-align:right}
+#docBadge .e{font:800 34px/1 Mont;color:var(--cyan);text-align:right;direction:ltr;letter-spacing:1px}
+
+/* CTA */
+#cta{position:absolute;left:540px;top:1110px;translate:-50% -50%;text-align:center;white-space:nowrap}
+#cta .btn{position:relative;display:inline-flex;align-items:center;gap:24px;direction:rtl;padding:26px 56px 34px 46px;border-radius:90px;overflow:hidden;
+  background:linear-gradient(135deg,#27D3D8,var(--teal2));box-shadow:0 0 0 8px rgba(255,255,255,.95),0 0 0 18px rgba(249,175,203,.55),0 26px 60px rgba(0,0,0,.45),0 0 90px rgba(25,195,201,.7)}
+#cta .btn .a{font:900 86px/1.1 Cairo;color:#fff;text-shadow:0 4px 14px rgba(0,40,50,.4)}
+#cta .btn .chk{width:96px;height:96px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none}
+#cta .shine{position:absolute;top:-40%;bottom:-40%;width:130px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);rotate:18deg}
+#cta .sub{margin-top:30px;font:800 40px/1 Mont;color:#fff;letter-spacing:6px;text-transform:uppercase;text-shadow:0 4px 18px rgba(0,0,0,.5)}
+#cta .sub span{color:var(--pink)}
+
+/* captions */
+#caps{position:absolute;left:60px;right:60px;top:1392px;translate:0 -50%;text-align:center;direction:rtl}
+#caps .c{display:inline;font:800 64px/1.62 Cairo;color:#fff;padding:2px 26px 10px;border-radius:26px;background:rgba(4,33,39,.66);
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;text-shadow:0 3px 10px rgba(0,0,0,.35)}
+#caps .key{color:var(--pink)}
+#caps .en{color:var(--cyan);font-weight:800}
+#capWrap{display:inline-block;max-width:940px;text-wrap:balance;transform-origin:50% 60%}
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- 1. doctor plate -->
+  <div id="cam"><img id="doc" alt=""></div>
+  <div id="vig"></div>
+  <div id="tint"></div>
+  <div id="bokeh"></div>
+
+  <!-- 2. B-rolls -->
+  <div class="card hide" id="card"><img id="cimg" alt=""></div>
+  <div id="meter" class="hide"><div class="lbl">VOL</div><div class="fill"></div><div id="meterPct">+</div></div>
+  <div id="lens" class="hide">
+    <div class="disc"><img id="limg" alt=""></div>
+    <svg viewBox="0 0 800 800"><g id="lensRing" style="transform-origin:400px 400px">
+      <circle cx="400" cy="400" r="392" fill="none" stroke="#8DF3F3" stroke-width="6" stroke-dasharray="40 26" stroke-linecap="round"/></g>
+      <g id="lensTicks" style="transform-origin:400px 400px">
+      <circle cx="400" cy="6" r="12" fill="#F9AFCB"/><circle cx="400" cy="794" r="12" fill="#F9AFCB"/></g></svg>
+  </div>
+  <div id="sym" class="abs hide" style="left:0;top:0;width:1080px;height:1920px">
+    <svg width="1080" height="1920"><line id="symLine" x1="540" y1="470" x2="540" y2="1250" stroke="#fff" stroke-width="5" stroke-dasharray="18 16" opacity=".85"/>
+      <g id="symL"><path d="M250 860 h120 m-26 -26 l26 26 l-26 26" fill="none" stroke="#8DF3F3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <g id="symR"><path d="M830 860 h-120 m26 -26 l-26 26 l26 26" fill="none" stroke="#8DF3F3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+  </div>
+  <div class="ctr hide" id="b2tag" style="top:1218px"><div class="pill" style="border-color:rgba(141,243,243,.8)"><span class="a" style="font-size:52px">ابتسامة متوازنة</span>
+    <svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="#8DF3F3"/><path d="M15 28 l8 8 l16 -18" fill="none" stroke="#042127" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  <div id="sparks" class="abs hide" style="left:0;top:0;width:1080px;height:1920px"></div>
+
+  <!-- 3. titles -->
+  <div class="ctr title hide" id="hookK" style="top:330px"><div class="ln bigar">كنتي تعرفي<span class="hl">؟</span></div></div>
+  <div id="qmark" class="hide">?</div>
+  <div class="ctr title hide" id="hookLF" style="top:272px"><div class="ln en"><span>Lip Filler</span></div></div>
+  <div class="ctr hide" id="hookNE" style="top:418px">
+    <div class="neq"><svg width="70" height="70" viewBox="0 0 70 70"><path d="M10 26 H60 M10 46 H60 M48 8 L22 62" stroke="#fff" stroke-width="9" stroke-linecap="round"/></svg></div>
+    <div class="txt"><span class="k">تكبير<i></i></span> بس؟</div>
+  </div>
+
+  <div class="ctr title hide" id="listH" style="top:262px"><div class="ln bigar">حالات <span class="hl">كتيرة</span></div></div>
+  <div class="chip hide" id="ch1" style="left:330px;top:392px"><b></b>Asymmetry</div>
+  <div class="chip c2 hide" id="ch2" style="left:760px;top:392px"><b></b>Gummy Smile</div>
+  <div class="chip c2 hide" id="ch3" style="left:330px;top:494px"><b></b>Volume</div>
+  <div class="chip hide" id="ch4" style="left:760px;top:494px"><b></b>Contour</div>
+
+  <div class="ctr title hide" id="tB1" style="top:318px"><div class="ln en">Lip Asymmetry</div><div class="ln"><span class="ar">عدم تماثل الشفايف</span></div></div>
+  <div class="ctr title hide" id="tB2" style="top:318px"><div class="ln en">Gummy Smile</div><div class="ln"><span class="ar teal">تراجع الشفة العلوية أو السفلية</span></div></div>
+
+  <div class="ctr hide" id="plusTag" style="top:300px"><div class="pill" style="border-color:rgba(141,243,243,.8)"><span class="a">كمان</span><span class="e" style="color:#8DF3F3;font-size:52px">+ Lip Filler</span></div></div>
+  <div class="ctr title hide" id="tShape" style="top:300px"><div class="ln bigar">تحسين <span class="hl">الشكل</span></div><div class="ln"><span class="ar teal" style="font-family:Mont;font-weight:800;font-size:46px;direction:ltr">Lip Contour</span></div></div>
+  <svg id="focus" class="hide" width="1080" height="1920"><g id="fbox" style="transform-box:fill-box;transform-origin:center"></g></svg>
+
+  <div class="ctr hide" id="pCleft" style="top:330px"><div class="pill"><span class="a">الشفايف الأرنبية</span><span class="e">Cleft Lip</span></div></div>
+  <div class="ctr hide" id="pScar" style="top:330px"><div class="pill"><span class="a">علاج الندبات</span><span class="e">Scars</span></div></div>
+
+  <div class="ctr title hide" id="tVol" style="top:318px"><div class="ln en" style="font-size:84px">Volume &amp; Fine Lines</div><div class="ln"><span class="ar">تعويض الحجم مع العمر</span></div></div>
+  <div class="ctr title hide" id="tLines" style="top:318px"><div class="ln en" style="font-size:84px">Fine Lines</div><div class="ln"><span class="ar teal">فرد الخطوط الرفيعة</span></div></div>
+
+  <div class="ctr title hide" id="tMost" style="top:320px"><div class="ln bigar" style="font-size:128px">والأهم<span class="hl">!</span></div><div class="ln"><span class="ar" style="font-family:Mont;font-weight:800;font-size:42px;letter-spacing:3px">MOST IMPORTANT</span></div></div>
+  <div class="ctr hide" id="docBadge" style="top:330px">
+    <div class="ic"><svg width="74" height="74" viewBox="0 0 74 74" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8 v18 a14 14 0 0 0 28 0 V8"/><path d="M32 40 v8 a14 14 0 0 0 28 0 v-6"/><circle cx="60" cy="36" r="6"/></svg></div>
+    <div><div class="a">الدكتور المناسب</div><div class="e">THE RIGHT DOCTOR</div></div>
+  </div>
+  <div class="icard hide" id="ic1" style="left:300px;top:340px">
+    <div class="ic"><svg width="62" height="62" viewBox="0 0 62 62" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M44 6 l12 12 M50 12 l-8 8 M42 20 l-24 24 l-8 -8 l24 -24 z M10 52 l8 -8 M6 56 l4 -4 M22 32 l4 4 M28 26 l4 4"/></svg></div>
+    <div class="a">نوع المادة</div><div class="e">Filler type</div></div>
+  <div class="icard pk hide" id="ic2" style="left:780px;top:340px">
+    <div class="ic"><svg width="66" height="66" viewBox="0 0 66 66" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round">
+      <circle cx="33" cy="33" r="22"/><circle cx="33" cy="33" r="9"/><path d="M33 3 v10 M33 53 v10 M3 33 h10 M53 33 h10"/></svg></div>
+    <div class="a" style="font-family:Mont;font-weight:900;font-size:46px">Technique</div><div class="e" style="color:#F9AFCB">التقنية المناسبة</div></div>
+
+  <div id="cta" class="hide">
+    <div class="btn"><div class="chk"><svg width="58" height="58" viewBox="0 0 58 58"><path d="M12 30 l11 11 l23 -25" fill="none" stroke="#0E8E99" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="a">اختار دكتور متخصص</div><i class="shine"></i></div>
+    <div class="sub">Lip Filler <span>•</span> Done Right</div>
+  </div>
+
+  <div id="flash"></div>
+  <div id="bar"></div>
+
+  <!-- 4. captions (own layer) -->
+  <div id="caps"><div id="capWrap"></div></div>
+</div>
+
+<script>
+const Q = new URLSearchParams(location.search);
+const VAR = Q.get('v') || 'yellow', SHOW_BG = Q.get('bg') !== '0', SHOW_CAPS = Q.get('caps') === '1';
+const FPS = 30, DUR = 826 / 30;
+if (!SHOW_BG) { document.body.classList.add('nobg'); document.documentElement.style.background = 'transparent'; }
+
+/* ---------------- timing (seconds) ---------------- */
+const T = {
+  hookK: [0.40, 2.12], qmark: [0.55, 2.12], hookLF: [2.14, 4.06], hookNE: [2.74, 4.06], strike: 3.30,
+  listH: [4.13, 6.36], chips: [4.42, 4.62, 4.82, 5.02], chipsOut: 6.18,
+  card1: [6.40, 11.06], swapB2: 8.75, tB1: [6.46, 8.66], tB2: [8.80, 10.98], b2tag: [9.75, 10.98],
+  plusTag: [11.14, 12.30], tShape: [12.33, 14.36], focus: [12.33, 14.38],
+  lens: [14.40, 16.32], pCleft: [14.44, 15.36], pScar: [15.40, 16.28],
+  card2: [16.30, 20.46], tVol: [16.36, 18.56], tLines: [18.62, 20.40], meter: [16.50, 18.56], sparks: [18.70, 20.30],
+  tMost: [20.48, 22.10], docBadge: [22.14, 23.98], ic1: [24.04, 25.86], ic2: [24.78, 25.86], cta: [25.92, 99],
+};
+// B-roll slots: where they sit on the timeline + which part of the 4s clip plays (native speed, no stretch)
+const BROLL = [
+  {id: 'B1', a: 6.40, b: 8.75, off: 1.00},
+  {id: 'B2', a: 8.75, b: 11.06, off: 1.50},
+  {id: 'B4', a: 14.40, b: 16.32, off: 1.80},
+  {id: 'B3', a: 16.30, b: 20.46, off: 0.00},
+];
+
+/* ---------------- helpers ---------------- */
+const $ = id => document.getElementById(id);
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, p) => a + (b - a) * p;
+const prog = (t, a, d) => cl((t - a) / d);
+const E = {
+  out3: p => 1 - Math.pow(1 - p, 3), out5: p => 1 - Math.pow(1 - p, 5), in3: p => p * p * p, in2: p => p * p,
+  io: p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2,
+  back: p => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); },
+  expo: p => p >= 1 ? 1 : 1 - Math.pow(2, -10 * p),
+};
+function show(el, on) { el.classList.toggle('hide', !on); return on; }
+function css(el, o) { for (const k in o) el.style[k] = o[k]; }
+
+/** Standard enter/exit: fast pop-in (scale+rise+blur), quick scale-up fade out. */
+function pop(el, t, a, b, o = {}) {
+  const {din = .32, dout = .18, dy = 46, s0 = .7, blur = 16, ease = E.back, sOut = 1.08, yOut = -16, x0 = 0, rot0 = 0} = o;
+  if (!show(el, t >= a && t < b)) return 0;
+  const i = prog(t, a, din), u = prog(t, b - dout, dout), ei = ease(i), eo = E.in2(u);
+  const s = lerp(s0, 1, ei) * lerp(1, sOut, eo);
+  const bl = (1 - cl(i * 1.8)) * blur + eo * blur;
+  css(el, {
+    opacity: cl(i * 2.5) * (1 - eo),
+    transform: `translate(${lerp(x0, 0, ei)}px,${lerp(dy, 0, ei) + yOut * eo}px) rotate(${lerp(rot0, 0, ei)}deg) scale(${s})`,
+    filter: bl > .4 ? `blur(${bl.toFixed(1)}px)` : 'none',
+  });
+  return i;
+}
+/** Titles: each .ln line pops with a small stagger. */
+function title(el, t, a, b, o = {}) {
+  if (!show(el, t >= a && t < b)) return;
+  css(el, {opacity: 1, transform: 'none', filter: 'none'});
+  [...el.querySelectorAll('.ln')].forEach((ln, k) => {
+    ln.classList.remove('hide');
+    pop(ln, t, a + k * .08, b - (el.querySelectorAll('.ln').length - 1 - k) * .04, o);
+  });
+}
+const seeded = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(7);
+
+/* ---------------- static builders ---------------- */
+// bokeh dots behind the B-roll cards
+const BOK = [...Array(26)].map(() => ({x: seeded() * 1080, y: seeded() * 1920, r: 6 + seeded() * 22, v: .3 + seeded() * .8, ph: seeded() * 6.28, pk: seeded() > .55}));
+BOK.forEach(d => { const i = document.createElement('i'); i.style.width = i.style.height = d.r + 'px';
+  i.style.background = d.pk ? 'rgba(249,175,203,.55)' : 'rgba(141,243,243,.5)'; $('bokeh').appendChild(i); d.el = i; });
+// sparkles (fine lines smoothing)
+const SPK = [[300, 640, 1], [760, 700, .8], [420, 1080, .9], [700, 1120, 1.1], [540, 560, .7], [250, 930, .8], [840, 980, .9]].map(([x, y, s], k) => {
+  const d = document.createElement('div'); d.className = 'spark';
+  d.innerHTML = `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 0 C43 30 50 37 80 40 C50 43 43 50 40 80 C37 50 30 43 0 40 C30 37 37 30 40 0Z" fill="${k % 2 ? '#fff' : '#FFD3E3'}"/></svg>`;
+  css(d, {left: x + 'px', top: y + 'px'}); $('sparks').appendChild(d); return {el: d, s, k};
+});
+// focus brackets around the lips (close-up shot)
+const FOC = {x: 530, y: 632, w: 300, h: 210};
+(() => {
+  const L = 54, {w, h} = FOC, g = $('fbox'), P = (d) => `<path d="${d}" fill="none" stroke="#8DF3F3" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  g.innerHTML = P(`M${-w/2} ${-h/2 + L} V${-h/2} H${-w/2 + L}`) + P(`M${w/2 - L} ${-h/2} H${w/2} V${-h/2 + L}`) +
+    P(`M${w/2} ${h/2 - L} V${h/2} H${w/2 - L}`) + P(`M${-w/2 + L} ${h/2} H${-w/2} V${h/2 - L}`) +
+    `<circle r="10" fill="#F9AFCB"/><circle id="fping" r="30" fill="none" stroke="#F9AFCB" stroke-width="5"/>`;
+})();
+
+/* ---------------- captions ---------------- */
+let CAPS = [];
+function capHTML(c) {
+  // merge consecutive English tokens into one LTR run
+  const out = []; let run = [];
+  const flush = () => { if (run.length) { out.push(`<span class="en" dir="ltr">${run.join(' ')}</span>`); run = []; } };
+  c.tokens.forEach(tk => {
+    if (tk.k === 'en') { run.push(tk.t); return; }
+    flush(); out.push(tk.k === 'key' ? `<span class="key">${tk.t}</span>` : tk.t);
+  });
+  flush();
+  return `<span class="c">${out.join(' ')}</span>`;
+}
+let curCap = -1;
+function renderCaps(t) {
+  const w = $('capWrap');
+  if (!SHOW_CAPS) { w.style.display = 'none'; return; }
+  const k = CAPS.findIndex(c => t >= c.s && t < c.e);
+  if (k !== curCap) { w.innerHTML = k < 0 ? '' : capHTML(CAPS[k]); curCap = k; }
+  if (k < 0) return;
+  const c = CAPS[k], i = prog(t, c.s, .14), u = prog(t, c.e - .08, .08);
+  css(w, {opacity: cl(i * 1.6) * (1 - u), transform: `translateY(${lerp(14, 0, E.out3(i))}px) scale(${lerp(.9, 1, E.back(i))})`});
+}
+
+/* ---------------- camera on the doctor plate ---------------- */
+function camera(t) {
+  // [start, end, scale0, scale1, originX, originY]
+  const K = [
+    [0.00, 0.40, 1.00, 1.01, 560, 300], [0.40, 4.10, 1.07, 1.11, 560, 300], [4.10, 6.40, 1.00, 1.04, 555, 640],
+    [6.40, 11.06, 1.06, 1.10, 540, 860], [11.06, 12.32, 1.00, 1.03, FOC.x, FOC.y], [12.32, 14.40, 1.06, 1.12, FOC.x, FOC.y],
+    [14.40, 20.46, 1.06, 1.12, 540, 860], [20.46, 22.12, 1.08, 1.11, 555, 420], [22.12, 23.60, 1.00, 1.03, 555, 520],
+    [23.60, 99, 1.00, 1.05, 555, 700],
+  ];
+  const k = K.find(k => t >= k[0] && t < k[1]) || K[K.length - 1];
+  let s = lerp(k[2], k[3], prog(t, k[0], k[1] - k[0]));
+  // punch-in kick at segment start (snappy zoom that settles)
+  const kick = 1 - E.out3(prog(t, k[0], .35));
+  if ([0.40, 12.32, 20.46].includes(k[0])) s += .06 * kick;
+  let sx = 0, sy = 0;   // short impact shake
+  for (const [a, amp] of [[0.40, 14], [2.14, 9], [20.48, 10]]) {
+    const p = prog(t, a, .3); if (p > 0 && p < 1) { sx += Math.sin(t * 95) * amp * (1 - p); sy += Math.cos(t * 77) * amp * (1 - p); }
+  }
+  // blur + tint while a B-roll is up
+  const inB = (a, b) => cl(Math.min(prog(t, a - .02, .2), 1 - prog(t, b - .16, .2)));
+  const bk = Math.max(inB(6.40, 11.06), inB(14.40, 20.46));
+  css($('cam'), {transformOrigin: `${k[4]}px ${k[5]}px`, transform: `translate(${sx}px,${sy}px) scale(${s})`,
+    filter: bk > .01 ? `blur(${(bk * 20).toFixed(1)}px) saturate(${1 - bk * .3})` : 'none'});
+  $('tint').style.opacity = bk;
+  $('bokeh').style.opacity = bk * .9;
+  BOK.forEach(d => css(d.el, {left: d.x + Math.sin(t * d.v + d.ph) * 30 + 'px', top: (d.y - t * 40 * d.v + 1920 * 3) % 1920 + 'px'}));
+  return bk;
+}
+
+/* ---------------- B-roll frames ---------------- */
+function brollFrame(t) {
+  for (const s of BROLL) if (t >= s.a - .001 && t < s.b) {
+    const f = Math.min(96, Math.max(1, Math.floor((s.off + t - s.a) * 24) + 1));
+    return {id: s.id, src: `cache/${s.id}/f${String(f).padStart(4, '0')}.jpg`};
+  }
+  return null;
+}
+
+/* ---------------- main ---------------- */
+const pending = [];
+function setSrc(img, src) { if (img.dataset.src === src) return; img.dataset.src = src; img.src = src; pending.push(img.decode().catch(() => {})); }
+
+async function renderFrame(t) {
+  pending.length = 0;
+  const n = Math.min(826, Math.round(t * FPS) + 1);
+  $('stage').querySelectorAll(':scope > *:not(#caps)').forEach(e => { if (!SHOW_BG) e.style.display = 'none'; });
+
+  if (SHOW_BG) {
+    setSrc($('doc'), `cache/doctor_${VAR}/f${String(n).padStart(4, '0')}.jpg`);
+    camera(t);
+    $('bar').style.width = (cl(t / DUR) * 1080).toFixed(1) + 'px';
+    // flash on hard hits
+    let fl = 0; for (const a of [0.40, 6.40, 16.30, 25.92]) { const p = prog(t, a, .16); if (p > 0 && p < 1) fl = Math.max(fl, (1 - p) * .55); }
+    $('flash').style.opacity = fl;
+
+    const br = brollFrame(t);
+    /* card (B1 -> B2 whip, then B3) */
+    const card = $('card');
+    const inC1 = t >= T.card1[0] && t < T.card1[1], inC2 = t >= T.card2[0] && t < T.card2[1];
+    if (show(card, (inC1 || inC2) && br && br.id !== 'B4')) {
+      setSrc($('cimg'), br.src);
+      let tx = 0, ty = 0, s = 1, r = 0, op = 1, bl = 0, clip = 'none';
+      if (inC1) {
+        const i = prog(t, T.card1[0], .32), u = prog(t, T.card1[1] - .14, .14);
+        s = lerp(.55, 1, E.back(i)) * lerp(1, 1.25, E.in2(u)); r = lerp(-9, 0, E.out3(i)); ty = lerp(140, 0, E.out3(i));
+        op = cl(i * 3) * (1 - E.in2(u)); bl = (1 - cl(i * 2)) * 18 + u * 20;
+        // whip B1 -> B2
+        const w1 = prog(t, T.swapB2 - .10, .10), w2 = prog(t, T.swapB2, .16);
+        if (t < T.swapB2 && w1 > 0) { tx = -1150 * E.in3(w1); bl = Math.max(bl, w1 * 26); }
+        if (t >= T.swapB2 && w2 < 1) { tx = 1150 * (1 - E.out3(w2)); bl = Math.max(bl, (1 - w2) * 26); }
+        s *= 1 + .02 * Math.sin((t - T.card1[0]) * 1.4);
+      } else {
+        const i = prog(t, T.card2[0], .3), u = prog(t, T.card2[1] - .16, .16);
+        clip = `circle(${lerp(30, 75, E.out3(i)).toFixed(1)}% at 50% 50%)`; s = lerp(.92, 1, E.out3(i));
+        ty = -1500 * E.in3(u); bl = u * 24;
+      }
+      css(card, {opacity: op, transform: `translate(${tx}px,${ty}px) rotate(${r}deg) scale(${s})`, filter: bl > .4 ? `blur(${bl.toFixed(1)}px)` : 'none', clipPath: clip});
+    }
+    /* lens (B4) */
+    const lens = $('lens');
+    if (show(lens, t >= T.lens[0] && t < T.lens[1] && br && br.id === 'B4')) {
+      setSrc($('limg'), br.src);
+      const i = prog(t, T.lens[0], .34), u = prog(t, T.lens[1] - .12, .12);
+      css(lens, {opacity: 1 - u, transform: `scale(${lerp(.3, 1, E.back(i)) * lerp(1, .6, E.in2(u))}) rotate(${lerp(40, 0, E.out3(i))}deg)`,
+        filter: i < 1 ? `blur(${((1 - i) * 14).toFixed(1)}px)` : 'none'});
+      $('lensRing').style.transform = `rotate(${(t - T.lens[0]) * 40}deg)`;
+      $('lensTicks').style.transform = `rotate(${-(t - T.lens[0]) * 70}deg)`;
+    }
+    /* B1 symmetry guide */
+    if (show($('sym'), t >= 6.62 && t < 8.62)) {
+      const i = prog(t, 6.62, .4), u = prog(t, 8.50, .12), pulse = Math.sin((t - 6.62) * 9) * 10;
+      css($('sym'), {opacity: 1 - u});
+      $('symLine').setAttribute('y2', lerp(470, 1250, E.out3(i)));
+      $('symL').setAttribute('transform', `translate(${lerp(-120, 0, E.out3(prog(t, 6.9, .3))) + pulse} 0)`);
+      $('symR').setAttribute('transform', `translate(${lerp(120, 0, E.out3(prog(t, 6.9, .3))) - pulse} 0)`);
+      $('symL').style.opacity = $('symR').style.opacity = cl(prog(t, 6.9, .2));
+    }
+    pop($('b2tag'), t, T.b2tag[0], T.b2tag[1], {dy: 60});
+    /* B3 meter + sparkles */
+    if (show($('meter'), t >= T.meter[0] && t < T.meter[1])) {
+      const i = prog(t, T.meter[0], .3), u = prog(t, T.meter[1] - .16, .16), f = E.io(prog(t, T.meter[0] + .25, 1.5));
+      css($('meter'), {opacity: cl(i * 2) * (1 - u), transform: `translateX(${lerp(120, 0, E.out3(i)) + 60 * E.in2(u)}px)`});
+      $('meter').querySelector('.fill').style.height = lerp(110, 470, f) + 'px';
+      $('meterPct').textContent = '+' + Math.round(f * 40) + '%';
+    }
+    if (show($('sparks'), t >= T.sparks[0] && t < T.sparks[1])) {
+      SPK.forEach(({el, s, k}) => { const a = T.sparks[0] + k * .16, p = ((t - a) / .7);
+        const v = p > 0 && p < 1 ? Math.sin(p * Math.PI) : 0;
+        css(el, {opacity: v, transform: `scale(${v * s}) rotate(${p * 90}deg)`}); });
+    }
+
+    /* hook */
+    title($('hookK'), t, ...T.hookK, {s0: 1.9, dy: 0, blur: 22, ease: E.expo, din: .3});
+    { const el = $('qmark'), p = pop(el, t, ...T.qmark, {s0: .2, dy: 80, rot0: -30, din: .42});
+      if (p) el.style.transform += ` rotate(${Math.sin((t - T.qmark[0]) * 6) * 7}deg)`; }
+    title($('hookLF'), t, ...T.hookLF, {s0: 2.2, dy: 0, blur: 26, ease: E.expo, din: .28, sOut: 1.25});
+    pop($('hookNE'), t, ...T.hookNE, {x0: 260, dy: 0, s0: .8, sOut: 1.2});
+    $('hookNE').querySelector('i').style.scale = `${E.out5(prog(t, T.strike, .22))} 1`;
+    $('hookNE').querySelector('.neq').style.transform = `rotate(${lerp(-180, 0, E.back(prog(t, T.hookNE[0], .45)))}deg)`;
+
+    /* list of cases */
+    title($('listH'), t, ...T.listH, {s0: 1.4, dy: 0, ease: E.expo});
+    ['ch1', 'ch2', 'ch3', 'ch4'].forEach((id, k) => pop($(id), t, T.chips[k], T.chipsOut + k * .05, {dy: 0, x0: k % 2 ? 160 : -160, s0: .5, din: .3, dout: .14}));
+
+    title($('tB1'), t, ...T.tB1);
+    title($('tB2'), t, ...T.tB2);
+
+    /* doctor segment 11-14.4 */
+    pop($('plusTag'), t, ...T.plusTag, {dy: -60, s0: .6});
+    title($('tShape'), t, ...T.tShape, {s0: 1.5, dy: 0, ease: E.expo});
+    if (show($('focus'), t >= T.focus[0] && t < T.focus[1])) {
+      const i = prog(t, T.focus[0], .4), u = prog(t, T.focus[1] - .15, .15);
+      css($('focus'), {opacity: (1 - u)});
+      $('fbox').setAttribute('transform', `translate(${FOC.x} ${FOC.y}) scale(${lerp(2.2, 1, E.out5(i)) * (1 + .03 * Math.sin(t * 7))})`);
+      const ping = ((t - T.focus[0]) % .9) / .9;
+      $('fping').setAttribute('r', 10 + ping * 60); $('fping').style.opacity = 1 - ping;
+    }
+
+    /* lens labels */
+    pop($('pCleft'), t, ...T.pCleft, {x0: -200, dy: 0});
+    pop($('pScar'), t, ...T.pScar, {x0: 200, dy: 0});
+
+    /* B3 titles */
+    title($('tVol'), t, ...T.tVol);
+    title($('tLines'), t, ...T.tLines);
+
+    /* final segment */
+    title($('tMost'), t, ...T.tMost, {s0: 2, dy: 0, blur: 24, ease: E.expo});
+    pop($('docBadge'), t, ...T.docBadge, {dy: 70});
+    pop($('ic1'), t, ...T.ic1, {dy: 120, s0: .4, rot0: -8});
+    pop($('ic2'), t, ...T.ic2, {dy: 120, s0: .4, rot0: 8});
+    { const el = $('cta');
+      if (show(el, t >= T.cta[0])) {
+        const i = prog(t, T.cta[0], .45), br2 = 1 + .025 * Math.sin((t - T.cta[0]) * 5.5) * cl(prog(t, T.cta[0] + .5, .3));
+        css(el, {opacity: cl(i * 2.5), transform: `translateY(${lerp(160, 0, E.out3(i))}px) scale(${lerp(.5, 1, E.back(i)) * br2})`,
+          filter: i < .6 ? `blur(${((1 - i / .6) * 14).toFixed(1)}px)` : 'none'});
+        const sh = ((t - T.cta[0] - .4) % 1.3) / .55;
+        el.querySelector('.shine').style.left = `${lerp(-200, 1000, cl(sh))}px`;
+        el.querySelector('.sub').style.opacity = cl(prog(t, T.cta[0] + .35, .3));
+        el.querySelector('.sub').style.letterSpacing = lerp(18, 6, E.out3(prog(t, T.cta[0] + .35, .5))) + 'px';
+      } }
+  }
+  renderCaps(t);
+  await Promise.all(pending);
+}
+window.renderFrame = renderFrame;
+
+window.ready = (async () => {
+  CAPS = await (await fetch('captions.json')).json();
+  await document.fonts.load('900 40px Mont'); await document.fonts.load('800 40px Cairo'); await document.fonts.load('900 40px Cairo');
+  await document.fonts.ready;
+  await renderFrame(0);
+  if (Q.get('play') === '1') {   // real-time preview in a normal browser
+    const au = new Audio('cache/voice.wav'); au.play().catch(() => {});
+    const t0 = performance.now(); const loop = async () => { const t = (performance.now() - t0) / 1000;
+      if (t < DUR) { await renderFrame(t); requestAnimationFrame(loop); } }; loop();
+  }
+  return true;
+})();
+</script>
+</body>
+</html>
