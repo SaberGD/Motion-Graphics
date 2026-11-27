@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>Saber AI Breakdown</title>
+<!--
+  Saber Group — AI video breakdown ad (1080x1920 @30fps, 20.5s).
+  window.renderFrame(t) draws one frame. Timings in the S object.
+  Sources: the original shoot + the Lip Filler AI plates and motion renders (../../lip-filler/project).
+-->
+<style>
+@font-face{font-family:Cairo;src:url(fonts/cairo-arabic.woff2) format('woff2');font-weight:200 1000;font-display:block;
+  unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FEFC;}
+@font-face{font-family:Cairo;src:url(fonts/cairo-latin.woff2) format('woff2');font-weight:200 1000;font-display:block;
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD;}
+@font-face{font-family:Mont;src:url(fonts/montserrat.woff2) format('woff2');font-weight:100 900;font-display:block}
+:root{--teal:#19C3C9;--teal2:#0E8E99;--deep:#06303A;--ink:#042127;--cyan:#8DF3F3;--pink:#F9AFCB;--pink2:#EE7FA8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#021A1F}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;color:#fff;font-family:Cairo,Mont,sans-serif;
+  background:radial-gradient(90% 60% at 50% 40%,#0B4652 0,#05262D 55%,#021519 100%)}
+.abs{position:absolute}
+.hide{visibility:hidden}
+.full{position:absolute;left:0;top:0;width:1080px;height:1920px;display:block}
+#bgGrid{position:absolute;inset:0;opacity:.18;
+  background-image:linear-gradient(rgba(141,243,243,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(141,243,243,.35) 1px,transparent 1px);
+  background-size:90px 90px}
+#glowA,#glowB{position:absolute;width:900px;height:900px;border-radius:50%;filter:blur(120px);opacity:.35}
+#glowA{background:#19C3C9;left:-300px;top:200px} #glowB{background:#EE7FA8;right:-320px;top:1000px}
+
+/* ---- segment A: slider breakdown ---- */
+#A{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0;overflow:hidden}
+#A .top{clip-path:inset(0 0 0 100%)}
+#handle{position:absolute;top:0;width:0;height:1920px}
+#handle .ln{position:absolute;left:-4px;top:0;width:8px;height:1920px;background:#fff;box-shadow:0 0 24px rgba(141,243,243,.95),0 0 60px rgba(25,195,201,.7)}
+#handle .knob{position:absolute;left:-62px;top:898px;width:124px;height:124px;border-radius:50%;background:#fff;display:grid;place-items:center;
+  box-shadow:0 0 0 8px rgba(25,195,201,.55),0 14px 40px rgba(0,0,0,.45)}
+.tag{position:absolute;top:1060px;font:800 30px/1 Mont;letter-spacing:4px;padding:12px 20px;border-radius:30px;white-space:nowrap}
+#tagB{right:28px;background:rgba(4,33,39,.75);color:#fff}
+#tagA{left:28px;background:var(--teal);color:var(--ink)}
+#stepper{position:absolute;left:540px;top:190px;translate:-50% 0;display:flex;align-items:center;gap:0}
+#stepper .n{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:900 26px Mont;color:#fff;background:rgba(4,33,39,.7);
+  border:3px solid rgba(255,255,255,.55)}
+#stepper .n.on{background:var(--teal);border-color:#fff;box-shadow:0 0 24px rgba(141,243,243,.9);color:var(--ink)}
+#stepper .bar{width:110px;height:6px;background:rgba(255,255,255,.35);position:relative;overflow:hidden}
+#stepper .bar i{position:absolute;inset:0;background:var(--cyan);transform-origin:0 50%;scale:0 1}
+#stepLbl{position:absolute;left:540px;top:330px;translate:-50% -50%;text-align:center;white-space:nowrap}
+#stepLbl .a{display:inline-block;direction:rtl;font:900 72px/1.2 Cairo;color:#fff;padding:2px 40px 10px;border-radius:50px;background:rgba(4,33,39,.72);
+  box-shadow:0 12px 34px rgba(0,0,0,.35)}
+#stepLbl .e{margin-top:12px;font:800 32px/1 Mont;letter-spacing:8px;color:var(--cyan);text-shadow:0 3px 14px rgba(0,0,0,.6)}
+
+/* ---- segment B: 5-up grid ---- */
+#B{position:absolute;inset:0}
+.tile{position:absolute;width:330px;height:587px;translate:-50% -50%;border-radius:28px;overflow:hidden;
+  box-shadow:0 0 0 5px rgba(255,255,255,.9),0 24px 50px rgba(0,0,0,.5)}
+.tile img{width:100%;height:100%;display:block}
+.tlbl{position:absolute;translate:-50% 0;white-space:nowrap;text-align:center;font:800 26px/1 Mont;letter-spacing:3px;color:#fff;
+  padding:10px 18px;border-radius:24px;background:rgba(4,33,39,.8);border:2px solid rgba(141,243,243,.6)}
+.tlbl.pk{border-color:rgba(249,175,203,.8)}
+#gHead{position:absolute;left:540px;top:205px;translate:-50% -50%;text-align:center;white-space:nowrap}
+#gHead .a{font:900 70px/1.2 Cairo;direction:rtl}
+#gHead .a b{color:var(--pink)}
+#gHead .e{margin-top:4px;font:800 30px/1 Mont;letter-spacing:10px;color:var(--cyan)}
+
+/* ---- segment C: flashes ---- */
+#C{position:absolute;inset:0;overflow:hidden}
+#C img{transform-origin:50% 45%}
+#word{position:absolute;left:540px;top:960px;translate:-50% -50%;white-space:nowrap;font:900 150px/1 Mont;letter-spacing:-3px;color:#fff;
+  text-shadow:-6px 0 0 rgba(238,127,168,.85),6px 0 0 rgba(25,195,201,.85),0 10px 40px rgba(0,0,0,.6)}
+#cbar{position:absolute;inset:0;background:linear-gradient(0deg,rgba(2,21,25,.55),transparent 40%,transparent 60%,rgba(2,21,25,.45))}
+
+/* ---- segment D: end card ---- */
+#D{position:absolute;inset:0}
+#logo{position:absolute;left:540px;top:900px;translate:-50% -50%;text-align:center;white-space:nowrap}
+#ring{position:absolute;left:540px;top:900px;width:760px;height:760px;translate:-50% -50%}
+#logo .sab{font:900 190px/1 Mont;letter-spacing:6px;display:flex;justify-content:center}
+#logo .sab span{display:inline-block;background:linear-gradient(180deg,#fff 40%,var(--cyan));-webkit-background-clip:text;color:transparent}
+#logo .grp{margin-top:10px;font:300 64px/1 Mont;letter-spacing:46px;margin-right:-46px;color:#fff}
+#logo .div{margin:38px auto 30px;height:5px;width:520px;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--pink));transform-origin:50% 50%}
+#logo .mk{font:800 40px/1 Mont;letter-spacing:15px;margin-right:-15px;color:var(--cyan)}
+#tagline{position:absolute;left:540px;top:1330px;translate:-50% -50%;white-space:nowrap;text-align:center}
+#tagline .a{direction:rtl;font:900 60px/1.25 Cairo;color:#fff}
+#tagline .a b{color:var(--pink)}
+#tagline .e{margin-top:16px;font:700 28px/1 Mont;letter-spacing:9px;color:rgba(255,255,255,.75)}
+
+#flash{position:absolute;inset:0;background:#fff;opacity:0}
+#vigAll{position:absolute;inset:0;pointer-events:none;background:radial-gradient(130% 80% at 50% 50%,transparent 60%,rgba(0,0,0,.35))}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bgGrid"></div><div id="glowA"></div><div id="glowB"></div>
+
+  <div id="A">
+    <img id="aBot" class="full" alt=""><img id="aTop" class="full top" alt="">
+    <div id="handle" class="hide"><div class="ln"></div>
+      <div class="knob"><svg width="70" height="40" viewBox="0 0 70 40" fill="none" stroke="#0E8E99" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 6 L6 20 L22 34 M48 6 L64 20 L48 34"/></svg></div></div>
+    <div id="tagB" class="tag hide">BEFORE</div><div id="tagA" class="tag hide">AFTER</div>
+    <div id="stepper">
+      <div class="n">1</div><div class="bar"><i></i></div><div class="n">2</div><div class="bar"><i></i></div>
+      <div class="n">3</div><div class="bar"><i></i></div><div class="n">4</div></div>
+    <div id="stepLbl"><div class="a"></div><div class="e"></div></div>
+  </div>
+
+  <div id="B" class="hide">
+    <div id="gHead"><div class="a">تصوير واحد <b>←</b> 5 نسخ</div><div class="e">1 SHOOT · 5 VERSIONS</div></div>
+  </div>
+
+  <div id="C" class="hide"><img id="cImg" class="full" alt=""><div id="cbar"></div><div id="word"></div></div>
+
+  <div id="D" class="hide">
+    <svg id="ring" viewBox="0 0 760 760"><g id="ringG" style="transform-origin:380px 380px">
+      <circle cx="380" cy="380" r="370" fill="none" stroke="#8DF3F3" stroke-width="4" stroke-dasharray="6 18" opacity=".7"/>
+      <circle cx="380" cy="380" r="330" fill="none" stroke="#F9AFCB" stroke-width="3" stroke-dasharray="180 60" opacity=".55"/></g></svg>
+    <div id="logo"><div class="sab"></div><div class="grp">GROUP</div><div class="div"></div><div class="mk">MARKETING AGENCY</div></div>
+    <div id="tagline"><div class="a">فيديوهات <b>AI</b> جاهزة للإعلان</div><div class="e">AI VIDEO · MOTION · ADS</div></div>
+  </div>
+
+  <div id="vigAll"></div>
+  <div id="flash"></div>
+</div>
+<script>
+const FPS = 30, DUR = 17.4;
+const LF = '../../lip-filler/project/';
+const SRC = {   // version -> [frame folder, frame count, display name]
+  orig: ['cache/original/', 826], aiY: [LF + 'cache/doctor_yellow/', 826], aiG: [LF + 'cache/doctor_green/', 826],
+  motY: [LF + 'frames/yellow/', 826], motG: [LF + 'frames/green/', 826],
+};
+const src = (v, s) => { const [d, n] = SRC[v]; return `${d}f${String(Math.min(n, Math.max(1, Math.round(s * FPS) + 1))).padStart(4, '0')}.jpg`; };
+
+/* ---------------- timing ---------------- */
+const S = {
+  A: [0, 9.1],
+  wipes: [  // [start, end, from, to, direction(+1 = new comes from the right)]
+    [1.45, 2.35, 'orig', 'aiY', 1], [3.35, 4.25, 'aiY', 'aiG', -1], [5.85, 6.75, 'aiG', 'motG', 1]],
+  steps: [[0, 'التصوير الأصلي', 'ORIGINAL SHOOT'], [1.45, 'لوكيشن جديد بالـ AI', 'AI LOCATION'],
+          [3.35, 'طقم جديد بالـ AI', 'AI OUTFIT'], [5.85, 'موشن جرافيكس + B-roll', 'MOTION GRAPHICS']],
+  B: [9.1, 13.2],
+  C: [13.2, 17.4], cutLen: .4,
+  cuts: [ // [version, source time, word]
+    ['aiY', 12.4, 'LOCATION'], ['aiG', 12.9, 'OUTFIT'], ['motY', 2.7, 'MOTION'], ['motG', 7.4, 'B-ROLL'],
+    ['motY', 15.0, ''], ['motG', 17.6, ''], ['orig', 19.5, ''], ['motG', 23.1, ''], ['motY', 25.95, '']],
+  D: [99, 99],   // end card removed: the ad ends on the last flash shot
+};
+const TILES = [ // version, x, y, label, pink?
+  ['orig', 190, 600, 'ORIGINAL', 0], ['aiY', 540, 600, 'AI LOCATION', 0], ['aiG', 890, 600, 'AI OUTFIT', 0],
+  ['motY', 365, 1250, 'MOTION · Y', 1], ['motG', 715, 1250, 'MOTION · G', 1]];
+
+/* ---------------- helpers ---------------- */
+const $ = id => document.getElementById(id);
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, p) => a + (b - a) * p;
+const prog = (t, a, d) => cl((t - a) / d);
+const E = {out3: p => 1 - Math.pow(1 - p, 3), in3: p => p * p * p, io: p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2,
+  back: p => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); }};
+const show = (el, on) => (el.classList.toggle('hide', !on), on);
+const css = (el, o) => Object.assign(el.style, o);
+const pending = [];
+function setSrc(img, s) { if (img.dataset.src === s) return; img.dataset.src = s; img.src = s; pending.push(img.decode().catch(() => {})); }
+
+/* build tiles + logo letters */
+TILES.forEach(([v, x, y, l, pk], k) => {
+  const d = document.createElement('div'); d.className = 'tile'; d.innerHTML = '<img alt="">'; css(d, {left: x + 'px', top: y + 'px'});
+  const b = document.createElement('div'); b.className = 'tlbl' + (pk ? ' pk' : ''); b.textContent = l; css(b, {left: x + 'px', top: y + 310 + 'px'});
+  $('B').append(d, b); TILES[k].el = d; TILES[k].lbl = b;
+});
+'SABER'.split('').forEach(c => { const s = document.createElement('span'); s.textContent = c; $('logo').querySelector('.sab').appendChild(s); });
+
+/* ---------------- segments ---------------- */
+function segA(t) {
+  if (!show($('A'), t < S.A[1] + .55)) return;
+  const sA = Math.min(t, S.A[1]);            // footage time in A == ad time
+  // which versions are on screen
+  let bot = 'orig', top = null, x = 1080, dir = 1;
+  for (const [a, b, from, to, d] of S.wipes) {
+    if (sA >= b) bot = to;
+    else if (sA >= a) { bot = from; top = to; dir = d; const p = E.io(prog(sA, a, b - a)); x = d > 0 ? lerp(1080, 0, p) : lerp(0, 1080, p); }
+  }
+  // after A ends, the A frame flies into its grid tile; its picture follows the grid clock
+  const sGrid = t - S.B[0];
+  setSrc($('aBot'), sGrid >= 0 ? src('motG', sGrid) : src(bot, sA));
+  show($('aTop'), !!top && sGrid < 0);
+  if (top) { setSrc($('aTop'), src(top, sA)); $('aTop').style.clipPath = dir > 0 ? `inset(0 0 0 ${x}px)` : `inset(0 ${1080 - x}px 0 0)`; }
+  const wiping = !!top && sGrid < 0;
+  show($('handle'), wiping); show($('tagA'), wiping); show($('tagB'), wiping);
+  if (wiping) {
+    $('handle').style.left = x + 'px';
+    // tags sit on either side of the handle: BEFORE on the old side, AFTER on the new side
+    const old = dir > 0 ? 'left' : 'right';
+    css($('tagB'), {left: dir > 0 ? (x - 230) + 'px' : (x + 40) + 'px', right: 'auto'});
+    css($('tagA'), {left: dir > 0 ? (x + 40) + 'px' : (x - 230) + 'px', right: 'auto'});
+  }
+  // stepper + step label
+  let k = 0; S.steps.forEach((s, i) => { if (sA >= s[0]) k = i; });
+  [...$('stepper').querySelectorAll('.n')].forEach((n, i) => n.classList.toggle('on', i <= k));
+  [...$('stepper').querySelectorAll('.bar i')].forEach((b, i) => b.style.scale = `${E.out3(prog(sA, S.steps[i + 1][0], .9))} 1`);
+  const lbl = $('stepLbl'), st = S.steps[k], i = prog(sA, st[0] + (k ? .3 : .15), .35);
+  if (lbl.dataset.k != k) { lbl.querySelector('.a').textContent = st[1]; lbl.querySelector('.e').textContent = st[2]; lbl.dataset.k = k; }
+  const out = prog(t, S.A[1] - .25, .25), out4 = prog(t, 6.75, .3);
+  css(lbl, {opacity: cl(i * 1.5) * (1 - out) * (1 - out4), transform: `translateY(${lerp(24, 0, E.out3(i))}px) scale(${lerp(.94, 1, E.out3(i))})`});
+  $('stepper').style.opacity = (1 - out) * cl(prog(t, .05, .3));
+  // fly into tile 5
+  const f = E.io(prog(t, S.A[1], .55)), T5 = TILES[4], sc = lerp(1, 330 / 1080, f);
+  css($('A'), {transform: `translate(${lerp(0, T5[1] - 165, f)}px,${lerp(0, T5[2] - 293.5, f)}px) scale(${sc})`,
+    borderRadius: `${lerp(0, 92, f)}px`, boxShadow: f > 0 ? `0 0 0 ${lerp(0, 16, f)}px rgba(255,255,255,.9)` : 'none'});
+}
+
+function segB(t) {
+  const on = t >= S.B[0] && t < S.C[0] + .05;
+  if (!show($('B'), on)) return;
+  const s = t - S.B[0];
+  TILES.forEach(([v, x, y], k) => {
+    setSrc(TILES[k].el.querySelector('img'), src(v, s));
+    const i = k === 4 ? (t >= S.A[1] + .55 ? 1 : 0) : E.back(prog(t, S.B[0] + .15 + k * .09, .45));
+    const vis = k === 4 ? t >= S.A[1] + .55 : true;
+    css(TILES[k].el, {opacity: vis ? cl(i * 2) : 0, transform: `scale(${lerp(.6, 1, i)})`});
+    // a highlight sweeps across the tiles
+    const hl = Math.max(0, Math.sin((s * 1.6 - k * .45) * Math.PI)) ** 6;
+    TILES[k].el.style.boxShadow = `0 0 0 5px rgba(255,255,255,.9),0 0 ${30 + hl * 50}px rgba(141,243,243,${.15 + hl * .7}),0 24px 50px rgba(0,0,0,.5)`;
+    const li = E.out3(prog(t, S.B[0] + .5 + k * .08, .4));
+    css(TILES[k].lbl, {opacity: li, transform: `translateY(${lerp(20, 0, li)}px)`});
+  });
+  const h = E.out3(prog(t, S.B[0] + .2, .45));
+  css($('gHead'), {opacity: h, transform: `translateY(${lerp(-30, 0, h)}px)`});
+  // zoom-punch into the flashes
+  const z = E.in3(prog(t, S.C[0] - .25, .25));
+  $('B').style.transform = `scale(${lerp(1, 1.6, z)})`; $('B').style.opacity = 1 - z * .6;
+}
+
+function segC(t) {
+  if (!show($('C'), t >= S.C[0])) return 0;
+  const d = S.cutLen, k = Math.min(S.cuts.length - 1, Math.floor((t - S.C[0]) / d)), lt = t - S.C[0] - k * d;   // last cut holds to the end
+  const [v, s0, w] = S.cuts[k];
+  setSrc($('cImg'), src(v, s0 + lt));
+  css($('cImg'), {transform: `scale(${lerp(1.12, 1.02, E.out3(cl(lt / (k === S.cuts.length - 1 ? 1.2 : d))))}) rotate(${(k % 2 ? 1 : -1) * lerp(1.2, 0, E.out3(cl(lt / .2)))}deg)`});
+  const wd = $('word'); wd.textContent = w; const wi = E.out3(cl(lt / .14));
+  css(wd, {opacity: w ? cl(wi * 2) : 0, transform: `scale(${lerp(1.35, 1, wi)})`, letterSpacing: lerp(10, -3, wi) + 'px'});
+  return cl(1 - lt / .1) * .55;   // flash strength at each cut
+}
+
+function segD(t) {
+  if (!show($('D'), t >= S.D[0])) return;
+  const s = t - S.D[0];
+  [...$('logo').querySelectorAll('.sab span')].forEach((sp, k) => {
+    const i = E.back(prog(s, .15 + k * .07, .5));
+    css(sp, {opacity: cl(i * 2), transform: `translateY(${lerp(80, 0, i)}px) scale(${lerp(.6, 1, i)})`, filter: i < 1 ? `blur(${(1 - cl(i)) * 10}px)` : 'none'});
+  });
+  const g = E.out3(prog(s, .6, .6));
+  css($('logo').querySelector('.grp'), {opacity: g, letterSpacing: lerp(80, 46, g) + 'px'});
+  $('logo').querySelector('.div').style.transform = `scaleX(${E.io(prog(s, .85, .6))})`;
+  const m = E.out3(prog(s, 1.1, .5));
+  css($('logo').querySelector('.mk'), {opacity: m, transform: `translateY(${lerp(20, 0, m)}px)`});
+  const tg = E.out3(prog(s, 1.5, .55));
+  css($('tagline'), {opacity: tg, transform: `translateY(${lerp(30, 0, tg)}px)`});
+  const r = E.out3(prog(s, .1, .9));
+  css($('ring'), {opacity: r * .9, transform: `scale(${lerp(.6, 1, r) * (1 + .015 * Math.sin(s * 2.4))})`});
+  $('ringG').style.transform = `rotate(${s * 14}deg)`;
+  css($('logo'), {transform: `scale(${1 + s * .008})`});
+}
+
+async function renderFrame(t) {
+  pending.length = 0;
+  css($('glowA'), {transform: `translate(${Math.sin(t * .5) * 120}px,${Math.cos(t * .4) * 160}px)`});
+  css($('glowB'), {transform: `translate(${Math.cos(t * .45) * 120}px,${Math.sin(t * .35) * 160}px)`});
+  segA(t); segB(t);
+  let fl = segC(t) || 0; segD(t);
+  for (const a of []) { const p = prog(t, a, .35); if (p > 0 && p < 1) fl = Math.max(fl, 1 - p); }
+  const p0 = prog(t, S.C[0], .3); if (p0 > 0 && p0 < 1) fl = Math.max(fl, 1 - p0);
+  $('flash').style.opacity = fl;
+  await Promise.all(pending);
+}
+window.renderFrame = renderFrame;
+window.ready = (async () => {
+  await document.fonts.load('900 40px Mont'); await document.fonts.load('900 40px Cairo'); await document.fonts.ready;
+  await renderFrame(0); return true;
+})();
+</script>
+</body>
+</html>

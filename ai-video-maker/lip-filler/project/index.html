@@ -336,10 +336,11 @@ function renderCaps(t) {
 /* ---------------- camera on the doctor plate ---------------- */
 function camera(t) {
   // [start, end, scale0, scale1, originX, originY]
+  // continuous scale across every card/lens section, so nothing jumps (no sudden zoom-out when a card leaves)
   const K = [
-    [0.00, 4.10, 1.00, 1.03, 560, 300], [4.10, 6.30, 1.00, 1.02, 555, 640],
-    [6.30, 11.42, 1.04, 1.06, 540, 860], [11.42, 12.40, 1.00, 1.015, FOC.x, FOC.y], [12.40, 14.40, 1.015, 1.05, FOC.x, FOC.y],
-    [14.40, 20.80, 1.04, 1.06, 540, 860], [20.80, 23.60, 1.00, 1.03, 555, 520], [23.60, 99, 1.00, 1.03, 555, 700],
+    [0.00, 6.30, 1.00, 1.035, 560, 300],
+    [6.30, 11.42, 1.035, 1.00, 560, 300], [11.42, 12.40, 1.00, 1.015, FOC.x, FOC.y], [12.40, 14.40, 1.015, 1.05, FOC.x, FOC.y],
+    [14.40, 20.80, 1.05, 1.00, FOC.x, FOC.y], [20.80, 23.60, 1.00, 1.03, 555, 520], [23.60, 99, 1.00, 1.03, 555, 700],
   ];
   const k = K.find(k => t >= k[0] && t < k[1]) || K[K.length - 1];
   let s = lerp(k[2], k[3], prog(t, k[0], k[1] - k[0]));
@@ -373,6 +374,13 @@ function brollFrame(t) {
 const pending = [];
 function setSrc(img, src) { if (img.dataset.src === src) return; img.dataset.src = src; img.src = src; pending.push(img.decode().catch(() => {})); }
 
+// frames of the wide shot that sits between two close-ups in the source; zoomed to the close-up framing
+const WIDE_FIX = {yellow: {from: 124, to: 188, s: 1.56, qx: 208, qy: 252}, green: {from: 123, to: 185, s: 1.54, qx: 189, qy: 208}};
+function plateFix(n) {
+  const w = WIDE_FIX[VAR], img = $('doc');
+  if (w && n >= w.from && n <= w.to) css(img, {transformOrigin: '0 0', transform: `translate(${-w.qx * w.s}px,${-w.qy * w.s}px) scale(${w.s})`});
+  else img.style.transform = 'none';
+}
 async function renderFrame(t) {
   pending.length = 0;
   const n = Math.min(826, Math.round(t * FPS) + 1);
@@ -380,6 +388,7 @@ async function renderFrame(t) {
 
   if (SHOW_BG) {
     setSrc($('doc'), `cache/doctor_${VAR}/f${String(n).padStart(4, '0')}.jpg`);
+    plateFix(n);
     camera(t);
     $('bar').style.width = (cl(t / DUR) * 1080).toFixed(1) + 'px';
     // flash on hard hits
