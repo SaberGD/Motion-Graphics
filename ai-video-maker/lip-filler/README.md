@@ -3,14 +3,15 @@
 ## Output (`output/`)
 | File | What it is |
 |---|---|
-| `lip_filler_yellow_WITH_captions.mp4` | Yellow blazer, graphics + B-rolls + Arabic captions + music/SFX |
-| `lip_filler_yellow_NO_captions.mp4` | Same, without captions |
-| `lip_filler_green_WITH_captions.mp4` / `_NO_captions.mp4` | Same for the green blazer |
-| `captions_layer_alpha.mov` | Captions only, transparent (QuickTime Animation) — place it over a NO_captions video |
-| `lip_filler_captions_ar.srt` | Captions as SRT (UTF-8) |
+| `lip_filler_yellow.mp4` | Yellow blazer: lower-third motion titles + B-rolls + music/SFX (no captions) |
+| `lip_filler_green.mp4` | Same for the green blazer |
 | `stems/voice.wav` | Original voice, untouched (bit-exact copy) |
 | `stems/music.wav`, `stems/sfx.wav` | Music bed and SFX, already ducked, for remixing |
 | `stems/mix.wav` | Final mix used in the MP4s |
+
+v2 (client notes): captions removed, all motion titles moved down to the lower third,
+fewer titles with longer and calmer holds, camera punch-ins and shakes removed, whooshes about 8 dB softer.
+Caption tooling (`scripts/captions.py`, `?caps=1`) is still in the project if captions are needed later.
 
 ## Project (`project/`)
 The edit is built as code, so any change re-renders the whole video in about 4 minutes.

@@ -38,7 +38,7 @@ body.nobg{background:transparent}
   background:radial-gradient(120% 70% at 50% 45%,rgba(25,195,201,.25),rgba(4,33,39,.78) 70%),linear-gradient(180deg,rgba(6,48,58,.5),rgba(4,33,39,.75))}
 #vig{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(4,30,36,.55) 0,rgba(4,30,36,0) 560px),
-             linear-gradient(0deg,rgba(4,30,36,.6) 0,rgba(4,30,36,0) 720px)}
+             linear-gradient(0deg,rgba(4,30,36,.82) 0,rgba(4,30,36,.55) 520px,rgba(4,30,36,0) 940px)}
 #flash{position:absolute;inset:0;background:#fff;opacity:0}
 #bokeh{position:absolute;inset:0;opacity:0}
 #bokeh i{position:absolute;border-radius:50%;filter:blur(2px)}
@@ -46,10 +46,10 @@ body.nobg{background:transparent}
   box-shadow:0 0 14px rgba(141,243,243,.8)}
 
 /* B-roll frames */
-.card{position:absolute;left:540px;top:860px;width:840px;height:820px;translate:-50% -50%;border-radius:58px;overflow:hidden;
+.card{position:absolute;left:540px;top:770px;width:840px;height:820px;translate:-50% -50%;border-radius:58px;overflow:hidden;
   box-shadow:0 0 0 9px rgba(255,255,255,.95),0 0 0 15px rgba(25,195,201,.55),0 40px 90px rgba(0,0,0,.5),0 0 120px rgba(25,195,201,.45)}
 .card img{width:100%;height:100%;object-fit:cover;object-position:50% 43%;display:block}
-#lens{position:absolute;left:540px;top:860px;width:800px;height:800px;translate:-50% -50%}
+#lens{position:absolute;left:540px;top:770px;width:800px;height:800px;translate:-50% -50%}
 #lens .disc{position:absolute;inset:40px;border-radius:50%;overflow:hidden;
   box-shadow:0 0 0 9px rgba(255,255,255,.95),0 40px 90px rgba(0,0,0,.5),0 0 120px rgba(249,175,203,.5)}
 #lens .disc img{width:100%;height:100%;object-fit:cover;object-position:40% 40%}
@@ -121,7 +121,7 @@ body.nobg{background:transparent}
 #docBadge .e{font:800 34px/1 Mont;color:var(--cyan);text-align:right;direction:ltr;letter-spacing:1px}
 
 /* CTA */
-#cta{position:absolute;left:540px;top:1110px;translate:-50% -50%;text-align:center;white-space:nowrap}
+#cta{position:absolute;left:540px;top:1310px;translate:-50% -50%;text-align:center;white-space:nowrap}
 #cta .btn{position:relative;display:inline-flex;align-items:center;gap:24px;direction:rtl;padding:26px 56px 34px 46px;border-radius:90px;overflow:hidden;
   background:linear-gradient(135deg,#27D3D8,var(--teal2));box-shadow:0 0 0 8px rgba(255,255,255,.95),0 0 0 18px rgba(249,175,203,.55),0 26px 60px rgba(0,0,0,.45),0 0 90px rgba(25,195,201,.7)}
 #cta .btn .a{font:900 86px/1.1 Cairo;color:#fff;text-shadow:0 4px 14px rgba(0,40,50,.4)}
@@ -158,9 +158,9 @@ body.nobg{background:transparent}
       <circle cx="400" cy="6" r="12" fill="#F9AFCB"/><circle cx="400" cy="794" r="12" fill="#F9AFCB"/></g></svg>
   </div>
   <div id="sym" class="abs hide" style="left:0;top:0;width:1080px;height:1920px">
-    <svg width="1080" height="1920"><line id="symLine" x1="540" y1="470" x2="540" y2="1250" stroke="#fff" stroke-width="5" stroke-dasharray="18 16" opacity=".85"/>
-      <g id="symL"><path d="M250 860 h120 m-26 -26 l26 26 l-26 26" fill="none" stroke="#8DF3F3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
-      <g id="symR"><path d="M830 860 h-120 m26 -26 l-26 26 l26 26" fill="none" stroke="#8DF3F3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+    <svg width="1080" height="1920"><line id="symLine" x1="540" y1="380" x2="540" y2="1160" stroke="#fff" stroke-width="5" stroke-dasharray="18 16" opacity=".85"/>
+      <g id="symL" style="display:none"><path d="M250 860 h120 m-26 -26 l26 26 l-26 26" fill="none" stroke="#8DF3F3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <g id="symR" style="display:none"><path d="M830 860 h-120 m26 -26 l-26 26 l26 26" fill="none" stroke="#8DF3F3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
   </div>
   <div class="ctr hide" id="b2tag" style="top:1218px"><div class="pill" style="border-color:rgba(141,243,243,.8)"><span class="a" style="font-size:52px">ابتسامة متوازنة</span>
     <svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="#8DF3F3"/><path d="M15 28 l8 8 l16 -18" fill="none" stroke="#042127" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
@@ -169,42 +169,42 @@ body.nobg{background:transparent}
   <!-- 3. titles -->
   <div class="ctr title hide" id="hookK" style="top:330px"><div class="ln bigar">كنتي تعرفي<span class="hl">؟</span></div></div>
   <div id="qmark" class="hide">?</div>
-  <div class="ctr title hide" id="hookLF" style="top:272px"><div class="ln en"><span>Lip Filler</span></div></div>
-  <div class="ctr hide" id="hookNE" style="top:418px">
+  <div class="ctr title hide" id="hookLF" style="top:1262px"><div class="ln en"><span>Lip Filler</span></div></div>
+  <div class="ctr hide" id="hookNE" style="top:1404px">
     <div class="neq"><svg width="70" height="70" viewBox="0 0 70 70"><path d="M10 26 H60 M10 46 H60 M48 8 L22 62" stroke="#fff" stroke-width="9" stroke-linecap="round"/></svg></div>
     <div class="txt"><span class="k">تكبير<i></i></span> بس؟</div>
   </div>
 
   <div class="ctr title hide" id="listH" style="top:262px"><div class="ln bigar">حالات <span class="hl">كتيرة</span></div></div>
-  <div class="chip hide" id="ch1" style="left:330px;top:392px"><b></b>Asymmetry</div>
-  <div class="chip c2 hide" id="ch2" style="left:760px;top:392px"><b></b>Gummy Smile</div>
-  <div class="chip c2 hide" id="ch3" style="left:330px;top:494px"><b></b>Volume</div>
-  <div class="chip hide" id="ch4" style="left:760px;top:494px"><b></b>Contour</div>
+  <div class="chip hide" id="ch1" style="left:330px;top:1300px"><b></b>Asymmetry</div>
+  <div class="chip c2 hide" id="ch2" style="left:760px;top:1300px"><b></b>Gummy Smile</div>
+  <div class="chip c2 hide" id="ch3" style="left:330px;top:1402px"><b></b>Volume</div>
+  <div class="chip hide" id="ch4" style="left:760px;top:1402px"><b></b>Contour</div>
 
-  <div class="ctr title hide" id="tB1" style="top:318px"><div class="ln en">Lip Asymmetry</div><div class="ln"><span class="ar">عدم تماثل الشفايف</span></div></div>
-  <div class="ctr title hide" id="tB2" style="top:318px"><div class="ln en">Gummy Smile</div><div class="ln"><span class="ar teal">تراجع الشفة العلوية أو السفلية</span></div></div>
+  <div class="ctr title hide" id="tB1" style="top:1330px"><div class="ln en">Lip Asymmetry</div><div class="ln"><span class="ar">عدم تماثل الشفايف</span></div></div>
+  <div class="ctr title hide" id="tB2" style="top:1330px"><div class="ln en">Gummy Smile</div><div class="ln"><span class="ar teal">تراجع الشفة العلوية أو السفلية</span></div></div>
 
   <div class="ctr hide" id="plusTag" style="top:300px"><div class="pill" style="border-color:rgba(141,243,243,.8)"><span class="a">كمان</span><span class="e" style="color:#8DF3F3;font-size:52px">+ Lip Filler</span></div></div>
-  <div class="ctr title hide" id="tShape" style="top:300px"><div class="ln bigar">تحسين <span class="hl">الشكل</span></div><div class="ln"><span class="ar teal" style="font-family:Mont;font-weight:800;font-size:46px;direction:ltr">Lip Contour</span></div></div>
+  <div class="ctr title hide" id="tShape" style="top:1330px"><div class="ln bigar">تحسين <span class="hl">الشكل</span></div><div class="ln"><span class="ar teal" style="font-family:Mont;font-weight:800;font-size:46px;direction:ltr">Lip Contour</span></div></div>
   <svg id="focus" class="hide" width="1080" height="1920"><g id="fbox" style="transform-box:fill-box;transform-origin:center"></g></svg>
 
-  <div class="ctr hide" id="pCleft" style="top:330px"><div class="pill"><span class="a">الشفايف الأرنبية</span><span class="e">Cleft Lip</span></div></div>
+  <div class="ctr hide" id="pCleft" style="top:1330px"><div class="pill"><span class="a" style="font-size:58px">الشفايف الأرنبية والندبات</span></div></div>
   <div class="ctr hide" id="pScar" style="top:330px"><div class="pill"><span class="a">علاج الندبات</span><span class="e">Scars</span></div></div>
 
-  <div class="ctr title hide" id="tVol" style="top:318px"><div class="ln en" style="font-size:84px">Volume &amp; Fine Lines</div><div class="ln"><span class="ar">تعويض الحجم مع العمر</span></div></div>
+  <div class="ctr title hide" id="tVol" style="top:1330px"><div class="ln en" style="font-size:84px">Volume &amp; Fine Lines</div><div class="ln"><span class="ar">تعويض الحجم مع العمر</span></div></div>
   <div class="ctr title hide" id="tLines" style="top:318px"><div class="ln en" style="font-size:84px">Fine Lines</div><div class="ln"><span class="ar teal">فرد الخطوط الرفيعة</span></div></div>
 
   <div class="ctr title hide" id="tMost" style="top:320px"><div class="ln bigar" style="font-size:128px">والأهم<span class="hl">!</span></div><div class="ln"><span class="ar" style="font-family:Mont;font-weight:800;font-size:42px;letter-spacing:3px">MOST IMPORTANT</span></div></div>
-  <div class="ctr hide" id="docBadge" style="top:330px">
+  <div class="ctr hide" id="docBadge" style="top:1330px">
     <div class="ic"><svg width="74" height="74" viewBox="0 0 74 74" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 8 v18 a14 14 0 0 0 28 0 V8"/><path d="M32 40 v8 a14 14 0 0 0 28 0 v-6"/><circle cx="60" cy="36" r="6"/></svg></div>
     <div><div class="a">الدكتور المناسب</div><div class="e">THE RIGHT DOCTOR</div></div>
   </div>
-  <div class="icard hide" id="ic1" style="left:300px;top:340px">
+  <div class="icard hide" id="ic1" style="left:300px;top:1340px">
     <div class="ic"><svg width="62" height="62" viewBox="0 0 62 62" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M44 6 l12 12 M50 12 l-8 8 M42 20 l-24 24 l-8 -8 l24 -24 z M10 52 l8 -8 M6 56 l4 -4 M22 32 l4 4 M28 26 l4 4"/></svg></div>
     <div class="a">نوع المادة</div><div class="e">Filler type</div></div>
-  <div class="icard pk hide" id="ic2" style="left:780px;top:340px">
+  <div class="icard pk hide" id="ic2" style="left:780px;top:1340px">
     <div class="ic"><svg width="66" height="66" viewBox="0 0 66 66" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round">
       <circle cx="33" cy="33" r="22"/><circle cx="33" cy="33" r="9"/><path d="M33 3 v10 M33 53 v10 M3 33 h10 M53 33 h10"/></svg></div>
     <div class="a" style="font-family:Mont;font-weight:900;font-size:46px">Technique</div><div class="e" style="color:#F9AFCB">التقنية المناسبة</div></div>
@@ -230,13 +230,13 @@ if (!SHOW_BG) { document.body.classList.add('nobg'); document.documentElement.st
 
 /* ---------------- timing (seconds) ---------------- */
 const T = {
-  hookK: [0.40, 2.12], qmark: [0.55, 2.12], hookLF: [2.14, 4.06], hookNE: [2.74, 4.06], strike: 3.30,
-  listH: [4.13, 6.36], chips: [4.42, 4.62, 4.82, 5.02], chipsOut: 6.18,
-  card1: [6.40, 11.06], swapB2: 8.75, tB1: [6.46, 8.66], tB2: [8.80, 10.98], b2tag: [9.75, 10.98],
-  plusTag: [11.14, 12.30], tShape: [12.33, 14.36], focus: [12.33, 14.38],
-  lens: [14.40, 16.32], pCleft: [14.44, 15.36], pScar: [15.40, 16.28],
-  card2: [16.30, 20.46], tVol: [16.36, 18.56], tLines: [18.62, 20.40], meter: [16.50, 18.56], sparks: [18.70, 20.30],
-  tMost: [20.48, 22.10], docBadge: [22.14, 23.98], ic1: [24.04, 25.86], ic2: [24.78, 25.86], cta: [25.92, 99],
+  hookK: [99, 99], qmark: [99, 99], hookLF: [0.50, 3.95], hookNE: [1.10, 3.95], strike: 3.30,
+  listH: [99, 99], chips: [4.35, 4.60, 4.85, 5.10], chipsOut: 6.05,
+  card1: [6.40, 11.06], swapB2: 8.75, tB1: [6.60, 8.62], tB2: [8.90, 10.95], b2tag: [99, 99],
+  plusTag: [99, 99], tShape: [12.40, 14.30], focus: [12.40, 14.34],
+  lens: [14.40, 16.32], pCleft: [14.55, 16.22], pScar: [99, 99],
+  card2: [16.30, 20.46], tVol: [16.50, 20.30], tLines: [99, 99], meter: [99, 99], sparks: [99, 99],
+  tMost: [99, 99], docBadge: [21.00, 23.85], ic1: [24.00, 25.75], ic2: [24.25, 25.75], cta: [25.92, 99],
 };
 // B-roll slots: where they sit on the timeline + which part of the 4s clip plays (native speed, no stretch)
 const BROLL = [
@@ -262,7 +262,11 @@ function css(el, o) { for (const k in o) el.style[k] = o[k]; }
 
 /** Standard enter/exit: fast pop-in (scale+rise+blur), quick scale-up fade out. */
 function pop(el, t, a, b, o = {}) {
-  const {din = .32, dout = .18, dy = 46, s0 = .7, blur = 16, ease = E.back, sOut = 1.08, yOut = -16, x0 = 0, rot0 = 0} = o;
+  let {din = .45, dout = .3, dy = 30, s0 = .92, blur = 10, sOut = 1.0, yOut = 10, x0 = 0} = o;
+  // calm mode: clamp anything punchy coming from the call sites
+  const ease = E.out3, rot0 = 0;
+  s0 = cl(s0, .9, 1.1); din = Math.max(din, .45); dout = Math.max(dout, .28); blur = Math.min(blur, 10);
+  sOut = 1 + (sOut - 1) * .25; dy = dy * .6; x0 = x0 * .35;
   if (!show(el, t >= a && t < b)) return 0;
   const i = prog(t, a, din), u = prog(t, b - dout, dout), ei = ease(i), eo = E.in2(u);
   const s = lerp(s0, 1, ei) * lerp(1, sOut, eo);
@@ -333,28 +337,26 @@ function renderCaps(t) {
 function camera(t) {
   // [start, end, scale0, scale1, originX, originY]
   const K = [
-    [0.00, 0.40, 1.00, 1.01, 560, 300], [0.40, 4.10, 1.07, 1.11, 560, 300], [4.10, 6.40, 1.00, 1.04, 555, 640],
-    [6.40, 11.06, 1.06, 1.10, 540, 860], [11.06, 12.32, 1.00, 1.03, FOC.x, FOC.y], [12.32, 14.40, 1.06, 1.12, FOC.x, FOC.y],
-    [14.40, 20.46, 1.06, 1.12, 540, 860], [20.46, 22.12, 1.08, 1.11, 555, 420], [22.12, 23.60, 1.00, 1.03, 555, 520],
-    [23.60, 99, 1.00, 1.05, 555, 700],
+    [0.00, 4.10, 1.00, 1.03, 560, 300], [4.10, 6.40, 1.00, 1.02, 555, 640],
+    [6.40, 11.06, 1.04, 1.06, 540, 860], [11.06, 12.40, 1.00, 1.015, FOC.x, FOC.y], [12.40, 14.40, 1.015, 1.05, FOC.x, FOC.y],
+    [14.40, 20.46, 1.04, 1.06, 540, 860], [20.46, 23.60, 1.00, 1.03, 555, 520], [23.60, 99, 1.00, 1.03, 555, 700],
   ];
   const k = K.find(k => t >= k[0] && t < k[1]) || K[K.length - 1];
   let s = lerp(k[2], k[3], prog(t, k[0], k[1] - k[0]));
   // punch-in kick at segment start (snappy zoom that settles)
   const kick = 1 - E.out3(prog(t, k[0], .35));
-  if ([0.40, 12.32, 20.46].includes(k[0])) s += .06 * kick;
   let sx = 0, sy = 0;   // short impact shake
-  for (const [a, amp] of [[0.40, 14], [2.14, 9], [20.48, 10]]) {
+  for (const [a, amp] of []) {
     const p = prog(t, a, .3); if (p > 0 && p < 1) { sx += Math.sin(t * 95) * amp * (1 - p); sy += Math.cos(t * 77) * amp * (1 - p); }
   }
   // blur + tint while a B-roll is up
-  const inB = (a, b) => cl(Math.min(prog(t, a - .02, .2), 1 - prog(t, b - .16, .2)));
+  const inB = (a, b) => cl(Math.min(prog(t, a - .05, .4), 1 - prog(t, b - .3, .4)));
   const bk = Math.max(inB(6.40, 11.06), inB(14.40, 20.46));
   css($('cam'), {transformOrigin: `${k[4]}px ${k[5]}px`, transform: `translate(${sx}px,${sy}px) scale(${s})`,
     filter: bk > .01 ? `blur(${(bk * 20).toFixed(1)}px) saturate(${1 - bk * .3})` : 'none'});
   $('tint').style.opacity = bk;
   $('bokeh').style.opacity = bk * .9;
-  BOK.forEach(d => css(d.el, {left: d.x + Math.sin(t * d.v + d.ph) * 30 + 'px', top: (d.y - t * 40 * d.v + 1920 * 3) % 1920 + 'px'}));
+  BOK.forEach(d => css(d.el, {left: d.x + Math.sin(t * d.v + d.ph) * 30 + 'px', top: (d.y - t * 18 * d.v + 1920 * 3) % 1920 + 'px'}));
   return bk;
 }
 
@@ -381,7 +383,7 @@ async function renderFrame(t) {
     camera(t);
     $('bar').style.width = (cl(t / DUR) * 1080).toFixed(1) + 'px';
     // flash on hard hits
-    let fl = 0; for (const a of [0.40, 6.40, 16.30, 25.92]) { const p = prog(t, a, .16); if (p > 0 && p < 1) fl = Math.max(fl, (1 - p) * .55); }
+    let fl = 0; for (const a of []) { const p = prog(t, a, .16); if (p > 0 && p < 1) fl = Math.max(fl, (1 - p) * .55); }
     $('flash').style.opacity = fl;
 
     const br = brollFrame(t);
@@ -392,18 +394,17 @@ async function renderFrame(t) {
       setSrc($('cimg'), br.src);
       let tx = 0, ty = 0, s = 1, r = 0, op = 1, bl = 0, clip = 'none';
       if (inC1) {
-        const i = prog(t, T.card1[0], .32), u = prog(t, T.card1[1] - .14, .14);
-        s = lerp(.55, 1, E.back(i)) * lerp(1, 1.25, E.in2(u)); r = lerp(-9, 0, E.out3(i)); ty = lerp(140, 0, E.out3(i));
-        op = cl(i * 3) * (1 - E.in2(u)); bl = (1 - cl(i * 2)) * 18 + u * 20;
+        const i = prog(t, T.card1[0], .5), u = prog(t, T.card1[1] - .3, .3);
+        s = lerp(.9, 1, E.out3(i)) * lerp(1, .96, E.in2(u)); ty = lerp(50, 0, E.out3(i));
+        op = cl(i * 1.6) * (1 - E.in2(u)); bl = (1 - cl(i * 1.6)) * 10 + u * 8;
         // whip B1 -> B2
         const w1 = prog(t, T.swapB2 - .10, .10), w2 = prog(t, T.swapB2, .16);
-        if (t < T.swapB2 && w1 > 0) { tx = -1150 * E.in3(w1); bl = Math.max(bl, w1 * 26); }
-        if (t >= T.swapB2 && w2 < 1) { tx = 1150 * (1 - E.out3(w2)); bl = Math.max(bl, (1 - w2) * 26); }
-        s *= 1 + .02 * Math.sin((t - T.card1[0]) * 1.4);
+        const dip = Math.abs(t - T.swapB2) < .14 ? Math.abs(t - T.swapB2) / .14 : 1;   // soft dip-cross between B1 and B2
+        op *= lerp(.15, 1, E.out3(dip));
       } else {
-        const i = prog(t, T.card2[0], .3), u = prog(t, T.card2[1] - .16, .16);
-        clip = `circle(${lerp(30, 75, E.out3(i)).toFixed(1)}% at 50% 50%)`; s = lerp(.92, 1, E.out3(i));
-        ty = -1500 * E.in3(u); bl = u * 24;
+        const i = prog(t, T.card2[0], .45), u = prog(t, T.card2[1] - .3, .3);
+        clip = `circle(${lerp(36, 75, E.out3(i)).toFixed(1)}% at 50% 50%)`; s = lerp(.96, 1, E.out3(i)) * lerp(1, .96, E.in2(u));
+        op = 1 - E.in2(u); bl = u * 8;
       }
       css(card, {opacity: op, transform: `translate(${tx}px,${ty}px) rotate(${r}deg) scale(${s})`, filter: bl > .4 ? `blur(${bl.toFixed(1)}px)` : 'none', clipPath: clip});
     }
@@ -411,15 +412,15 @@ async function renderFrame(t) {
     const lens = $('lens');
     if (show(lens, t >= T.lens[0] && t < T.lens[1] && br && br.id === 'B4')) {
       setSrc($('limg'), br.src);
-      const i = prog(t, T.lens[0], .34), u = prog(t, T.lens[1] - .12, .12);
-      css(lens, {opacity: 1 - u, transform: `scale(${lerp(.3, 1, E.back(i)) * lerp(1, .6, E.in2(u))}) rotate(${lerp(40, 0, E.out3(i))}deg)`,
-        filter: i < 1 ? `blur(${((1 - i) * 14).toFixed(1)}px)` : 'none'});
-      $('lensRing').style.transform = `rotate(${(t - T.lens[0]) * 40}deg)`;
-      $('lensTicks').style.transform = `rotate(${-(t - T.lens[0]) * 70}deg)`;
+      const i = prog(t, T.lens[0], .45), u = prog(t, T.lens[1] - .2, .2);
+      css(lens, {opacity: cl(i * 1.6) * (1 - u), transform: `scale(${lerp(.88, 1, E.out3(i)) * lerp(1, .9, E.in2(u))})`,
+        filter: i < 1 ? `blur(${((1 - i) * 8).toFixed(1)}px)` : 'none'});
+      $('lensRing').style.transform = `rotate(${(t - T.lens[0]) * 12}deg)`;
+      $('lensTicks').style.transform = `rotate(${-(t - T.lens[0]) * 20}deg)`;
     }
     /* B1 symmetry guide */
     if (show($('sym'), t >= 6.62 && t < 8.62)) {
-      const i = prog(t, 6.62, .4), u = prog(t, 8.50, .12), pulse = Math.sin((t - 6.62) * 9) * 10;
+      const i = prog(t, 6.62, .8), u = prog(t, 8.40, .25), pulse = 0;
       css($('sym'), {opacity: 1 - u});
       $('symLine').setAttribute('y2', lerp(470, 1250, E.out3(i)));
       $('symL').setAttribute('transform', `translate(${lerp(-120, 0, E.out3(prog(t, 6.9, .3))) + pulse} 0)`);
@@ -447,7 +448,7 @@ async function renderFrame(t) {
     title($('hookLF'), t, ...T.hookLF, {s0: 2.2, dy: 0, blur: 26, ease: E.expo, din: .28, sOut: 1.25});
     pop($('hookNE'), t, ...T.hookNE, {x0: 260, dy: 0, s0: .8, sOut: 1.2});
     $('hookNE').querySelector('i').style.scale = `${E.out5(prog(t, T.strike, .22))} 1`;
-    $('hookNE').querySelector('.neq').style.transform = `rotate(${lerp(-180, 0, E.back(prog(t, T.hookNE[0], .45)))}deg)`;
+    $('hookNE').querySelector('.neq').style.transform = `rotate(0deg)`;
 
     /* list of cases */
     title($('listH'), t, ...T.listH, {s0: 1.4, dy: 0, ease: E.expo});
@@ -460,10 +461,10 @@ async function renderFrame(t) {
     pop($('plusTag'), t, ...T.plusTag, {dy: -60, s0: .6});
     title($('tShape'), t, ...T.tShape, {s0: 1.5, dy: 0, ease: E.expo});
     if (show($('focus'), t >= T.focus[0] && t < T.focus[1])) {
-      const i = prog(t, T.focus[0], .4), u = prog(t, T.focus[1] - .15, .15);
+      const i = prog(t, T.focus[0], .6), u = prog(t, T.focus[1] - .3, .3);
       css($('focus'), {opacity: (1 - u)});
-      $('fbox').setAttribute('transform', `translate(${FOC.x} ${FOC.y}) scale(${lerp(2.2, 1, E.out5(i)) * (1 + .03 * Math.sin(t * 7))})`);
-      const ping = ((t - T.focus[0]) % .9) / .9;
+      $('fbox').setAttribute('transform', `translate(${FOC.x} ${FOC.y}) scale(${lerp(1.25, 1, E.out3(i))})`);
+      const ping = ((t - T.focus[0]) % 1.6) / 1.6;
       $('fping').setAttribute('r', 10 + ping * 60); $('fping').style.opacity = 1 - ping;
     }
 
@@ -482,10 +483,10 @@ async function renderFrame(t) {
     pop($('ic2'), t, ...T.ic2, {dy: 120, s0: .4, rot0: 8});
     { const el = $('cta');
       if (show(el, t >= T.cta[0])) {
-        const i = prog(t, T.cta[0], .45), br2 = 1 + .025 * Math.sin((t - T.cta[0]) * 5.5) * cl(prog(t, T.cta[0] + .5, .3));
-        css(el, {opacity: cl(i * 2.5), transform: `translateY(${lerp(160, 0, E.out3(i))}px) scale(${lerp(.5, 1, E.back(i)) * br2})`,
+        const i = prog(t, T.cta[0], .55), br2 = 1 + .012 * Math.sin((t - T.cta[0]) * 3) * cl(prog(t, T.cta[0] + .5, .3));
+        css(el, {opacity: cl(i * 2.5), transform: `translateY(${lerp(40, 0, E.out3(i))}px) scale(${lerp(.92, 1, E.out3(i)) * br2})`,
           filter: i < .6 ? `blur(${((1 - i / .6) * 14).toFixed(1)}px)` : 'none'});
-        const sh = ((t - T.cta[0] - .4) % 1.3) / .55;
+        const sh = ((t - T.cta[0] - .5) % 2.2) / .8;
         el.querySelector('.shine').style.left = `${lerp(-200, 1000, cl(sh))}px`;
         el.querySelector('.sub').style.opacity = cl(prog(t, T.cta[0] + .35, .3));
         el.querySelector('.sub').style.letterSpacing = lerp(18, 6, E.out3(prog(t, T.cta[0] + .35, .5))) + 'px';

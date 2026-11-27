@@ -162,29 +162,25 @@ def riser(dur=0.6):
 
 
 def sfx():
+    # calm pass: soft, sparse whooshes (about -8 dB vs v1), only on the elements that remain
     out = np.zeros((N, 2))
-    W = lambda at, g=0.30, **k: place(out, whoosh(**k), at - 0.25, g)
-    P = lambda at, g=0.16, pan=0.0, **k: place(out, pop(**k), at, g, pan)
-    place(out, impact(), 0.40, 0.30); W(0.40, 0.22)
-    W(2.14, 0.26); place(out, impact(0.5), 2.14, 0.22)
-    P(2.74, 0.18, f0=500, f1=1100); W(3.30, 0.14, dur=0.3, bright=1.4)
-    W(4.10, 0.20)
-    for k, a in enumerate([4.42, 4.62, 4.82, 5.02]):
-        P(a, 0.15, pan=-0.3 if k % 2 == 0 else 0.3, f0=800 + 80 * k, f1=1400 + 120 * k)
-    W(6.40, 0.30); place(out, impact(0.5), 6.40, 0.15)
-    W(8.75, 0.26, dur=0.3, bright=1.5)
-    P(9.75, 0.13, f0=900, f1=1500)
-    W(11.06, 0.22, up=False)
-    P(11.14, 0.14)
-    W(12.33, 0.22, dur=0.35)
-    W(14.40, 0.28); P(14.44, 0.12, pan=-0.3); P(15.40, 0.12, pan=0.3)
-    W(16.30, 0.28, dur=0.35)
-    place(out, shimmer(), 18.70, 0.13)
-    W(20.40, 0.24, dur=0.35, up=False); place(out, impact(0.6), 20.48, 0.25)
-    P(22.14, 0.15, f0=600, f1=1200)
-    P(24.04, 0.15, pan=-0.35); P(24.78, 0.15, pan=0.35, f0=900, f1=1500)
-    place(out, riser(), 25.32, 0.20)
-    place(out, impact(0.7), 25.92, 0.25); place(out, bell(1318.5), 25.92, 0.18); place(out, bell(1975.5), 26.0, 0.10)
+    W = lambda at, g=0.10, **k: place(out, whoosh(**k), at - 0.25, g)
+    P = lambda at, g=0.08, pan=0.0, **k: place(out, pop(**k), at, g, pan)
+    place(out, impact(), 0.50, 0.12); W(0.50, 0.08, dur=0.6)
+    P(1.10, 0.08, f0=500, f1=1000); W(3.30, 0.05, dur=0.4, bright=0.8)
+    for k, a in enumerate([4.35, 4.60, 4.85, 5.10]):
+        P(a, 0.07, pan=-0.3 if k % 2 == 0 else 0.3, f0=700 + 60 * k, f1=1200 + 80 * k)
+    W(6.45, 0.10, dur=0.6, bright=0.8)
+    W(8.80, 0.05, dur=0.5, bright=0.6)
+    W(11.10, 0.07, dur=0.6, up=False, bright=0.7)
+    W(12.45, 0.06, dur=0.6, bright=0.7)
+    W(14.45, 0.09, dur=0.6, bright=0.8)
+    W(16.35, 0.08, dur=0.6, bright=0.8)
+    W(20.45, 0.07, dur=0.6, up=False, bright=0.7)
+    P(21.00, 0.08, f0=600, f1=1100)
+    P(24.00, 0.07, pan=-0.35); P(24.25, 0.07, pan=0.35, f0=900, f1=1400)
+    place(out, riser(0.8), 25.12, 0.08)
+    place(out, impact(0.7), 25.92, 0.10); place(out, bell(1318.5), 25.92, 0.12); place(out, bell(1975.5), 26.05, 0.06)
     return out
 
 
