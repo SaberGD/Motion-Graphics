@@ -11,7 +11,7 @@ SR, place, whoosh, pop, impact, bell, riser, mtof, lowpass_fft, highpass_fft = (
 rng = np.random.default_rng(5)
 VOICE = lf.VOICE; N = len(VOICE); DUR = N / SR
 A_END, B_END, C_END = 11.45, 16.3, 25.9   # breakdown | 6-up grid | flash cuts | CTA shot
-WIPES = (1.20, 2.75, 4.07, 8.55)
+WIPES = (1.00, 2.30, 4.07, 5.55)
 BEAT = 0.4                                # 150 BPM; flash cuts every 2 beats from 16.3
 
 CH = [[57, 60, 64, 67], [53, 57, 60, 65], [48, 52, 55, 60], [55, 59, 62, 67]]

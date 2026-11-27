@@ -137,9 +137,10 @@ const src = (v, s) => { const [d, n] = SRC[v]; let f = Math.min(n, Math.max(1, M
 const S = {
   A: [0, 11.45],
   wipes: [  // [start, end, from, to, direction(+1 = new comes from the right)]
-    [1.20, 2.05, 'orig', 'aiY', 1], [2.75, 3.60, 'aiY', 'aiG', -1], [4.07, 4.95, 'aiG', 'marble', 1], [8.55, 9.45, 'marble', 'motG', -1]],
-  steps: [[0, 'التصوير الأصلي', 'ORIGINAL SHOOT'], [1.20, 'لوكيشن جديد بالـ AI', 'AI LOCATION'],
-          [2.75, 'طقم جديد بالـ AI', 'AI OUTFIT'], [4.07, 'مكان تاني + B-roll', 'NEW SCENE + B-ROLL'], [8.55, 'موشن جرافيكس', 'MOTION GRAPHICS']],
+    [1.00, 1.70, 'orig', 'aiY', 1], [2.30, 3.00, 'aiY', 'aiG', -1], [4.07, 4.75, 'aiG', 'marble', 1], [5.55, 6.20, 'marble', 'motG', -1]],
+  // every wipe happens while both sides show the doctor (marble's own B-roll starts at 6.4, the motion card at 6.3)
+  steps: [[0, 'التصوير الأصلي', 'ORIGINAL SHOOT'], [1.00, 'لوكيشن جديد بالـ AI', 'AI LOCATION'],
+          [2.30, 'طقم جديد بالـ AI', 'AI OUTFIT'], [4.07, 'مكان تاني بالـ AI', 'NEW SCENE'], [5.55, 'موشن جرافيكس + B-roll', 'MOTION GRAPHICS']],
   B: [11.45, 16.3],
   C: [16.3, 99], cutLen: .8,
   cuts: [ // [version, word]  — each cut shows that version at the current moment of the speech; the last one holds to the end
@@ -202,7 +203,7 @@ function segA(t) {
   [...$('stepper').querySelectorAll('.bar i')].forEach((b, i) => b.style.scale = `${E.out3(prog(sA, S.steps[i + 1][0], .9))} 1`);
   const lbl = $('stepLbl'), st = S.steps[k], i = prog(sA, st[0] + (k ? .3 : .15), .35);
   if (lbl.dataset.k != k) { lbl.querySelector('.a').textContent = st[1]; lbl.querySelector('.e').textContent = st[2]; lbl.dataset.k = k; }
-  const out = prog(t, S.A[1] - .25, .25), out4 = prog(t, 9.95, .3);   // step-5 label clears before the B-roll card
+  const out = prog(t, S.A[1] - .25, .25), out4 = prog(t, 6.32, .25);   // step-5 label clears before the B-roll card
   css(lbl, {opacity: cl(i * 1.5) * (1 - out) * (1 - out4), transform: `translateY(${lerp(24, 0, E.out3(i))}px) scale(${lerp(.94, 1, E.out3(i))})`});
   $('stepper').style.opacity = (1 - out) * cl(prog(t, .05, .3));
   // fly into the last tile
