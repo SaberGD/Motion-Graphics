@@ -12,3 +12,11 @@ The doctor's speech runs once, start to finish, untouched. Every comparison show
 `project/index.html` holds all the timing (object `S`). `scripts/audio.py` builds the soundtrack: the voice stays bit-exact, and the music and SFX are ducked under it.
 Frames come from `../lip-filler/project` (plates and renders), `project/cache/original` (from `source/original_full.mp4`) and
 `project/cache/marble` (from `source/marble_full_with_broll.mp4`, with the AI corner mark removed using delogo).
+
+## Max quality
+`output/saber_ai_breakdown_ad_MAXQ.mp4`: lossless PNG at every render stage (`HQ=1` for both renderers, `?hq=1` on the page),
+encoded with H.264 CRF 12, `-preset slower`, about 11.5 Mbps.
+```bash
+(cd lip-filler/project && HQ=1 node scripts/render.mjs yellow 4 && HQ=1 node scripts/render.mjs green 4)
+(cd breakdown-ad/project && HQ=1 node scripts/render.mjs ad 4)
+```

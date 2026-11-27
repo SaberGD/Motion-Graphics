@@ -15,12 +15,13 @@ try { ({chromium} = require('playwright')); } catch { ({chromium} = require('/op
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const [pass = 'yellow', workers = '4', only] = process.argv.slice(2);
 const N = 826;
+const HQ = process.env.HQ === '1';
 const isCaps = pass === 'caps';
 const qs = isCaps ? 'bg=0&caps=1' : `v=${pass}&bg=1&caps=0`;
-const outDir = join(ROOT, 'frames', pass);
+const outDir = join(ROOT, 'frames', pass + (HQ ? '_png' : ''));
 await mkdir(outDir, {recursive: true});
 
-const MIME = {'.html': 'text/html', '.json': 'application/json', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.wav': 'audio/wav', '.js': 'text/javascript'};
+const MIME = {'.html': 'text/html', '.json': 'application/json', '.jpg': 'image/jpeg', '.png': 'image/png', '.woff2': 'font/woff2', '.wav': 'audio/wav', '.js': 'text/javascript'};
 const server = createServer(async (req, res) => {
   try {
     const p = join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname));
@@ -43,8 +44,8 @@ await Promise.all([...Array(+workers)].map(async (_, w) => {
   for (let k = w; k < frames.length; k += +workers) {
     const f = frames[k];
     await page.evaluate(t => window.renderFrame(t), (f - 1) / 30);
-    const path = join(outDir, `f${String(f).padStart(4, '0')}.${isCaps ? 'png' : 'jpg'}`);
-    await page.screenshot(isCaps ? {path, omitBackground: true} : {path, type: 'jpeg', quality: 95});
+    const path = join(outDir, `f${String(f).padStart(4, '0')}.${isCaps || HQ ? 'png' : 'jpg'}`);
+    await page.screenshot(isCaps ? {path, omitBackground: true} : HQ ? {path, type: 'png'} : {path, type: 'jpeg', quality: 95});
     if (++done % 100 === 0) console.log(`${pass}: ${done}/${frames.length}  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
   }
 }));

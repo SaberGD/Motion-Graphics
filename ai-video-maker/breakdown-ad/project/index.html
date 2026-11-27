@@ -123,14 +123,16 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#021A1F}
 <script>
 const FPS = 30, DUR = 826 / 30;
 const LF = '../../lip-filler/project/';
+const HQ = new URLSearchParams(location.search).get('hq') === '1';
 const SRC = {   // version -> [frame folder, frame count, display name]
   orig: ['cache/original/', 826], aiY: [LF + 'cache/doctor_yellow/', 826], aiG: [LF + 'cache/doctor_green/', 826],
-  motY: [LF + 'frames/yellow/', 826], motG: [LF + 'frames/green/', 826], marble: ['cache/marble/', 826],
+  // ?hq=1 reads the lossless PNG renders of the motion versions
+  motY: [LF + (HQ ? 'frames/yellow_png/' : 'frames/yellow/'), 826, HQ ? 'png' : 'jpg'], motG: [LF + (HQ ? 'frames/green_png/' : 'frames/green/'), 826, HQ ? 'png' : 'jpg'], marble: ['cache/marble/', 826],
 };
 const HOLD = {marble: [[189, 192, 188]]};   // [from, to, use] frame substitutions
-const src = (v, s) => { const [d, n] = SRC[v]; let f = Math.min(n, Math.max(1, Math.round(s * FPS) + 1));
+const src = (v, s) => { const [d, n, ext = 'jpg'] = SRC[v]; let f = Math.min(n, Math.max(1, Math.round(s * FPS) + 1));
   for (const [a, b, u] of HOLD[v] || []) if (f >= a && f <= b) f = u;
-  return `${d}f${String(f).padStart(4, '0')}.jpg`; };
+  return `${d}f${String(f).padStart(4, '0')}.${ext}`; };
 
 /* ---------------- timing ---------------- */
 // Every picture is shown at its source time == ad time, so the speech runs once, start to finish, under all comparisons.
